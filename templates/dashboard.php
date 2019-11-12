@@ -15,7 +15,7 @@
         <!-- Page title set in pageTitle directive -->
         <title page-title></title>
         
-        <link rel="icon" type="image/png" href="<?= $root; ?>assets/img/favicon.ico">
+        <link rel="icon" type="image/png" href="<?= $root; ?>assets/img/icon/favicon.png">
 
         <!-- Font awesome -->
         <link href="<?= $root; ?>assets/font-awesome/css/font-awesome.css" rel="stylesheet">
@@ -54,7 +54,7 @@
         <script src="<?= $root; ?>assets/js/plugins/pace/pace.min.js"></script>
 
         <!-- Custom and plugin javascript -->
-        <script src="<?= $root; ?>assets/js/extra/inspinia.js"></script>
+        <script src="<?= $root; ?>assets/js/extra/dashboard/inspinia.js"></script>
 
         <!-- Main Angular scripts-->
         <script src="<?= $root; ?>assets/js/angular/angular.min.js"></script>
