@@ -27,6 +27,11 @@ return [
         'renderer' => [
             'template_path' => __DIR__ . '/../templates/',
         ],
+        'pdo' => [ 
+            'dsn' => 'mysql:host=localhost;dbname=cogworks_2;charset=UTF8',
+            'username' => 'root',
+            'password' => 'P@ssw0rd',
+        ],
 
         // Monolog settings
         'logger' => [

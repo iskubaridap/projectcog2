@@ -14,6 +14,10 @@ function MainCtrl() {
 
 };
 
+/*
+    Application Section
+*/
+
 
 angular
     .module('mcafee')

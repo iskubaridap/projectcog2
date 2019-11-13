@@ -165,6 +165,10 @@ function minimalizaSidebar($timeout) {
     };
 }
 
+/*
+    Application Section
+*/
+
 
 /**
  *
