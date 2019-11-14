@@ -29,7 +29,7 @@ $middleware($app);
 $routes = require __DIR__ . '/../src/routes.php';
 $dashboard = require __DIR__ . '/../src/routes/dashboard.php';
 $extra = require __DIR__ . '/../src/routes/extra.php';
-$developers = require __DIR__ . '/../src/routes/developers.php';
+$developers = require __DIR__ . '/../src/routes/projectcog/developers.php';
 
 $routes($app);
 $dashboard($app);

@@ -170,6 +170,8 @@ function minimalizaSidebar($timeout) {
 */
 
 
+
+
 /**
  *
  * Pass all functions into module
