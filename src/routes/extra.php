@@ -24,10 +24,14 @@ return function (App $app) {
     $container = $app->getContainer();
 
     $app->get('/extra/db-test', function ($request, $response, $args) use ($container) {
-        $users = $container->cogworks->query("
+        $users = $container->projectcog->query("
             select * from users;
         ")->fetchAll(PDO::FETCH_ASSOC);
 
-        return json_encode($users);
+        $cogFiles = $container->cogworks->query("
+            select * from cog_files;
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
+        return json_encode($users) . '<br><br><br>' . json_encode($cogFiles);
     });
 };

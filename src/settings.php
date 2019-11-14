@@ -43,6 +43,11 @@ return [
         'renderer' => [
             'template_path' => __DIR__ . '/../templates/',
         ],
+        'projectcog' => [ 
+            'dsn' => 'mysql:host=localhost;dbname=projectcog;charset=UTF8',
+            'username' => 'root',
+            'password' => 'P@ssw0rd',
+        ],
         'cogworks' => [ 
             'dsn' => 'mysql:host=localhost;dbname=cogworks;charset=UTF8',
             'username' => 'root',

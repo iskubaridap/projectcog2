@@ -43,6 +43,15 @@ return function (App $app) {
         return new \Slim\Views\PhpRenderer($settings['template_path']);
     };
 
+    $container['projectcog'] = function ($c) { 
+        $settings = $c->get('settings')['projectcog'];
+
+        return new PDO($settings['dsn'], $settings['username'], $settings['password']); 
+    };
+    $container['App\Action\HomeAction'] = function ($c) { 
+        return new App\Action\HomeAction($c->get('view'), $c->get('logger'), $c['projectcog']); 
+    };
+
     $container['cogworks'] = function ($c) { 
         $settings = $c->get('settings')['cogworks'];
 
