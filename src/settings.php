@@ -18,6 +18,22 @@
         
         //mysql:host=mysql.projectcog.com;dbname=cogworks
 */
+/*
+        // This is prove that we can access more than one database in one app
+        // Change "pdo" into the first database
+        // Change "pdo2" into the second database
+
+        'pdo' => [ 
+            'dsn' => 'mysql:host=localhost;dbname=cogworks_2;charset=UTF8',
+            'username' => 'root',
+            'password' => 'P@ssw0rd',
+        ],
+        'pdo2' => [ 
+            'dsn' => 'mysql:host=localhost;dbname=cogworks;charset=UTF8',
+            'username' => 'root',
+            'password' => 'P@ssw0rd',
+        ],
+*/
 return [
     'settings' => [
         'displayErrorDetails' => true, // set to false in production
@@ -27,8 +43,8 @@ return [
         'renderer' => [
             'template_path' => __DIR__ . '/../templates/',
         ],
-        'pdo' => [ 
-            'dsn' => 'mysql:host=localhost;dbname=cogworks_2;charset=UTF8',
+        'cogworks' => [ 
+            'dsn' => 'mysql:host=localhost;dbname=cogworks;charset=UTF8',
             'username' => 'root',
             'password' => 'P@ssw0rd',
         ],

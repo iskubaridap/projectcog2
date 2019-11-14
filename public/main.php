@@ -28,10 +28,12 @@ $middleware($app);
 // Register routes
 $routes = require __DIR__ . '/../src/routes.php';
 $dashboard = require __DIR__ . '/../src/routes/dashboard.php';
+$extra = require __DIR__ . '/../src/routes/extra.php';
 $developers = require __DIR__ . '/../src/routes/developers.php';
 
 $routes($app);
 $dashboard($app);
+$extra($app);
 $developers($app);
 
 // Run app
