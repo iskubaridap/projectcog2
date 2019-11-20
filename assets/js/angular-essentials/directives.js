@@ -169,9 +169,53 @@ function minimalizaSidebar($timeout) {
     Application Section
 */
 
+function sectionLoaderIndicator($rootScope) {
+    return {
+        restrict: 'E',
+        scope: {
+            text: "@",
+            object: '='
+        },
+        templateUrl: 'assets/views/templates/section-loader-indicator.html',
+        controller: function($scope, $element){},
+        link: function(scope, elem, attrs){
+            scope.text = attrs.text;
+            try
+            {
+                scope.error = scope.object.error;
+                scope.errorData = scope.object.errorData;
+            }
+            catch(error)
+            {
+                scope.error = undefined;
+                scope.errorData = undefined;
+            }
+        }
+    };
+}
 
-
-
+function sectionDataEmpty($rootScope) {
+    return {
+        restrict: 'E',
+        scope: {
+            text: '@',
+            object: '='
+        },
+        templateUrl: 'assets/views/templates/section-data-empty.html',
+        link: function(scope, elem, attrs){
+            scope.text = attrs.text;
+        }
+    };
+}
+function sectionDevelopers($rootScope) {
+    return {
+        restrict: 'E',
+        scope: {
+        },
+        templateUrl: 'assets/views/sections/developers-home-page.html',
+        link: function(scope, elem, attrs){}
+    };
+}
 /**
  *
  * Pass all functions into module
@@ -182,4 +226,7 @@ angular
     .directive('sideNavigation', sideNavigation)
     .directive('iboxTools', iboxTools)
     .directive('minimalizaSidebar', minimalizaSidebar)
-    .directive('iboxToolsFullScreen', iboxToolsFullScreen);
+    .directive('iboxToolsFullScreen', iboxToolsFullScreen)
+    .directive('sectionLoaderIndicator', sectionLoaderIndicator)
+    .directive('sectionDataEmpty', sectionDataEmpty)
+    .directive('sectionDevelopers', sectionDevelopers);

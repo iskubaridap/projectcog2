@@ -24,7 +24,51 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
         .state('home.main', {
             url: "/main",
             templateUrl: "assets/views/main.html",
-            data: { pageTitle: 'Example view' }
+            data: { pageTitle: 'Home' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'developers',
+                            files: ['assets/js/app/developers/developers.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']
+                        },
+                        {
+                            name: 'oitozero.ngSweetAlert',
+                            files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        }
+                    ]);
+                }
+            }
+        })
+        .state('developers', {
+            abstract: true,
+            url: "/developers",
+            templateUrl: "assets/views/common/content.html",
+        })
+        .state('developers.active', {
+            url: "/active",
+            templateUrl: "assets/views/developers/developers-main.html",
+            data: { pageTitle: 'Developers' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'developers',
+                            files: ['assets/js/app/developers/developers.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']
+                        },
+                        {
+                            name: 'oitozero.ngSweetAlert',
+                            files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        }
+                    ]);
+                }
+            }
         })
         .state('minor', {
             url: "/minor",

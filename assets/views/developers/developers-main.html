@@ -1,0 +1,90 @@
+<div id="section-developers" ng-controller="developersCtrl as developer" class="wrapper wrapper-content animated fadeInRight">
+    <section-loader-indicator text="Preparing to show all active Developers" object="developer.activeDevelopers" ng-if="developer.activeDevelopers === undefined || developer.activeDevelopers.error !== undefined"></section-loader-indicator>
+    <section-data-empty text="Records for Active Developers are Empty." ng-if="developer.activeDevelopers !== undefined && developer.activeDevelopers === null"></section-data-empty>
+    
+    <div class="row" ng-if="developer.activeDevelopers !== undefined && developer.activeDevelopers.error === undefined">
+        <div class="col-md-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Developers - {{developer.activeDevelopers.length}}</h5>
+                    <div class="ibox-tools" uib-dropdown>
+                        <a href uib-dropdown-toggle>
+                            <i class="fa fa-bars"></i> View by...
+                        </a>
+                        <ul uib-dropdown-menu>
+                            <li><a ng-click="developer.orderByName($event)">Name</a>
+                            </li>
+                            <li><a ng-click="developer.orderByPosition($event)">Position</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                        <div class="row" ng-repeat="item in developer.activeDevelopers" ng-if="$index % 4 == 0">
+                            <div class="col-md-3" ng-if="developer.activeDevelopers[$index] !== undefined">
+                                <div class="contact-box center-version">
+                                    <a>
+                                        <img alt="image" class="img-circle" ng-src="{{developer.activeDevelopers[$index].image}}">
+                                        <h3 class="m-b-xs"><strong>{{developer.activeDevelopers[$index].user}}</strong></h3>
+                                        <div class="font-bold">{{developer.activeDevelopers[$index].position}}</div>
+                                    </a>
+                                    <div class="contact-box-footer">
+                                        <div class="m-t-xs btn-group">
+                                            <a class="btn btn-xs btn-white" data-id="{{developer.activeDevelopers[$index].id}}" ng-click="developer.view($event)">Profile</a>
+                                            <a class="btn btn-xs btn-white" data-id="{{developer.activeDevelopers[$index].id}}" ng-click="developer.remove($event)">Remove</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3" ng-if="developer.activeDevelopers[$index + 1] !== undefined">
+                                <div class="contact-box center-version">
+                                    <a>
+                                        <img alt="image" class="img-circle" ng-src="{{developer.activeDevelopers[$index + 1].image}}">
+                                        <h3 class="m-b-xs"><strong>{{developer.activeDevelopers[$index + 1].user}}</strong></h3>
+                                        <div class="font-bold">{{developer.activeDevelopers[$index + 1].position}}</div>
+                                    </a>
+                                    <div class="contact-box-footer">
+                                        <div class="m-t-xs btn-group">
+                                            <a class="btn btn-xs btn-white" data-id="{{developer.activeDevelopers[$index + 1].id}}" ng-click="developer.view($event)">Profile</a>
+                                            <a class="btn btn-xs btn-white" data-id="{{developer.activeDevelopers[$index + 1].id}}" ng-click="developer.remove($event)">Remove</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3" ng-if="developer.activeDevelopers[$index + 2] !== undefined">
+                                <div class="contact-box center-version">
+                                    <a>
+                                        <img alt="image" class="img-circle" ng-src="{{developer.activeDevelopers[$index + 2].image}}">
+                                        <h3 class="m-b-xs"><strong>{{developer.activeDevelopers[$index + 2].user}}</strong></h3>
+                                        <div class="font-bold">{{developer.activeDevelopers[$index + 2].position}}</div>
+                                    </a>
+                                    <div class="contact-box-footer">
+                                        <div class="m-t-xs btn-group">
+                                            <a class="btn btn-xs btn-white" data-id="{{developer.activeDevelopers[$index + 2].id}}" ng-click="developer.view($event)">Profile</a>
+                                            <a class="btn btn-xs btn-white" data-id="{{developer.activeDevelopers[$index + 2].id}}" ng-click="developer.remove($event)">Remove</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3" ng-if="developer.activeDevelopers[$index + 3] !== undefined">
+                                <div class="contact-box center-version">
+                                    <a>
+                                        <img alt="image" class="img-circle" ng-src="{{developer.activeDevelopers[$index + 3].image}}">
+                                        <h3 class="m-b-xs"><strong>{{developer.activeDevelopers[$index + 3].user}}</strong></h3>
+                                        <div class="font-bold">{{developer.activeDevelopers[$index + 3].position}}</div>
+                                    </a>
+                                    <div class="contact-box-footer">
+                                        <div class="m-t-xs btn-group">
+                                            <a class="btn btn-xs btn-white" data-id="{{developer.activeDevelopers[$index + 3].id}}" ng-click="developer.view($event)">Profile</a>
+                                            <a class="btn btn-xs btn-white" data-id="{{developer.activeDevelopers[$index + 3].id}}" ng-click="developer.remove($event)">Remove</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

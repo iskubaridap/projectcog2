@@ -25,6 +25,8 @@
 
         <!-- Main Inspinia CSS files -->
         <link href="<?= $root; ?>assets/css/animate.css" rel="stylesheet">
+
+        <link href="<?= $root; ?>assets/css/generic.css" rel="stylesheet">
         <link id="loadBefore" href="<?= $root; ?>assets/css/style.css" rel="stylesheet">
 
 

@@ -39,11 +39,11 @@
                 </ul>
             </li>
             
-            <li>
+            <li ng-class="{active: $state.includes('developers')}">
                 <a href="#"><i class="fa fa-users"></i> <span class="nav-label">Developers </span><span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level collapse">
+                <ul class="nav nav-second-level collapse" ng-class="{in: $state.includes('developers')}">
+                    <li ui-sref-active="active"><a ui-sref="developers.active"><i class="fa fa-user-circle"></i> Users</a></li>
                     <li ui-sref-active="active"><a><i class="fa fa-plus-circle"></i> Add</a></li>
-                    <li ui-sref-active="active"><a><i class="fa fa-minus-circle"></i> Remove</a></li>
                 </ul>
             </li>
             <li>

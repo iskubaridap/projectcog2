@@ -1,0 +1,15 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="text-center m-t-lg loader-wrap">
+            <div class="loading-indicator">
+                <div ng-if="error === undefined">
+                    <p class="loading-indicator-title large-font">{{text}}</p>
+                    <p class="large-font">Retrieving data... <img src="assets/img/icon/loading.gif"></p>
+                </div>
+                <div ng-if="error !== undefined && error === 'serverError'">
+                    <p class="loading-indicator-title large-font">Something went wrong. Application cannot retreive {{errorData}} Data.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

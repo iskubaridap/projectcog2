@@ -1,0 +1,39 @@
+<div id="section-developers" ng-controller="developersCtrl as developer">
+    <section-loader-indicator text="Preparing to show all active Developers" object="developer.activeDevelopers" ng-if="developer.activeDevelopers === undefined || developer.activeDevelopers.error !== undefined"></section-loader-indicator>
+    <section-data-empty text="Records for Active Developers are Empty." ng-if="developer.activeDevelopers !== undefined && developer.activeDevelopers === null"></section-data-empty>
+    
+    <div class="row" ng-if="developer.activeDevelopers !== undefined && developer.activeDevelopers.error === undefined">
+        <div class="col-md-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Developers - {{developer.activeDevelopers.length}}</h5>
+                    <a ui-sref="developers.active" class="btn btn-primary btn-xs pull-right"><i class="fa fa-users"></i>&nbsp;&nbsp;&nbsp;Visit Page</a>
+                </div>
+                <div class="ibox-content">
+                        <div class="row">
+                            <div ng-repeat="item in developer.activeDevelopers | limitTo:4">
+                                <div class="col-md-3" ng-if="developer.activeDevelopers[$index] !== undefined">
+                                    <div class="contact-box center-version">
+                                        <a>
+                                            <img alt="image" class="img-circle" ng-src="{{developer.activeDevelopers[$index].image}}">
+                                            <h3 class="m-b-xs"><strong>{{developer.activeDevelopers[$index].user}}</strong></h3>
+                                            <div class="font-bold">{{developer.activeDevelopers[$index].position}}</div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" ng-if="developer.activeDevelopers.length > 1">
+                                <p class="text-center">There are {{developer.activeDevelopers.length}} total number of Active Developers. You can view them of all at this <a ui-sref="developers.active">page</a>.</p>
+                            </div>
+                            <div class="col-md-12" ng-if="developer.activeDevelopers.length == 1">
+                                <p class="text-center">There is 1 Active Developer. You can view him at this <a ui-sref="developers.active">page</a>.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

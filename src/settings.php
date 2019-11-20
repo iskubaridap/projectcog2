@@ -33,6 +33,9 @@
             'username' => 'root',
             'password' => 'P@ssw0rd',
         ],
+
+        'dsn' => 'mysql:host=localhost;dbname=cogworks_original;charset=UTF8',
+        'dsn' => 'mysql:host=localhost;dbname=projectcog;charset=UTF8',
 */
 return [
     'settings' => [
@@ -42,6 +45,11 @@ return [
         // Renderer settings
         'renderer' => [
             'template_path' => __DIR__ . '/../templates/',
+        ],
+        'cogworks_original' => [ 
+            'dsn' => 'mysql:host=localhost;dbname=cogworks_original;charset=UTF8',
+            'username' => 'root',
+            'password' => 'P@ssw0rd',
         ],
         'projectcog' => [ 
             'dsn' => 'mysql:host=localhost;dbname=projectcog;charset=UTF8',

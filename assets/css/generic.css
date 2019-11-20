@@ -1,0 +1,44 @@
+.loader-wrap img
+{
+    width: 25px;
+    height: 25px;
+}
+.loading-indicator-title
+{
+    margin-bottom: 0;
+    font-weight: bold !important;
+}
+.btn-icon
+{
+    cursor: pointer;
+}
+.large-font {
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 1.667;
+}
+
+.large-font {
+    line-height: 1.44;
+}
+
+.biggest-font {
+    font-weight: 300;
+    font-size: 30px;
+    line-height: 1.667;
+}
+
+@media screen and (max-width: 1023px) {
+    .biggest-font {
+        font-size: 24px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .large-font {
+        font-size: 16px;
+    }
+    .biggest-font {
+        font-size: 20px;
+    }
+}
