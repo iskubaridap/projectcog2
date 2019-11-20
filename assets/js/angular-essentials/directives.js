@@ -207,12 +207,12 @@ function sectionDataEmpty($rootScope) {
         }
     };
 }
-function sectionDevelopers($rootScope) {
+function sectionCogworksDevelopers($rootScope) {
     return {
         restrict: 'E',
         scope: {
         },
-        templateUrl: 'assets/views/sections/developers-home-page.html',
+        templateUrl: 'assets/views/cogworks/sections/developers-cogworks-home-page.html',
         link: function(scope, elem, attrs){}
     };
 }
@@ -229,4 +229,4 @@ angular
     .directive('iboxToolsFullScreen', iboxToolsFullScreen)
     .directive('sectionLoaderIndicator', sectionLoaderIndicator)
     .directive('sectionDataEmpty', sectionDataEmpty)
-    .directive('sectionDevelopers', sectionDevelopers);
+    .directive('sectionCogworksDevelopers', sectionCogworksDevelopers);

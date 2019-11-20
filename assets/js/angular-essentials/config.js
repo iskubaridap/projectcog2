@@ -7,7 +7,9 @@
  *
  */
 function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
-    $urlRouterProvider.otherwise("/home/main");
+    // Disable for now
+    // $urlRouterProvider.otherwise("/home/main");
+    $urlRouterProvider.otherwise("/cogworks/home/main");
 
     $ocLazyLoadProvider.config({
         // Set to true if you want to see what and when is dynamically loaded
@@ -16,12 +18,12 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
 
     $stateProvider
 
-        .state('home', {
+        .state('cog-home', {
             abstract: true,
-            url: "/home",
+            url: "/cogworks/home",
             templateUrl: "assets/views/common/content.html",
         })
-        .state('home.main', {
+        .state('cog-home.main', {
             url: "/main",
             templateUrl: "assets/views/main.html",
             data: { pageTitle: 'Home' },
@@ -29,8 +31,8 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 loadPlugin: function ($ocLazyLoad) {
                     return $ocLazyLoad.load([
                         {
-                            name: 'developers',
-                            files: ['assets/js/app/developers/developers.js']
+                            name: 'cog-developers',
+                            files: ['assets/js/app/cogworks/developers/cog-developers.js']
                         },
                         {
                             files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']
@@ -43,21 +45,21 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 }
             }
         })
-        .state('developers', {
+        .state('cog-developers', {
             abstract: true,
-            url: "/developers",
+            url: "/cogworks/developers",
             templateUrl: "assets/views/common/content.html",
         })
-        .state('developers.active', {
+        .state('cog-developers.active', {
             url: "/active",
-            templateUrl: "assets/views/developers/developers-main.html",
+            templateUrl: "assets/views/cogworks/developers/developers-cogworks-main.html",
             data: { pageTitle: 'Developers' },
             resolve: {
                 loadPlugin: function ($ocLazyLoad) {
                     return $ocLazyLoad.load([
                         {
-                            name: 'developers',
-                            files: ['assets/js/app/developers/developers.js']
+                            name: 'cog-developers',
+                            files: ['assets/js/app/cogworks/developers/cog-developers.js']
                         },
                         {
                             files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']

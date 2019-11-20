@@ -1,7 +1,7 @@
 var developers = function($rootScope, $http){
     var self = this;
     this.getActiveDevelopers = function(obj, config){
-        return $http.post((root + "developers/retrieve/active"))
+        return $http.post((root + "cogworks/developers/retrieve/active"))
         .then(function (response) {
             obj.activeDevelopers = ((response.data).toString().length > 0) ? response.data : null;
             // console.log(obj.activeDevelopers);

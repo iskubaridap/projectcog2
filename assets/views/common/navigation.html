@@ -22,8 +22,8 @@
 
             </li>
 
-            <li ng-class="{active: $state.includes('home')}">
-                <a ui-sref="home.main"><i class="fa fa-home"></i> <span class="nav-label">Home</span> </a>
+            <li ng-class="{active: $state.includes('cog-home')}">
+                <a ui-sref="cog-home.main"><i class="fa fa-home"></i> <span class="nav-label">Home</span> </a>
             </li>
             <li>
                 <a><i class="fa fa-file"></i> <span>Create New File</span></a>
@@ -34,15 +34,15 @@
             <li>
                 <a href="#"><i class="fa fa-folder"></i> <span class="nav-label">Projects </span><span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level collapse">
+                    <li ui-sref-active="active"><a><i class="fa fa-folder-o"></i> View</a></li>
                     <li ui-sref-active="active"><a><i class="fa fa-plus-circle"></i> Add</a></li>
-                    <li ui-sref-active="active"><a><i class="fa fa-minus-circle"></i> Remove</a></li>
                 </ul>
             </li>
             
-            <li ng-class="{active: $state.includes('developers')}">
+            <li ng-class="{active: $state.includes('cog-developers')}">
                 <a href="#"><i class="fa fa-users"></i> <span class="nav-label">Developers </span><span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level collapse" ng-class="{in: $state.includes('developers')}">
-                    <li ui-sref-active="active"><a ui-sref="developers.active"><i class="fa fa-user-circle"></i> Users</a></li>
+                <ul class="nav nav-second-level collapse" ng-class="{in: $state.includes('cog-developers')}">
+                    <li ui-sref-active="active"><a ui-sref="cog-developers.active"><i class="fa fa-user-circle"></i> View</a></li>
                     <li ui-sref-active="active"><a><i class="fa fa-plus-circle"></i> Add</a></li>
                 </ul>
             </li>

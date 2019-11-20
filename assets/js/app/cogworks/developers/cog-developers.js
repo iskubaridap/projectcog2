@@ -1,4 +1,4 @@
-var developers = angular.module("developers", []);
+var cogDevelopers = angular.module("cog-developers", []);
 function developersCtrl($rootScope, $scope, $element, $state, $http, $timeout, developers, SweetAlert)
 {
     var self = this;
@@ -23,9 +23,8 @@ function developersCtrl($rootScope, $scope, $element, $state, $http, $timeout, d
             closeOnCancel: false },
         function (isConfirm) {
             if (isConfirm) {
-                $http.post((root + "developers/deactivate"), {id: id})
+                $http.post((root + "cogworks/developers/deactivate"), {id: id})
                 .then(function (response) {
-                    console.log(response.data);
                     if(response.data == 'true')
                     {
                         developers.getActiveDevelopers(self);
@@ -77,4 +76,4 @@ function developersCtrl($rootScope, $scope, $element, $state, $http, $timeout, d
     };
 }
 
-developers.controller('developersCtrl', developersCtrl);
+cogDevelopers.controller('developersCtrl', developersCtrl);

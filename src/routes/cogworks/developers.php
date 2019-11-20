@@ -7,7 +7,7 @@ use Slim\Http\Response;
 return function (App $app) {
     $container = $app->getContainer();
 
-    $app->post('/developers/retrieve/active', function ($request, $response, $args) use ($container) {
+    $app->post('/cogworks/developers/retrieve/active', function ($request, $response, $args) use ($container) {
         // @session_start();
         // $result = null;
         // $userID = $_SESSION['id'];
@@ -49,7 +49,7 @@ return function (App $app) {
         // }
         return json_encode($developers);
     });
-    $app->post('/developers/deactivate', function ($request, $response, $args) use ($container) {
+    $app->post('/cogworks/developers/deactivate', function ($request, $response, $args) use ($container) {
         $id = $request->getParam('id');
         $date = new DateTime('NOW');
         $dateDateTime = $date->format('Y-m-d H:i:s');

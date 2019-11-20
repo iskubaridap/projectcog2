@@ -29,12 +29,12 @@ $middleware($app);
 $routes = require __DIR__ . '/../src/routes.php';
 $dashboard = require __DIR__ . '/../src/routes/dashboard.php';
 $extra = require __DIR__ . '/../src/routes/extra/extra.php';
-$developers = require __DIR__ . '/../src/routes/projectcog/developers.php';
+$cogDevelopers = require __DIR__ . '/../src/routes/cogworks/developers.php';
 
 $routes($app);
 $dashboard($app);
 $extra($app);
-$developers($app);
+$cogDevelopers($app);
 
 // Run app
 $app->run();
