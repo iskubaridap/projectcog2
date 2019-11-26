@@ -35,11 +35,26 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                             files: ['assets/js/app/cogworks/developers/cog-developers.js']
                         },
                         {
+                            name: 'cog-files',
+                            files: ['assets/js/app/cogworks/files/cog-files.js']
+                        },
+                        {
+                            name: 'cog-projects',
+                            files: ['assets/js/app/cogworks/projects/cog-projects.js']
+                        },
+                        {
                             files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']
                         },
                         {
                             name: 'oitozero.ngSweetAlert',
                             files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/footable/footable.all.min.js', 'assets/css/plugins/footable/footable.core.css']
+                        },
+                        {
+                            name: 'ui.footable',
+                            files: ['assets/js/plugins/footable/angular-footable.js']
                         }
                     ]);
                 }
@@ -67,6 +82,74 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                         {
                             name: 'oitozero.ngSweetAlert',
                             files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        }
+                    ]);
+                }
+            }
+        })
+        .state('cog-files', {
+            abstract: true,
+            url: "/cogworks/cog-files",
+            templateUrl: "assets/views/common/content.html",
+        })
+        .state('cog-files.active', {
+            url: "/active",
+            templateUrl: "assets/views/cogworks/cog-files/cog-files-main.html",
+            data: { pageTitle: 'Cogworks Files' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'cog-files',
+                            files: ['assets/js/app/cogworks/files/cog-files.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']
+                        },
+                        {
+                            name: 'oitozero.ngSweetAlert',
+                            files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/footable/footable.all.min.js', 'assets/css/plugins/footable/footable.core.css']
+                        },
+                        {
+                            name: 'ui.footable',
+                            files: ['assets/js/plugins/footable/angular-footable.js']
+                        }
+                    ]);
+                }
+            }
+        })
+        .state('cog-projects', {
+            abstract: true,
+            url: "/cogworks/projects",
+            templateUrl: "assets/views/common/content.html",
+        })
+        .state('cog-projects.active', {
+            url: "/active",
+            templateUrl: "assets/views/cogworks/projects/projects-main.html",
+            data: { pageTitle: 'Projects' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'cog-projects',
+                            files: ['assets/js/app/cogworks/projects/cog-projects.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']
+                        },
+                        {
+                            name: 'oitozero.ngSweetAlert',
+                            files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/footable/footable.all.min.js', 'assets/css/plugins/footable/footable.core.css']
+                        },
+                        {
+                            name: 'ui.footable',
+                            files: ['assets/js/plugins/footable/angular-footable.js']
                         }
                     ]);
                 }

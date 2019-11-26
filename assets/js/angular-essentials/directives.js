@@ -216,6 +216,15 @@ function sectionCogworksDevelopers($rootScope) {
         link: function(scope, elem, attrs){}
     };
 }
+function sectionCogworksFilesProjects($rootScope) {
+    return {
+        restrict: 'E',
+        scope: {
+        },
+        templateUrl: 'assets/views/cogworks/sections/files-projects-cogworks-home-page.html',
+        link: function(scope, elem, attrs){}
+    };
+}
 /**
  *
  * Pass all functions into module
@@ -229,4 +238,5 @@ angular
     .directive('iboxToolsFullScreen', iboxToolsFullScreen)
     .directive('sectionLoaderIndicator', sectionLoaderIndicator)
     .directive('sectionDataEmpty', sectionDataEmpty)
-    .directive('sectionCogworksDevelopers', sectionCogworksDevelopers);
+    .directive('sectionCogworksDevelopers', sectionCogworksDevelopers)
+    .directive('sectionCogworksFilesProjects', sectionCogworksFilesProjects);

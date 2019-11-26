@@ -1,0 +1,139 @@
+<div id="section-cogworks-projects" ng-controller="cogProjectsCtrl as cogProject">
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-12">
+            <h2>Projects <span class="pull-right">Total: {{cogProject.activeProjects.length}}</span></h2>
+            <div class="pull-left">
+                <button ng-click="cogProject.orderByName($event)" type="button" class="btn btn-xs btn-link">Name</button> |
+                <button ng-click="cogProject.orderByUpdated($event)" type="button" class="btn btn-xs btn-link">Updated</button> |
+                <button ng-click="cogProject.orderByCreated($event)" type="button" class="btn btn-xs btn-link">Created</button>
+            </div>
+            <!-- <div class="pull-right">
+                <button ng-click="cogProject.viewByThumbnail($event)" type="button" class="btn btn-xs btn-link">Thumbnail</button> |
+                <button ng-click="cogProject.viewByList($event)" type="button" class="btn btn-xs btn-link">List</button>
+            </div> -->
+        </div>
+    </div>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <section-loader-indicator text="Preparing to show all Projects" object="cogProject.activeProjects" ng-if="cogProject.activeProjects === undefined || cogProject.activeProjects.error !== undefined"></section-loader-indicator>
+        <section-data-empty text="Records for Projects are Empty." ng-if="cogProject.activeProjects !== undefined && cogProject.activeProjects === null"></section-data-empty>
+        
+        <div ng-if="cogProject.activeProjects !== undefined && cogProject.activeProjects.error === undefined">
+            <div class="row section-thumbnail show-default" ng-repeat="item in cogProject.activeProjects" ng-if="$index % 4 == 0">
+                <div class="col-md-3" ng-if="cogProject.activeProjects[$index] !== undefined">
+                    <div class="ibox app-ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5></h5>
+                            <div class="ibox-tools dropdown" uib-dropdown="">
+                                <a uib-dropdown-toggle="" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-bars"></i>
+                                </a>
+                                <ul uib-dropdown-menu="" class="dropdown-menu">
+                                    <li><a data-id="{{cogProject.activeProjects[$index].id}}" ng-click="cogProject.open($event)">Open</a></li>
+                                    <li><a data-id="{{cogProject.activeProjects[$index].id}}" ng-click="cogProject.details($event)">Details</a></li>
+                                    <li><a data-id="{{cogProject.activeProjects[$index].id}}" ng-click="cogProject.update($event)">Update</a></li>
+                                    <li><a data-id="{{cogProject.activeProjects[$index].id}}" ng-click="cogProject.remove($event)">Remove</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="contact-box center-version">
+                                <a>
+                                    <img alt="image" class="" ng-src="{{cogProject.activeProjects[$index].image}}">
+                                    <div class="font-bold">{{cogProject.activeProjects[$index].project}}</div>
+                                    <div class="font-bold">Cog Files - {{cogProject.activeProjects[$index].cogfiles.length}}</div>
+                                    <div class="font-bold">Created - {{cogProject.activeProjects[$index].created}}</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3" ng-if="cogProject.activeProjects[$index + 1] !== undefined">
+                    <div class="ibox app-ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5></h5>
+                            <div class="ibox-tools dropdown" uib-dropdown="">
+                                <a uib-dropdown-toggle="" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-bars"></i>
+                                </a>
+                                <ul uib-dropdown-menu="" class="dropdown-menu">
+                                    <li><a data-id="{{cogProject.activeProjects[$index + 1].id}}" ng-click="cogProject.open($event)">Open</a></li>
+                                    <li><a data-id="{{cogProject.activeProjects[$index + 1].id}}" ng-click="cogProject.details($event)">Details</a></li>
+                                    <li><a data-id="{{cogProject.activeProjects[$index + 1].id}}" ng-click="cogProject.update($event)">Update</a></li>
+                                    <li><a data-id="{{cogProject.activeProjects[$index + 1].id}}" ng-click="cogProject.remove($event)">Remove</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="contact-box center-version">
+                                <a>
+                                    <img alt="image" class="" ng-src="{{cogProject.activeProjects[$index + 1].image}}">
+                                    <div class="font-bold">{{cogProject.activeProjects[$index + 1].project}}</div>
+                                    <div class="font-bold">Cog Files - {{cogProject.activeProjects[$index + 1].cogfiles.length}}</div>
+                                    <div class="font-bold">Created - {{cogProject.activeProjects[$index + 1].created}}</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3" ng-if="cogProject.activeProjects[$index + 2] !== undefined">
+                    <div class="ibox app-ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5></h5>
+                            <div class="ibox-tools dropdown" uib-dropdown="">
+                                <a uib-dropdown-toggle="" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-bars"></i>
+                                </a>
+                                <ul uib-dropdown-menu="" class="dropdown-menu">
+                                    <li><a data-id="{{cogProject.activeProjects[$index + 2].id}}" ng-click="cogProject.open($event)">Open</a></li>
+                                    <li><a data-id="{{cogProject.activeProjects[$index + 2].id}}" ng-click="cogProject.details($event)">Details</a></li>
+                                    <li><a data-id="{{cogProject.activeProjects[$index + 2].id}}" ng-click="cogProject.update($event)">Update</a></li>
+                                    <li><a data-id="{{cogProject.activeProjects[$index + 2].id}}" ng-click="cogProject.remove($event)">Remove</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="contact-box center-version">
+                                <a>
+                                    <img alt="image" class="" ng-src="{{cogProject.activeProjects[$index + 2].image}}">
+                                    <div class="font-bold">{{cogProject.activeProjects[$index + 2].project}}</div>
+                                    <div class="font-bold">Cog Files - {{cogProject.activeProjects[$index + 2].cogfiles.length}}</div>
+                                    <div class="font-bold">Created - {{cogProject.activeProjects[$index + 2].created}}</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3" ng-if="cogProject.activeProjects[$index + 3] !== undefined">
+                    <div class="ibox app-ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5></h5>
+                            <div class="ibox-tools dropdown" uib-dropdown="">
+                                <a uib-dropdown-toggle="" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-bars"></i>
+                                </a>
+                                <ul uib-dropdown-menu="" class="dropdown-menu">
+                                    <li><a data-id="{{cogProject.activeProjects[$index + 3].id}}" ng-click="cogProject.open($event)">Open</a></li>
+                                    <li><a data-id="{{cogProject.activeProjects[$index + 3].id}}" ng-click="cogProject.details($event)">Details</a></li>
+                                    <li><a data-id="{{cogProject.activeProjects[$index + 3].id}}" ng-click="cogProject.update($event)">Update</a></li>
+                                    <li><a data-id="{{cogProject.activeProjects[$index + 3].id}}" ng-click="cogProject.remove($event)">Remove</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="contact-box center-version">
+                                <a>
+                                    <img alt="image" class="" ng-src="{{cogProject.activeProjects[$index + 3].image}}">
+                                    <div class="font-bold">{{cogProject.activeProjects[$index + 3].project}}</div>
+                                    <div class="font-bold">Cog Files - {{cogProject.activeProjects[$index + 3].cogfiles.length}}</div>
+                                    <div class="font-bold">Created - {{cogProject.activeProjects[$index + 3].created}}</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

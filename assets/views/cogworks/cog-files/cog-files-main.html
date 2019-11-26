@@ -1,0 +1,176 @@
+<div id="section-cogworks-files" ng-controller="cogFilesCtrl as cogFile">
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-12">
+            <h2>Cog Files <span class="pull-right">Total: {{cogFile.activeFiles.length}}</span></h2>
+            <div class="pull-left">
+                <button ng-click="cogFile.orderByName($event)" type="button" class="btn btn-xs btn-link">Name</button> |
+                <button ng-click="cogFile.orderByProject($event)" type="button" class="btn btn-xs btn-link">Project</button> |
+                <button ng-click="cogFile.orderByCreated($event)" type="button" class="btn btn-xs btn-link">Created</button> |
+                <button ng-click="cogFile.orderByUpdated($event)" type="button" class="btn btn-xs btn-link">Update</button>
+            </div>
+            <!-- <div class="pull-right">
+                <button ng-click="cogFile.viewByThumbnail($event)" type="button" class="btn btn-xs btn-link">Thumbnail</button> |
+                <button ng-click="cogFile.viewByList($event)" type="button" class="btn btn-xs btn-link">List</button>
+            </div> -->
+        </div>
+    </div>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <section-loader-indicator text="Preparing to show all Cog Files" object="cogFile.activeFiles" ng-if="cogFile.activeFiles === undefined || cogFile.activeFiles.error !== undefined"></section-loader-indicator>
+        <section-data-empty text="Records for Cog Files are Empty." ng-if="cogFile.activeFiles !== undefined && cogFile.activeFiles === null"></section-data-empty>
+    
+        <div ng-if="cogFile.activeFiles !== undefined && cogFile.activeFiles.error === undefined">
+            <div class="row section-thumbnail show-default" ng-repeat="item in cogFile.activeFiles" ng-if="$index % 4 == 0">
+                <div class="col-md-3" ng-if="cogFile.activeFiles[$index] !== undefined">
+                    <div class="ibox app-ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5></h5>
+                            <div class="ibox-tools dropdown" uib-dropdown="">
+                                <a uib-dropdown-toggle="" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-bars"></i>
+                                </a>
+                                <ul uib-dropdown-menu="" class="dropdown-menu">
+                                    <li><a data-id="{{cogFile.activeFiles[$index].id}}" ng-click="cogFile.open($event)">Open</a></li>
+                                    <li><a data-id="{{cogFile.activeFiles[$index].id}}" ng-click="cogFile.details($event)">Details</a></li>
+                                    <li><a data-id="{{cogFile.activeFiles[$index].id}}" ng-click="cogFile.duplicate($event)">Clone</a></li>
+                                    <li><a data-id="{{cogFile.activeFiles[$index].id}}" ng-click="cogFile.update($event)">Update</a></li>
+                                    <li><a data-id="{{cogFile.activeFiles[$index].id}}" ng-click="cogFile.remove($event)">Remove</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="contact-box center-version">
+                                <a>
+                                    <img alt="image" class="" ng-src="{{cogFile.activeFiles[$index].image}}">
+                                    <div class="font-bold">{{cogFile.activeFiles[$index].cogfile}}</div>
+                                    <div class="font-bold">{{cogFile.activeFiles[$index].project}}</div>
+                                    <div class="font-bold">Updated - {{cogFile.activeFiles[$index].updated}}</div>
+                                    <div class="font-bold">Created - {{cogFile.activeFiles[$index].created}}</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3" ng-if="cogFile.activeFiles[$index + 1] !== undefined">
+                    <div class="ibox app-ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5></h5>
+                            <div class="ibox-tools dropdown" uib-dropdown="">
+                                <a uib-dropdown-toggle="" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-bars"></i>
+                                </a>
+                                <ul uib-dropdown-menu="" class="dropdown-menu">
+                                    <li><a data-id="{{cogFile.activeFiles[$index + 1].id}}" ng-click="cogFile.open($event)">Open</a></li>
+                                    <li><a data-id="{{cogFile.activeFiles[$index + 1].id}}" ng-click="cogFile.details($event)">Details</a></li>
+                                    <li><a data-id="{{cogFile.activeFiles[$index + 1].id}}" ng-click="cogFile.duplicate($event)">Clone</a></li>
+                                    <li><a data-id="{{cogFile.activeFiles[$index + 1].id}}" ng-click="cogFile.update($event)">Update</a></li>
+                                    <li><a data-id="{{cogFile.activeFiles[$index + 1].id}}" ng-click="cogFile.remove($event)">Remove</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="contact-box center-version">
+                                <a>
+                                    <img alt="image" class="" ng-src="{{cogFile.activeFiles[$index + 1].image}}">
+                                    <div class="font-bold">{{cogFile.activeFiles[$index + 1].cogfile}}</div>
+                                    <div class="font-bold">{{cogFile.activeFiles[$index + 1].project}}</div>
+                                    <div class="font-bold">Updated - {{cogFile.activeFiles[$index + 1].updated}}</div>
+                                    <div class="font-bold">Created - {{cogFile.activeFiles[$index + 1].created}}</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3" ng-if="cogFile.activeFiles[$index + 2] !== undefined">
+                    <div class="ibox app-ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5></h5>
+                            <div class="ibox-tools dropdown" uib-dropdown="">
+                                <a uib-dropdown-toggle="" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-bars"></i>
+                                </a>
+                                <ul uib-dropdown-menu="" class="dropdown-menu">
+                                    <li><a data-id="{{cogFile.activeFiles[$index + 2].id}}" ng-click="cogFile.open($event)">Open</a></li>
+                                    <li><a data-id="{{cogFile.activeFiles[$index + 2].id}}" ng-click="cogFile.details($event)">Details</a></li>
+                                    <li><a data-id="{{cogFile.activeFiles[$index + 2].id}}" ng-click="cogFile.duplicate($event)">Clone</a></li>
+                                    <li><a data-id="{{cogFile.activeFiles[$index + 2].id}}" ng-click="cogFile.update($event)">Update</a></li>
+                                    <li><a data-id="{{cogFile.activeFiles[$index + 2].id}}" ng-click="cogFile.remove($event)">Remove</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="contact-box center-version">
+                                <a>
+                                    <img alt="image" class="" ng-src="{{cogFile.activeFiles[$index + 2].image}}">
+                                    <div class="font-bold">{{cogFile.activeFiles[$index + 2].cogfile}}</div>
+                                    <div class="font-bold">{{cogFile.activeFiles[$index + 2].project}}</div>
+                                    <div class="font-bold">Updated - {{cogFile.activeFiles[$index + 2].updated}}</div>
+                                    <div class="font-bold">Created - {{cogFile.activeFiles[$index + 2].created}}</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3" ng-if="cogFile.activeFiles[$index + 3] !== undefined">
+                    <div class="ibox app-ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5></h5>
+                            <div class="ibox-tools dropdown" uib-dropdown="">
+                                <a uib-dropdown-toggle="" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-bars"></i>
+                                </a>
+                                <ul uib-dropdown-menu="" class="dropdown-menu">
+                                    <li><a data-id="{{cogFile.activeFiles[$index + 3].id}}" ng-click="cogFile.open($event)">Open</a></li>
+                                    <li><a data-id="{{cogFile.activeFiles[$index + 3].id}}" ng-click="cogFile.details($event)">Details</a></li>
+                                    <li><a data-id="{{cogFile.activeFiles[$index + 3].id}}" ng-click="cogFile.duplicate($event)">Clone</a></li>
+                                    <li><a data-id="{{cogFile.activeFiles[$index + 3].id}}" ng-click="cogFile.update($event)">Update</a></li>
+                                    <li><a data-id="{{cogFile.activeFiles[$index + 3].id}}" ng-click="cogFile.remove($event)">Remove</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="contact-box center-version">
+                                <a>
+                                    <img alt="image" class="" ng-src="{{cogFile.activeFiles[$index + 3].image}}">
+                                    <div class="font-bold">{{cogFile.activeFiles[$index + 3].cogfile}}</div>
+                                    <div class="font-bold">{{cogFile.activeFiles[$index + 3].project}}</div>
+                                    <div class="font-bold">Updated - {{cogFile.activeFiles[$index + 3].updated}}</div>
+                                    <div class="font-bold">Created - {{cogFile.activeFiles[$index + 3].created}}</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- Disable for now -->
+            <!-- <div class="row section-list hide-default">
+                <div class="col-md-12">
+                    <table id="cogworks-files-table" class="footable table table-stripped" data-page-size="50" data-filter=#filter>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Project</th>
+                                <th>Updated</th>
+                                <th>Created</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cogworks-files-table-body"></tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="5">
+                                    <ul class="pagination pull-right"></ul>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div> -->
+
+        </div>
+    </div>
+</div>

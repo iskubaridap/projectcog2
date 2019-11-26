@@ -27,6 +27,38 @@
     font-size: 30px;
     line-height: 1.667;
 }
+.show-default
+{
+    display: block;
+}
+.hide-default
+{
+    display: none;
+}
+.app-ibox .dropdown-toggle
+{
+    color: #676a6c
+}
+.app-ibox .ibox-content
+{
+    padding: 0;
+}
+.app-ibox .contact-box.center-version
+{
+    padding: 0;
+    border: none;
+}
+#section-cogworks-files .contact-box
+{
+    padding: 0;
+    margin-bottom: 0;
+    background-color: transparent;
+    border: none;
+}
+#section-cogworks-files .contact-box .contact-box-footer
+{
+    padding: 15px;
+}
 
 @media screen and (max-width: 1023px) {
     .biggest-font {

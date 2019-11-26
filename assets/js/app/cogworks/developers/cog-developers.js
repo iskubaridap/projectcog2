@@ -1,14 +1,22 @@
 var cogDevelopers = angular.module("cog-developers", []);
-function developersCtrl($rootScope, $scope, $element, $state, $http, $timeout, developers, SweetAlert)
+function cogDevelopersCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogDevelopers, SweetAlert)
 {
     var self = this;
     self.activeDevelopers = undefined;
-    developers.getActiveDevelopers(self);
+    cogDevelopers.getActiveDevelopers(self);
 
     var viewUser = function(id)
     {
         //console.log(id);
     };
+    var updateUser = function(id)
+    {
+        //console.log(id);
+    };
+    var viewThumnail = function()
+    {};
+    var viewList = function()
+    {};
     var removeUser = function(id)
     {
         SweetAlert.swal({
@@ -64,10 +72,23 @@ function developersCtrl($rootScope, $scope, $element, $state, $http, $timeout, d
             return 0;
         });
     };
+    self.viewByThumnail = function(event)
+    {
+        viewThumnail();
+    };
+    self.viewByList = function(event)
+    {
+        viewList();
+    };
     self.view = function(event)
     {
         var elem = $(event.target);
         viewUser(elem.attr('data-id'));
+    };
+    self.update = function(event)
+    {
+        var elem = $(event.target);
+        updateUser(elem.attr('data-id'));
     };
     self.remove = function(event)
     {
@@ -76,4 +97,4 @@ function developersCtrl($rootScope, $scope, $element, $state, $http, $timeout, d
     };
 }
 
-cogDevelopers.controller('developersCtrl', developersCtrl);
+cogDevelopers.controller('cogDevelopersCtrl', cogDevelopersCtrl);

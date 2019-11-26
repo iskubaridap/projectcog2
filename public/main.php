@@ -30,11 +30,15 @@ $routes = require __DIR__ . '/../src/routes.php';
 $dashboard = require __DIR__ . '/../src/routes/dashboard.php';
 $extra = require __DIR__ . '/../src/routes/extra/extra.php';
 $cogDevelopers = require __DIR__ . '/../src/routes/cogworks/developers.php';
+$cogProjects = require __DIR__ . '/../src/routes/cogworks/projects.php';
+$cogFiles = require __DIR__ . '/../src/routes/cogworks/cog-files.php';
 
 $routes($app);
 $dashboard($app);
 $extra($app);
 $cogDevelopers($app);
+$cogProjects($app);
+$cogFiles($app);
 
 // Run app
 $app->run();

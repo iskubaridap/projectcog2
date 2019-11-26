@@ -13,7 +13,6 @@ return function (App $app) {
         // $userID = $_SESSION['id'];
         $userPosition = 1;
         $userOrg = 1;
-        $index = 0;
 
         if($userPosition == 1)
         {
@@ -22,11 +21,6 @@ return function (App $app) {
                 where users.status_id = '1' and users.position_id = positions.id and organization_id <> 1
                 order by users.user asc
             ")->fetchAll(PDO::FETCH_ASSOC);
-            /* $developers = $container->projectcog->query("
-                select id, name, image, role, organization_id from users 
-                where active = '1' and organization_id <> 1
-                order by name asc
-            ")->fetchAll(PDO::FETCH_ASSOC); */
         }
         else
         {

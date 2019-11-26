@@ -1,0 +1,68 @@
+<div id="section-cogworks-files-projects">
+    <div class="row">
+        <div class="col-md-8">
+            <div ng-controller="cogFilesCtrl as cogFile">
+                <section-loader-indicator text="Preparing to show all Cog Files" object="cogFile.activeFiles" ng-if="cogFile.activeFiles === undefined || cogFile.activeFiles.error !== undefined"></section-loader-indicator>
+                <section-data-empty text="Records for Cog Files are Empty." ng-if="cogFile.activeFiles !== undefined && cogFile.activeFiles === null"></section-data-empty>
+                <div ng-if="cogFile.activeFiles !== undefined && cogFile.activeFiles.error === undefined">
+                    <div class="ibox-title">
+                        <h5>Cog Files</h5>
+                        <a ui-sref="cog-files.active" class="btn btn-primary btn-xs pull-right"><i class="fa fa-files-o"></i>&nbsp;&nbsp;&nbsp;Visit Page</a>
+                    </div>
+                    <div class="ibox-content">
+                        <table class="footable table table-stripped" data-page-size="10" data-filter=#filter>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Project</th>
+                                    <th>Updated</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in cogFile.activeFiles | limitTo : 10">
+                                    <td>{{item.cogfile}}</td>
+                                    <td>{{item.project}}</td>
+                                    <td>{{item.updated}}</td>
+                                    <td>{{item.created}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p ng-if="cogFile.activeFiles.length > 1" class="text-center">There are {{cogFile.activeFiles.length}} total number of Cog Files. You can view them of all at this <a ui-sref="cog-files.active">page</a>.</p>
+                        <p ng-if="cogFile.activeFiles.length == 1" class="text-center">There is only 1 Cog File. You can view it at this <a ui-sref="cog-files.active">page</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div ng-controller="cogProjectsCtrl as cogProject">
+                <section-loader-indicator text="Preparing to show all Projects" object="cogProject.activeProjects" ng-if="cogProject.activeProjects === undefined || cogProject.activeProjects.error !== undefined"></section-loader-indicator>
+                <section-data-empty text="Records for Projects are Empty." ng-if="cogProject.activeProjects !== undefined && cogProject.activeProjects === null"></section-data-empty>
+                <div ng-if="cogProject.activeProjects !== undefined && cogProject.activeProjects.error === undefined">
+                    <div class="ibox-title">
+                        <h5>Projects</h5>
+                        <a ui-sref="cog-projects.active" class="btn btn-primary btn-xs pull-right"><i class="fa fa-folder"></i>&nbsp;&nbsp;&nbsp;Visit Page</a>
+                    </div>
+                    <div class="ibox-content">
+                        <table class="footable table table-stripped" data-page-size="10" data-filter=#filter>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Total Files</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in cogProject.activeProjects | limitTo : 10">
+                                    <td>{{item.project}}</td>
+                                    <td>{{item.cogfiles.length}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p ng-if="cogProject.activeProjects.length > 1" class="text-center">There are {{cogProject.activeProjects.length}} total number of Projects. You can view them of all at this <a>page</a>.</p>
+                        <p ng-if="cogProject.activeProjects.length == 1" class="text-center">There is only 1 Project. You can view it at this <a>page</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
