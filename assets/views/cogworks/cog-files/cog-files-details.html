@@ -1,0 +1,4 @@
+<div id="section-cogworks-developers" ng-controller="cogFilesDetailsCtrl as cogFile">
+    <section-loader-indicator text="Preparing to show file Details" object="cogFile.details" ng-if="cogFile.details === undefined || cogFile.details.error !== undefined"></section-loader-indicator>
+    <section-data-empty text="No data retrieved." ng-if="cogFile.details !== undefined && cogFile.details === null"></section-data-empty>
+</div>

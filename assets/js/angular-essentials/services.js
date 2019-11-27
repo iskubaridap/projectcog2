@@ -34,6 +34,28 @@ var cogFiles = function($rootScope, $http){
         });
   };
 };
+var cogFilesDetails = function($rootScope, $http){
+  var self = this;
+  this.getDetails = function(obj, config, callback){
+      return $http.post((root + "cogworks/cog-files/retrieve/active"), config)
+      .then(function (response) {
+          obj.details = ((response.data).toString().length > 0) ? response.data : null;
+          try
+          {
+            callback();
+          }
+          catch(err)
+          {
+            // no callback function
+          }
+        }, function (response) {
+          obj.details = new Object();
+          obj.details.error = 'serverError';
+          obj.details.errorData = 'Developer';
+          return null;
+        });
+  };
+};
 var cogProjects = function($rootScope, $http){
   var self = this;
   this.getActiveProjects = function(obj, config, callback){

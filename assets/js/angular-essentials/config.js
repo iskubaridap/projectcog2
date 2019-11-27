@@ -121,6 +121,21 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 }
             }
         })
+        .state('cog-files.details', {
+            url: "/active/:id",
+            templateUrl: "assets/views/cogworks/cog-files/cog-files-details.html",
+            data: { pageTitle: 'Cogworks File Details' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'cog-files-details',
+                            files: ['assets/js/app/cogworks/files/cog-files-details.js']
+                        }
+                    ]);
+                }
+            }
+        })
         .state('cog-projects', {
             abstract: true,
             url: "/cogworks/projects",

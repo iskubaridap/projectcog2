@@ -139,6 +139,7 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, cog
     {
         var elem = $(event.target);
         openFile(elem.attr('data-id'));
+        // $('#myModal').modal('show');
     };
     self.details = function(event)
     {
