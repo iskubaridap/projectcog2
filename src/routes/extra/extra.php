@@ -19,10 +19,12 @@ use Slim\Http\Response;
         return json_encode($users) . '<br><br><br>' . json_encode($users2);
     }); 
 */
-
 return function (App $app) {
     $container = $app->getContainer();
 
+    $app->post('/extra/test-function', function ($request, $response, $args) use ($container) {
+        foobar();
+    });
     $app->get('/extra/db-test', function ($request, $response, $args) use ($container) {
         $users = $container->cogworks_original->query("
             select * from users order by id;
@@ -410,5 +412,342 @@ return function (App $app) {
         }
         echo 'Process is complete!';
         //echo json_encode($whatNotProcess);
+    });
+
+    $app->post('/extra/generate/users/folders', function ($request, $response, $args) use ($container) {
+        header('Content-type: text/html; charset=utf-8');
+        $root = $_SERVER['DOCUMENT_ROOT'];
+        $userFiles = $root . '/user_files/';
+        $cogworksFolder = $root . '/cogworks/';
+        $orgs = $container->projectcog->query("
+            select * from organizations order by id;
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
+        $users = $container->projectcog->query("
+            select * from users order by id;
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
+        rrmdir($cogworksFolder . 'admin');
+        rrmdir($cogworksFolder . 'developers');
+        rrmdir($cogworksFolder . 'organizations');
+
+        generateDirectory($cogworksFolder . 'admin');
+        generateDirectory($cogworksFolder . 'admin/users');
+        generateCogworksDefaultDirectories($cogworksFolder . 'admin');
+
+        generateDirectory($cogworksFolder . 'developers');
+        generateDirectory($cogworksFolder . 'organizations');
+
+        foreach($orgs as $org)
+        {
+            if($org['id'] != 1 && $org['id'] != 2)
+            {
+                generateDirectory($cogworksFolder . 'organizations/' . $org['id']);
+                generateDirectory($cogworksFolder . 'organizations/' . $org['id'] . '/users');
+                generateCogworksDefaultDirectories($cogworksFolder . 'organizations/' . $org['id']);
+            }
+        }
+        foreach($users as $user)
+        {
+            if($user['organization_id'] == 1)
+            {
+                generateDirectory($cogworksFolder . 'admin/users/' . $user['id']);
+                generateCogworksUserDirectories($cogworksFolder . 'admin/users/' . $user['id']);
+            }
+            else if($user['organization_id'] == 2)
+            {
+                generateDirectory($cogworksFolder . 'developers/' . $user['id']);
+                generateCogworksUserDirectories($cogworksFolder . 'developers/' . $user['id']);
+            }
+            else
+            {
+                generateDirectory($cogworksFolder . 'organizations/' . $user['organization_id'] . '/users/' . $user['id']);
+                generateCogworksUserDirectories($cogworksFolder . 'organizations/' . $user['organization_id'] . '/users/' . $user['id']);
+            }
+        }
+        echo 'Process is complete!';
+    });
+    $app->post('/extra/transfer-modify/cog-files', function ($request, $response, $args) use ($container) {
+        header('Content-type: text/html; charset=utf-8');
+        $fileExist = false;
+        $userFilesPath = $_SERVER['DOCUMENT_ROOT'] . '/user_files/';
+        $cogworksPath = $_SERVER['DOCUMENT_ROOT'] . '/cogworks/';
+        $blankFilePath = $_SERVER['DOCUMENT_ROOT'] . '/assets/cogworks/js/templates/blank.json';
+        $result = array();
+        
+        $orgs = $container->projectcog->query("
+            select * from organizations order by id;
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
+        $users = $container->projectcog->query("
+            select * from users order by id;
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
+        $cogFiles = $container->cogworks->query("
+            select * from cog_files order by id;
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
+        $projects = $container->cogworks->query("
+            select * from projects order by id;
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach($cogFiles as $cog)
+        {
+            $cogAry = array();
+            $cogID = $cog['id'];
+            $cogName = $cog['cog_file'];
+            $cogNewName = '';
+            $userID = $cog['user_id'];
+            $projectID = $cog['project_id'];
+            $projectName = '';
+            $userEmail = '';
+            $userName = '';
+            $userOrgID = '';
+            $userOrgName = '';
+            $cogPath = '';
+            $fileExist = null;
+            $fileCopied = null;
+            $copied = null;
+            $basePath = '';
+
+            foreach($users as $user)
+            {
+                if($userID == $user['id'])
+                {
+                    $userName = $user['user'];
+                    $userEmail = (str_replace('.com', '', $user['email'])); // i already removed the '.com' here
+                    $userOrgID = $user['organization_id'];
+                    break;
+                }
+            }
+            foreach($orgs as $org)
+            {
+                if($userOrgID == $org['id'])
+                {
+                    $userOrgName = $org['organization'];
+                    break;
+                }
+            }
+            foreach($projects as $proj)
+            {
+                if($projectID == $proj['id'])
+                {
+                    $projectID = $proj['id'];
+                    $projectName = $proj['project'];
+                    break;
+                }
+            }
+
+            if(strlen($cogName) > 0)
+            {
+                $cogNewName = $cogID . '.cog';
+                if($projectID == 0)
+                {
+                    if($org['id'] == 1)
+                    {
+                        $basePath = setCogworksDirectoryPath($org['id']) . 'users/' . $userID . '/raw-files/';
+                    }
+                    else if($org['id'] == 2)
+                    {
+                        $basePath = setCogworksDirectoryPath($org['id']) . $userID . '/raw-files/';
+                    }
+                    else
+                    {
+                        $basePath = setCogworksDirectoryPath($org['id']) . $userOrgID . '/users/' . $userID . '/raw-files/';
+                    }
+                    $cogPath = $userFilesPath . $userOrgName . '/' . $userEmail . '/raw_files/' . $cogName;
+                    $fileExist = file_exists($userFilesPath . $userOrgName . '/' . $userEmail . '/raw_files/' . $cogName);
+                    if(!$fileExist)
+                    {
+                        $fileCopied = copy($blankFilePath, ($basePath . $cogNewName));
+                        chmod(($basePath . $cogNewName), 0777);
+                        if(!$fileCopied)
+                        {
+                            $cogPath = '';
+                            $fileExist = false;
+                        }
+                    }
+                    else
+                    {
+                        $copied = copy($cogPath, ($basePath . $cogNewName));
+                        chmod(($basePath . $cogNewName), 0777);
+                    }
+                }
+                else
+                {
+                    if($org['1'] == 1)
+                    {
+                        $basePath = setCogworksDirectoryPath($org['id']) . 'projects/' . $projectID . '/';
+                    }
+                    else if($org['id'] == 2)
+                    {
+                        $basePath = setCogworksDirectoryPath($org['id']) . $userID . '/projects/' . $projectID . '/';
+                    }
+                    else
+                    {
+                        $basePath = setCogworksDirectoryPath($org['id']) . $userOrgID . '/projects/' . $projectID . '/';
+                        generateDirectory($cogworksPath . '/organizations/' . $userOrgID . '/projects/' . $projectID);
+                    }
+                    $cogPath = $userFilesPath . $userOrgName . '/' . $projectName . '/' . $cogName;
+                    $fileExist = file_exists($userFilesPath . $userOrgName . '/' . $projectName . '/' . $cogName);
+                    if(!$fileExist)
+                    {
+                        $fileCopied = copy($blankFilePath, ($basePath . $cogNewName));
+                        chmod(($basePath . $cogNewName), 0777);
+                        if(!$fileCopied)
+                        {
+                            $cogPath = '';
+                            $fileExist = false;
+                        }
+                    }
+                    else
+                    {
+                        $copied = copy($cogPath, ($basePath . $cogNewName));
+                        chmod(($basePath . $cogNewName), 0777);
+                    }
+                }
+            }
+            
+            $cogAry['id'] = $cogID;
+            $cogAry['filename'] = $cogName;
+            $cogAry['newFilename'] = $cogNewName;
+            $cogAry['userID'] = $userID;
+            $cogAry['userName'] = $userName;
+            $cogAry['userEmail'] = $userEmail;
+            $cogAry['orgID'] = $userOrgID;
+            $cogAry['orgName'] = $userOrgName;
+            $cogAry['projID'] = $projectID;
+            $cogAry['projName'] = $projectName;
+            $cogAry['exist'] = $fileExist;
+            $cogAry['path'] = $cogPath;
+            $cogAry['copied'] = $copied;
+            
+            echo '
+            ';
+            array_push($result, $cogAry);
+        }
+        return json_encode($result);
+    });
+    
+    $app->post('/extra/transfer-modify/cog-files/check-file-exist', function ($request, $response, $args) use ($container) {
+        $fileExist = false;
+        $path = $_SERVER['DOCUMENT_ROOT'] . '/cogworks/';
+        $result = array();
+        
+        $orgs = $container->projectcog->query("
+            select * from organizations order by id;
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
+        $users = $container->projectcog->query("
+            select * from users order by id;
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
+        $cogFiles = $container->cogworks->query("
+            select * from cog_files order by id;
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
+        $projects = $container->cogworks->query("
+            select * from projects order by id;
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach($cogFiles as $cog)
+        {
+            $cogAry = array();
+            $cogID = $cog['id'];
+            $cogName = $cog['id'] . '.cog';
+            $cogNewName = '';
+            $userID = $cog['user_id'];
+            $projectID = $cog['project_id'];
+            $projectName = '';
+            $userEmail = '';
+            $userName = '';
+            $userOrgID = '';
+            $userOrgName = '';
+            $cogPath = '';
+            $fileExist = null;
+            $basePath = '';
+
+            foreach($users as $user)
+            {
+                if($userID == $user['id'])
+                {
+                    $userName = $user['user'];
+                    $userEmail = (str_replace('.com', '', $user['email'])); // i already removed the '.com' here
+                    $userOrgID = $user['organization_id'];
+                    break;
+                }
+            }
+            foreach($orgs as $org)
+            {
+                if($userOrgID == $org['id'])
+                {
+                    $userOrgName = $org['organization'];
+                    break;
+                }
+            }
+            foreach($projects as $proj)
+            {
+                if($projectID == $proj['id'])
+                {
+                    $projectID = $proj['id'];
+                    $projectName = $proj['project'];
+                    break;
+                }
+            }
+            
+            if(strlen((str_replace('.cog', '', $cogName))) > 0)
+            {
+                if($projectID == 0)
+                {
+                    if($org['id'] == 1)
+                    {
+                        $basePath = setCogworksDirectoryPath($org['id']) . 'users/' . $userID . '/raw-files/';
+                    }
+                    else if($org['id'] == 2)
+                    {
+                        $basePath = setCogworksDirectoryPath($org['id']) . $userID . '/raw-files/';
+                    }
+                    else
+                    {
+                        $basePath = setCogworksDirectoryPath($org['id']) . $userOrgID . '/users/' . $userID . '/raw-files/';
+                    }
+                    $fileExist = file_exists($basePath . $cogName);
+                }
+                else
+                {
+                    if($org['1'] == 1)
+                    {
+                        $basePath = setCogworksDirectoryPath($org['id']) . 'projects/' . $projectID . '/';
+                    }
+                    else if($org['id'] == 2)
+                    {
+                        $basePath = setCogworksDirectoryPath($org['id']) . $userID . '/projects/' . $projectID . '/';
+                    }
+                    else
+                    {
+                        $basePath = setCogworksDirectoryPath($org['id']) . $userOrgID . '/projects/' . $projectID . '/';
+                    }
+                    $fileExist = file_exists($basePath . $cogName);
+                }
+            }
+            
+            $cogAry['id'] = $cogID;
+            $cogAry['filename'] = $cogName;
+            $cogAry['newFilename'] = $cogNewName;
+            $cogAry['userID'] = $userID;
+            $cogAry['userName'] = $userName;
+            $cogAry['userEmail'] = $userEmail;
+            $cogAry['orgID'] = $userOrgID;
+            $cogAry['orgName'] = $userOrgName;
+            $cogAry['projID'] = $projectID;
+            $cogAry['projName'] = $projectName;
+            $cogAry['exist'] = $fileExist;
+            $cogAry['path'] = $cogPath;
+            
+            echo '
+            ';
+            array_push($result, $cogAry);
+        }
+        return json_encode($result);
     });
 };
