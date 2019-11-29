@@ -6,7 +6,7 @@
 /**
  * MainCtrl - controller
  */
-function MainCtrl($rootScope) {
+function MainCtrl() {
     var self = this;
 
     this.userName = 'Example user';

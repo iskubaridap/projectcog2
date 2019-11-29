@@ -6,7 +6,7 @@ use Slim\Http\Response;
 
 return function (App $app) {
     $container = $app->getContainer();
-
+    
     $app->post('/cogworks/cog-files/retrieve/active', function ($request, $response, $args) use ($container) {
         // @session_start();
         // $result = null;
@@ -100,4 +100,49 @@ return function (App $app) {
 
         return json_encode($result);
     });
+    $app->post('/cogworks/cog-files/retrieve/details', function ($request, $response, $args) use ($container) {
+        $result = null;
+        $id = $request->getParam('id');
+        $basePath = '';
+
+        $cog = $container->cogworks->query("
+            select * from cog_files
+            where id = '$id';
+        ")->fetch(PDO::FETCH_ASSOC);
+        $userID = $cog['user_id'];
+        $projID = $cog['project_id'];
+        $project = $container->cogworks->query("
+            select * from projects
+            where id = '$projID';
+        ")->fetch(PDO::FETCH_ASSOC);
+        $statID = $cog['status_id'];
+        $status = $container->projectcog->query("
+            select * from statues
+            where id = '$statID';
+        ")->fetch(PDO::FETCH_ASSOC);
+        $user = $container->projectcog->query("
+            select * from users
+            where id = '$userID';
+        ")->fetch(PDO::FETCH_ASSOC);
+        $orgID = $user['organization_id'];
+
+        $result = array();
+        $result['id'] = $cog['id'];
+        $result['cogfile'] = $cog['cog_file'];
+        // $result['content'] = $cog['cog_file_content']; // reserve code
+        $result['image'] = $cog['image'];
+        $result['user-id'] = $cog['user_id'];
+        $result['project-id'] = $cog['project_id'];
+        $result['project'] = $project['project'];
+        $result['status'] = $status['status'];
+        $result['updated'] = (explode(" ",$cog['updated']))[0];
+        $result['created'] = (explode(" ",$cog['created']))[0];
+
+        $cogName = $cog['id'] . '.cog';
+        $basePath = getCogFileDirectory($projID, $orgID, $userID);
+        $result['content'] = json_decode(file_get_contents($basePath . $cogName, true));
+
+        return json_encode($result);
+    });
+
 };

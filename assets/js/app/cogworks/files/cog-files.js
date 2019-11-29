@@ -1,5 +1,5 @@
 var cogFiles = angular.module("cog-files", []);
-function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogFiles, SweetAlert)
+function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogFiles, SweetAlert, $stateParams)
 {
     var self = this;
     self.activeFiles = undefined;
@@ -7,7 +7,8 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, cog
 
     var detailFile = function(id)
     {
-        console.log(id);
+        //$state.go('cog-files.details', {id: id});
+        // $state.go('cog-files.details');
     };
     var openFile = function(id)
     {

@@ -4,6 +4,41 @@ function test()
 {
     echo 'hello world!';
 }
+function getCogFileDirectory($projID, $orgID, $userID)
+{
+    $basePath = '';
+    if($projID == 0)
+    {
+        if($orgID == 1)
+        {
+            $basePath = setCogworksDirectoryPath($orgID) . 'users/' . $userID . '/raw-files/';
+        }
+        else if($orgID == 2)
+        {
+            $basePath = setCogworksDirectoryPath($orgID) . $userID . '/raw-files/';
+        }
+        else
+        {
+            $basePath = setCogworksDirectoryPath($orgID) . $orgID . '/users/' . $userID . '/raw-files/';
+        }
+    }
+    else
+    {
+        if($orgID == 1)
+        {
+            $basePath = setCogworksDirectoryPath($orgID) . 'projects/' . $projID . '/';
+        }
+        else if($orgID == 2)
+        {
+            $basePath = setCogworksDirectoryPath($orgID) . $userID . '/projects/' . $projID . '/';
+        }
+        else
+        {
+            $basePath = setCogworksDirectoryPath($orgID) . $orgID . '/projects/' . $projID . '/';
+        }
+    }
+    return $basePath;
+}
 function setCogworksDirectoryPath($orgID)
 {
     $path = '';

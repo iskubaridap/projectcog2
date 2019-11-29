@@ -122,7 +122,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             }
         })
         .state('cog-files.details', {
-            url: "/active/:id",
+            url: "/details",
             templateUrl: "assets/views/cogworks/cog-files/cog-files-details.html",
             data: { pageTitle: 'Cogworks File Details' },
             resolve: {

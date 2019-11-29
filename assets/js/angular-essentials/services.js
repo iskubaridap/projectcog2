@@ -1,4 +1,4 @@
-var cogDevelopers = function($rootScope, $http){
+var cogDevelopers = function($http){
     var self = this;
     this.getActiveDevelopers = function(obj, config){
         return $http.post((root + "cogworks/developers/retrieve/active"))
@@ -12,7 +12,7 @@ var cogDevelopers = function($rootScope, $http){
           });
     };
 };
-var cogFiles = function($rootScope, $http){
+var cogFiles = function($http){
   var self = this;
   this.getActiveFiles = function(obj, config, callback){
       return $http.post((root + "cogworks/cog-files/retrieve/active"))
@@ -29,15 +29,15 @@ var cogFiles = function($rootScope, $http){
         }, function (response) {
           obj.activeFiles = new Object();
           obj.activeFiles.error = 'serverError';
-          obj.activeFiles.errorData = 'Developer';
+          obj.activeFiles.errorData = 'Cog Files';
           return null;
         });
   };
 };
-var cogFilesDetails = function($rootScope, $http){
+var cogFilesDetails = function($http){
   var self = this;
   this.getDetails = function(obj, config, callback){
-      return $http.post((root + "cogworks/cog-files/retrieve/active"), config)
+      return $http.post((root + "cogworks/cog-files/retrieve/details"), config)
       .then(function (response) {
           obj.details = ((response.data).toString().length > 0) ? response.data : null;
           try
@@ -51,12 +51,12 @@ var cogFilesDetails = function($rootScope, $http){
         }, function (response) {
           obj.details = new Object();
           obj.details.error = 'serverError';
-          obj.details.errorData = 'Developer';
+          obj.details.errorData = 'Cog File Details';
           return null;
         });
   };
 };
-var cogProjects = function($rootScope, $http){
+var cogProjects = function($http){
   var self = this;
   this.getActiveProjects = function(obj, config, callback){
       return $http.post((root + "cogworks/projects/retrieve/active"))
@@ -73,7 +73,7 @@ var cogProjects = function($rootScope, $http){
         }, function (response) {
           obj.activeProjects = new Object();
           obj.activeProjects.error = 'serverError';
-          obj.activeProjects.errorData = 'Developer';
+          obj.activeProjects.errorData = 'Cog Projects';
           return null;
         });
   };
@@ -83,4 +83,5 @@ angular
     .module('mcafee')
     .service('cogDevelopers', cogDevelopers)
     .service('cogFiles', cogFiles)
+    .service('cogFilesDetails', cogFilesDetails)
     .service('cogProjects', cogProjects);
