@@ -92,7 +92,8 @@ return function (App $app) {
         $prepare = $container->cogworks->prepare("
             update cog_files
             set
-            status_id = '0'
+            status_id = '2',
+            updated = '$dateDateTime'
             where id = '$id'
         ");
 
@@ -131,9 +132,9 @@ return function (App $app) {
         $result['cogfile'] = $cog['cog_file'];
         // $result['content'] = $cog['cog_file_content']; // reserve code
         $result['image'] = $cog['image'];
-        $result['user-id'] = $cog['user_id'];
-        $result['project-id'] = $cog['project_id'];
-        $result['project'] = $project['project'];
+        $result['userID'] = $cog['user_id'];
+        $result['projectID'] = $cog['project_id'];
+        $result['project'] = ($projID != 0) ? $project['project'] : '(Personal File)';
         $result['status'] = $status['status'];
         $result['updated'] = (explode(" ",$cog['updated']))[0];
         $result['created'] = (explode(" ",$cog['created']))[0];

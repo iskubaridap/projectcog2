@@ -7,7 +7,7 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, cog
 
     var detailFile = function(id)
     {
-        //$state.go('cog-files.details', {id: id});
+        $state.go('cog-files.details', {'id': id});
         // $state.go('cog-files.details');
     };
     var openFile = function(id)

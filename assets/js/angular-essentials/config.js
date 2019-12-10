@@ -122,7 +122,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             }
         })
         .state('cog-files.details', {
-            url: "/details",
+            url: "/details/:id",
             templateUrl: "assets/views/cogworks/cog-files/cog-files-details.html",
             data: { pageTitle: 'Cogworks File Details' },
             resolve: {
@@ -131,6 +131,13 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                         {
                             name: 'cog-files-details',
                             files: ['assets/js/app/cogworks/files/cog-files-details.js']
+                        },
+                        {
+                            files: ['assets/css/plugins/jsTree/style.min.css','assets/js/plugins/jsTree/jstree.min.js']
+                        },
+                        {
+                            name: 'ngJsTree',
+                            files: ['assets/js/plugins/jsTree/ngJsTree.min.js']
                         }
                     ]);
                 }

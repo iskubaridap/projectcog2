@@ -23,9 +23,9 @@ return function (App $app) {
     $container = $app->getContainer();
 
     $app->post('/extra/test-function', function ($request, $response, $args) use ($container) {
-        foobar();
+        test();
     });
-    $app->get('/extra/db-test', function ($request, $response, $args) use ($container) {
+    $app->post('/extra/db-test', function ($request, $response, $args) use ($container) {
         $users = $container->cogworks_original->query("
             select * from users order by id;
         ")->fetchAll(PDO::FETCH_ASSOC);

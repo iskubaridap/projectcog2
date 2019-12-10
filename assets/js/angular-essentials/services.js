@@ -20,7 +20,7 @@ var cogFiles = function($http){
           obj.activeFiles = ((response.data).toString().length > 0) ? response.data : null;
           try
           {
-            callback();
+            callback(response.data);
           }
           catch(err)
           {
@@ -40,9 +40,10 @@ var cogFilesDetails = function($http){
       return $http.post((root + "cogworks/cog-files/retrieve/details"), config)
       .then(function (response) {
           obj.details = ((response.data).toString().length > 0) ? response.data : null;
+          console.log(response.data);
           try
           {
-            callback();
+            callback(response.data);
           }
           catch(err)
           {
@@ -64,7 +65,7 @@ var cogProjects = function($http){
           obj.activeProjects = ((response.data).toString().length > 0) ? response.data : null;
           try
           {
-            callback();
+            callback(response.data);
           }
           catch(err)
           {

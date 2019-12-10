@@ -1,4 +1,44 @@
 <div id="section-cogworks-developers" ng-controller="cogFilesDetailsCtrl as cogFileDetail">
-    <!-- <section-loader-indicator text="Preparing to show file Details" object="cogFile.details" ng-if="cogFile.details === undefined || cogFile.details.error !== undefined"></section-loader-indicator>
-    <section-data-empty text="No data retrieved." ng-if="cogFile.details !== undefined && cogFile.details === null"></section-data-empty> -->
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-12">
+            <h2>Cog Files Details <a ui-sref="cog-files.active" class="btn btn-primary btn-xs pull-right"><i class="fa fa-files-o"></i> Cog Files</a></h2>
+        </div>
+    </div>
+    <section-loader-indicator text="Preparing to show file Details" object="cogFileDetail.details" ng-if="cogFileDetail.details === undefined || cogFileDetail.details.error !== undefined"></section-loader-indicator>
+    <section-data-empty text="No data retrieved." ng-if="cogFileDetail.details !== undefined && cogFileDetail.details === null"></section-data-empty>
+
+    <div ng-if="cogFileDetail.details !== undefined && cogFileDetail.details.error === undefined">
+        <p ng-if="cogFileDetail.details.id === null" class="large-font m-t">File does not exist.</p>
+        <div ng-if="cogFileDetail.details.id !== null" class="m-t">
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <p class="large-font"><strong>Filename: </strong>{{(cogFileDetail.details.cogfile).replace('.cog','')}}</p>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <p ng-if="cogFileDetail.details.projectID != 0" class="large-font"><strong>Project: </strong>{{cogFileDetail.details.project}}</p>
+                    <p ng-if="cogFileDetail.details.projectID == 0" class="large-font"><strong>Project: </strong><i>(Personal File)</i></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <p class="large-font"><strong>Updated: </strong>{{cogFileDetail.details.updated}}</p>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <p class="large-font"><strong>Created: </strong>{{cogFileDetail.details.created}}</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10 col-md-push-1">
+                    <div class="ibox float-e-margins m-md">
+                        <div class="ibox-title">
+                            <h5>Info and File Structure</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <div js-tree="cogFileDetail.treeConfig" ng-model="cogFileDetail.content" tree="treeInstance"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
