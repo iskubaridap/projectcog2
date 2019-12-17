@@ -1,4 +1,4 @@
-var cogProjects = angular.module("cog-projects", []);
+var cogProjectsModule = angular.module("cog-projects", []);
 function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogProjects, SweetAlert)
 {
     var self = this;
@@ -105,4 +105,4 @@ function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, 
     };
 }
 
-cogProjects.controller('cogProjectsCtrl', cogProjectsCtrl);
+cogProjectsModule.controller('cogProjectsCtrl', cogProjectsCtrl);

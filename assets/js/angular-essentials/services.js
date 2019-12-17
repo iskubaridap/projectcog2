@@ -1,9 +1,17 @@
 var cogDevelopers = function($http){
     var self = this;
-    this.getActiveDevelopers = function(obj, config){
+    this.getActiveDevelopers = function(obj, config, callback){
         return $http.post((root + "cogworks/developers/retrieve/active"))
         .then(function (response) {
             obj.activeDevelopers = ((response.data).toString().length > 0) ? response.data : null;
+            try
+            {
+              callback(response.data);
+            }
+            catch(err)
+            {
+              // no callback function
+            }
           }, function (response) {
             obj.activeDevelopers = new Object();
             obj.activeDevelopers.error = 'serverError';
@@ -18,6 +26,7 @@ var cogFiles = function($http){
       return $http.post((root + "cogworks/cog-files/retrieve/active"))
       .then(function (response) {
           obj.activeFiles = ((response.data).toString().length > 0) ? response.data : null;
+          console.log(obj.activeFiles);
           try
           {
             callback(response.data);
@@ -63,6 +72,7 @@ var cogProjects = function($http){
       return $http.post((root + "cogworks/projects/retrieve/active"))
       .then(function (response) {
           obj.activeProjects = ((response.data).toString().length > 0) ? response.data : null;
+          console.log(response.data);
           try
           {
             callback(response.data);

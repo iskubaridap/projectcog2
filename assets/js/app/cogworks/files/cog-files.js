@@ -20,7 +20,7 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, cog
     };
     var updateFile = function(id)
     {
-        console.log(id);
+        $state.go('cog-files.update', {'id': id});
     };
     var viewThumnail = function()
     {

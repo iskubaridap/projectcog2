@@ -2,7 +2,7 @@ var cogFilesDetails = angular.module("cog-files-details", []);
 function cogFilesDetailsCtrl($rootScope, $scope, $element, $state, $http, cogFilesDetails)
 {
     var self = this;
-    console.log($state.params.id);
+    // console.log($state.params.id);
     cogFilesDetails.getDetails(self, {id: $state.params.id},function(data){
         var cogFileObj = data.content;
         var childrenAry = new Array();

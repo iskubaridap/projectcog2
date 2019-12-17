@@ -54,12 +54,12 @@
                             <tbody>
                                 <tr ng-repeat="item in cogProject.activeProjects | limitTo : 10">
                                     <td>{{item.project}}</td>
-                                    <td>{{item.cogfiles.length}}</td>
+                                    <td>{{item.cogfiles}}</td>
                                 </tr>
                             </tbody>
                         </table>
-                        <p ng-if="cogProject.activeProjects.length > 1" class="text-center">There are {{cogProject.activeProjects.length}} total number of Projects. You can view them of all at this <a>page</a>.</p>
-                        <p ng-if="cogProject.activeProjects.length == 1" class="text-center">There is only 1 Project. You can view it at this <a>page</a>.</p>
+                        <p ng-if="cogProject.activeProjects.length > 1" class="text-center">There are {{cogProject.activeProjects.length}} total number of Projects. You can view them of all at this <a ui-sref="cog-projects.active">page</a>.</p>
+                        <p ng-if="cogProject.activeProjects.length == 1" class="text-center">There is only 1 Project. You can view it at this <a ui-sref="cog-projects.active">page</a>.</p>
                     </div>
                 </div>
             </div>

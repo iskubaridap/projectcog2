@@ -59,6 +59,20 @@
 {
     padding: 15px;
 }
+.center-element
+{
+    margin-left: auto;
+    margin-right: auto;
+    display: table;
+}
+.cog-image-preview-thumbnail img
+{
+    margin-left: auto;
+    margin-right: auto;
+    display: table;
+    max-width: 150px;
+    height: auto;
+}
 
 @media screen and (max-width: 1023px) {
     .biggest-font {

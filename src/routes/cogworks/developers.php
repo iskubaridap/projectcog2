@@ -35,7 +35,7 @@ return function (App $app) {
         // {
             foreach($developers as &$developer)
             {
-                // if($developer['image'] == null)
+                // if($developer['image'] == null || strlen($developer['image']) <= 0)
                 // {
                     $developer['image'] = 'assets/img/thumbnail/thumbnail-profile-pic.png';
                 // }
