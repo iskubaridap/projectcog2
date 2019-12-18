@@ -1,0 +1,36 @@
+<div id="cog-files-details-section" ng-controller="cogFilesDetailsCtrl as cogFileDetail">
+    <div ng-if="cogFileDetail.details !== undefined && cogFileDetail.details.error === undefined">
+        <p ng-if="cogFileDetail.details.id === null" class="large-font m-t">File does not exist.</p>
+        <div ng-if="cogFileDetail.details.id !== null" class="m-t">
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <p class="large-font"><strong>Filename: </strong>{{(cogFileDetail.details.cogfile).replace('.cog','')}}</p>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <p ng-if="cogFileDetail.details.projectID != 0" class="large-font"><strong>Project: </strong>{{cogFileDetail.details.project}}</p>
+                    <p ng-if="cogFileDetail.details.projectID == 0" class="large-font"><strong>Project: </strong><i>(Personal File)</i></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <p class="large-font"><strong>Updated: </strong>{{cogFileDetail.details.updated}}</p>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <p class="large-font"><strong>Created: </strong>{{cogFileDetail.details.created}}</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10 col-md-push-1">
+                    <div class="ibox float-e-margins m-md">
+                        <div class="ibox-title">
+                            <h5>Info and File Structure</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <div js-tree="cogFileDetail.treeConfig" ng-model="cogFileDetail.content" tree="treeInstance"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

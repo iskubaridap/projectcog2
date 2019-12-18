@@ -225,6 +225,24 @@ function sectionCogworksFilesProjects($rootScope) {
         link: function(scope, elem, attrs){}
     };
 }
+function sectionCogworksFilesDetails($rootScope) {
+    return {
+        restrict: 'E',
+        scope: {
+        },
+        templateUrl: 'assets/views/cogworks/sections/cog-files-details-section.html',
+        link: function(scope, elem, attrs){}
+    };
+}
+function sectionCogworksFilesUpdate($rootScope) {
+    return {
+        restrict: 'E',
+        scope: {
+        },
+        templateUrl: 'assets/views/cogworks/sections/cog-files-update-section.html',
+        link: function(scope, elem, attrs){}
+    };
+}
 /**
  *
  * Pass all functions into module
@@ -239,4 +257,6 @@ angular
     .directive('sectionLoaderIndicator', sectionLoaderIndicator)
     .directive('sectionDataEmpty', sectionDataEmpty)
     .directive('sectionCogworksDevelopers', sectionCogworksDevelopers)
-    .directive('sectionCogworksFilesProjects', sectionCogworksFilesProjects);
+    .directive('sectionCogworksFilesProjects', sectionCogworksFilesProjects)
+    .directive('sectionCogworksFilesDetails', sectionCogworksFilesDetails)
+    .directive('sectionCogworksFilesUpdate', sectionCogworksFilesUpdate);

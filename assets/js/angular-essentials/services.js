@@ -23,7 +23,7 @@ var cogDevelopers = function($http){
 var cogFiles = function($http){
   var self = this;
   this.getActiveFiles = function(obj, config, callback){
-      return $http.post((root + "cogworks/cog-files/retrieve/active"))
+      return $http.post((root + "cogworks/cog-files/retrieve/active"), config)
       .then(function (response) {
           obj.activeFiles = ((response.data).toString().length > 0) ? response.data : null;
           console.log(obj.activeFiles);
@@ -66,6 +66,29 @@ var cogFilesDetails = function($http){
         });
   };
 };
+var cogProject = function($http){
+  var self = this;
+  this.getProject = function(obj, config, callback){
+      return $http.post((root + "cogworks/projects/retrieve/single"), config)
+      .then(function (response) {
+          obj.project = ((response.data).toString().length > 0) ? response.data : null;
+          console.log(response.data);
+          try
+          {
+            callback(response.data);
+          }
+          catch(err)
+          {
+            // no callback function
+          }
+        }, function (response) {
+          obj.project = new Object();
+          obj.project.error = 'serverError';
+          obj.project.errorData = 'Cog Projects';
+          return null;
+        });
+  };
+};
 var cogProjects = function($http){
   var self = this;
   this.getActiveProjects = function(obj, config, callback){
@@ -95,4 +118,5 @@ angular
     .service('cogDevelopers', cogDevelopers)
     .service('cogFiles', cogFiles)
     .service('cogFilesDetails', cogFilesDetails)
+    .service('cogProject', cogProject)
     .service('cogProjects', cogProjects);

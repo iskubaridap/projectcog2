@@ -93,7 +93,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             templateUrl: "assets/views/common/content.html",
         })
         .state('cog-files.active', {
-            url: "/active",
+            url: "/active/:project",
             templateUrl: "assets/views/cogworks/cog-files/cog-files-main.html",
             data: { pageTitle: 'Cogworks Files' },
             resolve: {
@@ -200,6 +200,85 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                         {
                             name: 'ui.footable',
                             files: ['assets/js/plugins/footable/angular-footable.js']
+                        }
+                    ]);
+                }
+            }
+        })
+        .state('cog-projects.files', {
+            url: "/cog-files/:project",
+            templateUrl: "assets/views/cogworks/projects/projects-cog-files.html",
+            data: { pageTitle: 'Cogworks Files' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'cog-files',
+                            files: ['assets/js/app/cogworks/files/cog-files.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']
+                        },
+                        {
+                            name: 'oitozero.ngSweetAlert',
+                            files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/footable/footable.all.min.js', 'assets/css/plugins/footable/footable.core.css']
+                        },
+                        {
+                            name: 'ui.footable',
+                            files: ['assets/js/plugins/footable/angular-footable.js']
+                        }
+                    ]);
+                }
+            }
+        })
+        .state('cog-projects.files-details', {
+            url: "/details/:id",
+            templateUrl: "assets/views/cogworks/projects/projects-cog-files-details.html",
+            data: { pageTitle: 'Cogworks File Details' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'cog-files-details',
+                            files: ['assets/js/app/cogworks/files/cog-files-details.js']
+                        },
+                        {
+                            files: ['assets/css/plugins/jsTree/style.min.css','assets/js/plugins/jsTree/jstree.min.js']
+                        },
+                        {
+                            name: 'ngJsTree',
+                            files: ['assets/js/plugins/jsTree/ngJsTree.min.js']
+                        }
+                    ]);
+                }
+            }
+        })
+        .state('cog-projects.files-update', {
+            url: "/update/:id",
+            templateUrl: "assets/views/cogworks/projects/projects-cog-files-update.html",
+            data: { pageTitle: 'Cogworks File Update' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'cog-files-update',
+                            files: ['assets/js/app/cogworks/files/cog-files-update.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']
+                        },
+                        {
+                            name: 'oitozero.ngSweetAlert',
+                            files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        },
+                        {
+                            files: ['assets/css/plugins/dropzone/basic.css','assets/css/plugins/dropzone/dropzone.css','assets/js/plugins/dropzone/dropzone.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/jasny/jasny-bootstrap.min.js', 'assets/css/plugins/jasny/jasny-bootstrap.min.css' ]
                         }
                     ]);
                 }

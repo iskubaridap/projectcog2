@@ -29,7 +29,7 @@
                 <a><i class="fa fa-file"></i> <span>Create New File</span></a>
             </li>
             <li ng-class="{active: $state.includes('cog-files')}">
-                <a ui-sref="cog-files.active"><i class="fa fa-files-o"></i> <span>Personal Files</span></a>
+                <a ui-sref="cog-files.active({project: 'all'})"><i class="fa fa-files-o"></i> <span>Personal Files</span></a>
             </li>
             <li ng-class="{active: $state.includes('cog-projects')}">
                 <a href="#"><i class="fa fa-folder"></i> <span class="nav-label">Projects </span><span class="fa arrow"></span></a>

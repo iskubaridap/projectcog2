@@ -5,6 +5,10 @@ function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, 
     self.activeProjects = undefined;
     cogProjects.getActiveProjects(self);
 
+    var openProject = function(id)
+    {
+        $state.go('cog-projects.files', {'project': id});
+    };
     var viewFile = function(id)
     {
         //console.log(id);
@@ -89,6 +93,11 @@ function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, 
     {
         var elem = $(event.target);
         viewFile(elem.attr('data-id'));
+    };
+    self.open = function(event)
+    {
+        var elem = $(event.target);
+        openProject(elem.attr('data-id'));
     };
     self.details = function(event)
     {

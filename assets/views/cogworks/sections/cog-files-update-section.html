@@ -1,0 +1,62 @@
+<div id="cog-files-update-section" ng-controller="cogFilesUpdateCtrl as cogFileUpdate">
+    <div ng-if="cogFileUpdate.details !== undefined && cogFileUpdate.details.error === undefined">
+        <p ng-if="cogFileUpdate.details.id === null" class="large-font m-t">File does not exist.</p>
+        <div ng-if="cogFileUpdate.details.id !== null" class="m-t">
+            <div class="row">
+                <div class="col-md-10 col-md-push-1">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="col-md-6 col-md-push-3">
+                                    <div class="cog-image-preview-thumbnail m-md">
+                                        <img alt="image" class="" ng-src="{{cogFileUpdate.details.image}}">
+                                    </div>
+                                    <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                                        <div class="form-control" data-trigger="fileinput"><i class="glyphicon glyphicon-file fileinput-exists"></i> <span class="fileinput-filename"></span></div>
+                                        <span class="input-group-addon btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists">Change</span><input data-orginal-value="{{cogFileUpdate.details.imageValue}}" id="cog-update-image" class="cog-input" type="file" name="cog-image"></span>
+                                        <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+                                    </div>
+                                    <!-- <input type="file" id="cog-image-file" class="center-element"> -->
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="hr-line-dashed"></div>
+                                </div>
+                            </div>
+
+                            <form method="post" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Filename</label>
+                                            <input data-orginal-value="{{cogFileUpdate.details.cogfile}}" id="cog-update-filename" name="cog-filename" type="text" class="cog-input form-control" value="{{(cogFileUpdate.details.cogfile).replace('.cog','')}}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" ng-if="cogFileUpdate.activeProjects !== undefined">
+                                        <div class="form-group">
+                                            <label class="control-label">Project</label>
+
+                                            <select data-orginal-value="{{cogFileUpdate.details.projectID}}" id="cog-update-project" class="cog-input form-control m-b" name="cog-project">
+                                                <!-- <option value="0" selected>(Personal File)</option> -->
+                                                <option ng-repeat="item in cogFileUpdate.activeProjects" ng-selected="item.id == cogFileUpdate.details.projectID" value="{{item.id}}">{{item.project}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="pull-right">
+                                            <button ng-click="cogFileUpdate.reset($event)" class="btn btn-primary" type="button">Reset</button>
+                                            <button ng-click="cogFileUpdate.submit($event)" class="btn btn-primary" type="button">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

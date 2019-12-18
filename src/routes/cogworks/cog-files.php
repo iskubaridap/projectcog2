@@ -15,6 +15,7 @@ return function (App $app) {
         $userPosition = 1;
         $userID = 1; // temporary value
         $result = array();
+        $projectID = $request->getParam('projID');
 
         $user = $container->projectcog->query("
             select * from users
@@ -31,29 +32,61 @@ return function (App $app) {
         // This assumes that the user is the Admin
         if($userPosition == 1)
         {
-            $cogFiles = $container->cogworks->query("
-                select * from cog_files
-                where status_id = '1'
-                order by cog_file asc
-            ")->fetchAll(PDO::FETCH_ASSOC);
-            $projects = $container->cogworks->query("
-                select * from projects
-                where status_id = '1'
-                order by project asc
-            ")->fetchAll(PDO::FETCH_ASSOC);
+            if($projectID == 'all')
+            {
+                $cogFiles = $container->cogworks->query("
+                    select * from cog_files
+                    where status_id = '1'
+                    order by cog_file asc
+                ")->fetchAll(PDO::FETCH_ASSOC);
+                $projects = $container->cogworks->query("
+                    select * from projects
+                    where status_id = '1'
+                    order by project asc
+                ")->fetchAll(PDO::FETCH_ASSOC);
+            }
+            else
+            {
+                $cogFiles = $container->cogworks->query("
+                    select * from cog_files
+                    where status_id = '1' and project_id = '$projectID'
+                    order by cog_file asc
+                ")->fetchAll(PDO::FETCH_ASSOC);
+                $projects = $container->cogworks->query("
+                    select * from projects
+                    where id = '$projectID'
+                    order by project asc
+                ")->fetchAll(PDO::FETCH_ASSOC);
+            }
         }
         else
         {
-            $cogFiles = $container->cogworks->query("
-                select * from cog_files
-                where status_id = '1' and user_id = '$userID' and organization_id = '$userOrg'
-                order by cog_file asc
-            ")->fetchAll(PDO::FETCH_ASSOC);
-            $projects = $container->cogworks->query("
-                select * from projects
-                where status_id = '1' and organization_id = '$userOrg'
-                order by project asc
-            ")->fetchAll(PDO::FETCH_ASSOC);
+            if($projectID == 'all')
+            {
+                $cogFiles = $container->cogworks->query("
+                    select * from cog_files
+                    where status_id = '1' and user_id = '$userID' and organization_id = '$userOrg'
+                    order by cog_file asc
+                ")->fetchAll(PDO::FETCH_ASSOC);
+                $projects = $container->cogworks->query("
+                    select * from projects
+                    where status_id = '1' and organization_id = '$userOrg'
+                    order by project asc
+                ")->fetchAll(PDO::FETCH_ASSOC);
+            }
+            else
+            {
+                $cogFiles = $container->cogworks->query("
+                    select * from cog_files
+                    where status_id = '1' and user_id = '$userID' and organization_id = '$userOrg' and project_id = '$projectID'
+                    order by cog_file asc
+                ")->fetchAll(PDO::FETCH_ASSOC);
+                $projects = $container->cogworks->query("
+                    select * from projects
+                    where id = '$projectID' and organization_id = '$userOrg'
+                    order by project asc
+                ")->fetchAll(PDO::FETCH_ASSOC);
+            }
         }
 
         foreach($cogFiles as $cog)
@@ -61,7 +94,7 @@ return function (App $app) {
             $cogFile = array();
             $cogFileUserID = $cog['user_id'];
             $cogFile['id'] = $cog['id'];
-            $cogFile['cogfile'] = $cog['cog_file'];
+            $cogFile['cogfile'] = str_replace('.cog', '', $cog['cog_file']);
             $cogFile['user'] = $cog['user_id'];
             $cogFile['projectID'] = $cog['project_id'];
             $cogFile['created'] = (explode(" ",$cog['created']))[0];

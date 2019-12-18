@@ -1,13 +1,29 @@
 var cogFiles = angular.module("cog-files", []);
-function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogFiles, SweetAlert, $stateParams)
+function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogProject, cogFiles, SweetAlert, $stateParams)
 {
     var self = this;
+    var cogProjID = $state.params.project;
+    self.cogProj = cogProjID;
+    self.cogProj = null;
     self.activeFiles = undefined;
-    cogFiles.getActiveFiles(self);
+    cogProject.getProject(self, {id: cogProjID}, function(data){
+        if(data != 'false')
+        {
+            self.cogProj = data.project;
+        }
+    });
+    cogFiles.getActiveFiles(self, {projID: cogProjID});
 
     var detailFile = function(id)
     {
-        $state.go('cog-files.details', {'id': id});
+        if(cogProjID == 'all')
+        {
+            $state.go('cog-files.details', {'id': id});
+        }
+        else
+        {
+            $state.go('cog-projects.files-details', {'id': id});
+        }
         // $state.go('cog-files.details');
     };
     var openFile = function(id)
@@ -20,7 +36,14 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, cog
     };
     var updateFile = function(id)
     {
-        $state.go('cog-files.update', {'id': id});
+        if(cogProjID == 'all')
+        {
+            $state.go('cog-files.update', {'id': id});
+        }
+        else
+        {
+            $state.go('cog-projects.files-update', {'id': id});
+        }
     };
     var viewThumnail = function()
     {

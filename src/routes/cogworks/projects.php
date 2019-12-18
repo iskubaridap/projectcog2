@@ -83,6 +83,15 @@ return function (App $app) {
         
         return json_encode($result);
     });
+    $app->post('/cogworks/projects/retrieve/single', function ($request, $response, $args) use ($container) {
+        $id = $request->getParam('id');
+        $result = null;
+        $result = $container->cogworks->query("
+            select * from projects
+            where id = '$id'
+        ")->fetch(PDO::FETCH_ASSOC);
+        return json_encode($result);
+    });
     $app->post('/cogworks/projects/retrieve/projects-files/active', function ($request, $response, $args) use ($container) {
         // @session_start();
         // $result = null;
