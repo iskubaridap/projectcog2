@@ -4,6 +4,45 @@ function test()
 {
     echo 'hello world!';
 }
+function getCogProjectThumbnail($orgID, $projID, $img, $container)
+{
+    $ary = array();
+    $ary['imageValue'] = '';
+    $ary['path'] = '';
+    $userID = 0; // initial value
+    if($img == null || strlen($img) <= 0)
+    {
+        $ary['imageValue'] = '';
+        $ary['path'] = 'assets/img/thumbnail/cog-project.svg';
+    }
+    else
+    {
+        $ary['imageValue'] = $img;
+        // first determine or initiate $userID org for Developers
+        if($orgID == 2)
+        {
+            // it just need one query to retrieve user id
+            $cogInfo = $container->cogworks->query("
+                select * from cog_files
+                where id = '$projID'
+            ")->fetch(PDO::FETCH_ASSOC);
+            $userID = $cogInfo['user_id'];
+        }
+        if($orgID == 1)
+        {
+            $ary['path'] = 'cogworks/admin/img/thumbnail/projects/' . $projID . '/' . $img;
+        }
+        else if($orgID == 2)
+        {
+            $ary['path'] = 'cogworks/developers/' . $userID . '/img/thumbnail/projects/' . $projID . '/' . $img;
+        }
+        else
+        {
+            $ary['path'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/projects/' . $projID . '/' . $img;
+        }
+    }
+    return $ary;
+}
 function getCogFileThumbnail($orgID, $userID, $cogID, $img, $container)
 {
     $ary = array();
@@ -45,7 +84,7 @@ function getCogFileThumbnail($orgID, $userID, $cogID, $img, $container)
                 $ary['path'] = 'cogworks/organizations/' . $userInfoOrgID . '/img/thumbnail/cog-files/' . $cogProjectID . '/' . $img;
             }
         }
-        else if($org == 2)
+        else if($orgID == 2)
         {
             $ary['path'] = 'cogworks/developers/' . $userID . '/img/thumbnail/cog-files/' . $cogProjectID . '/' . $img;
         }

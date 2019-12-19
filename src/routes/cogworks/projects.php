@@ -28,7 +28,7 @@ return function (App $app) {
         ")->fetchAll(PDO::FETCH_ASSOC);
 
         // This assumes that the user is the Admin
-        if($userPosition == 1 || $userPosition == 2)
+        if($userPosition == 1)
         {
             $projects = $container->cogworks->query("
                 select * from projects
@@ -54,11 +54,11 @@ return function (App $app) {
             $project['orgID'] = $prj['organization_id'];
             $project['created'] = (explode(" ",$prj['created']))[0];
             $project['cogfiles'] = 0;
+            $projImgAry = array();
 
-            if($prj['image'] == null || strlen($prj['image']) <= 0)
-            {
-                $project['image'] = 'assets/img/thumbnail/cog-file.svg';
-            }
+            $projImgAry = getCogProjectThumbnail($prj['organization_id'], $prj['id'], $prj['image'], $container);
+            $project['imageValue'] = $projImgAry['imageValue'];
+            $project['image'] = $projImgAry['path'];
 
             foreach($orgs as $org)
             {
@@ -80,16 +80,33 @@ return function (App $app) {
         return json_encode($result);
     });
     $app->post('/cogworks/projects/deactivate', function ($request, $response, $args) use ($container) {
-        
+        $id = $request->getParam('id');
+        $result = null;
+        $date = new DateTime('NOW');
+        $dateDateTime = $date->format('Y-m-d H:i:s');
+        $prepare = $container->cogworks->prepare("
+            update projects
+            set
+            status_id = '2',
+            updated = '$dateDateTime'
+            where id = '$id'
+        ");
+
+        $result = $prepare->execute();
         return json_encode($result);
     });
     $app->post('/cogworks/projects/retrieve/single', function ($request, $response, $args) use ($container) {
         $id = $request->getParam('id');
         $result = null;
+        $tmpAry = array();
         $result = $container->cogworks->query("
             select * from projects
             where id = '$id'
         ")->fetch(PDO::FETCH_ASSOC);
+
+        $tmpAry = getCogProjectThumbnail($result['organization_id'], $id, $result['image'], $container);
+        $result['imageValue'] = $tmpAry['imageValue'];
+        $result['image'] = $tmpAry['path'];
         return json_encode($result);
     });
     $app->post('/cogworks/projects/retrieve/projects-files/active', function ($request, $response, $args) use ($container) {
@@ -113,7 +130,7 @@ return function (App $app) {
         ")->fetchAll(PDO::FETCH_ASSOC);
 
         // This assumes that the user is the Admin
-        if($userPosition == 1 || $userPosition == 2)
+        if($userPosition == 1)
         {
             $projects = $container->cogworks->query("
                 select * from projects
@@ -140,10 +157,9 @@ return function (App $app) {
             $project['created'] = (explode(" ",$prj['created']))[0];
             $project['cogfiles'] = array();
 
-            if($prj['image'] == null || strlen($prj['image']) <= 0)
-            {
-                $project['image'] = 'assets/img/thumbnail/cog-file.svg';
-            }
+            $projImgAry = getCogProjectThumbnail($prj['organization_id'], $prj['id'], $prj['image'], $container);
+            $project['imageValue'] = $projImgAry['imageValue'];
+            $project['image'] = $projImgAry['path'];
 
             foreach($orgs as $org)
             {
@@ -167,15 +183,72 @@ return function (App $app) {
                 $cog['user'] = $file['user_id'];
                 $cog['created'] = $file['created'];
                 $cog['updated'] = $file['updated'];
+                $tmpAry = array();
 
-                if($file['image'] == null || strlen($file['image']) <= 0)
-                {
-                    $cog['image'] = 'assets/img/thumbnail/cog-file.svg';
-                }
+                $tmpAry = getCogFileThumbnail($userOrg, $userID, $file['id'], $file['image'], $container);
+                $cog['imageValue'] = $tmpAry['imageValue'];
+                $cog['image'] = $tmpAry['path'];
                 array_push($project['cogfiles'], $cog);
             }
             array_push($result, $project);
         }
         return json_encode($result);
     });
+    $app->post('/cogworks/projects/update', function ($request, $response, $args) use ($container) {
+        // @session_start();
+       // $result = null;
+       // $userID = $_SESSION['id'];
+       // $userID = 5; // temporary value...this assumes that i'm nina of jsi
+       $userID = 5; // temporary value...this assumes that i'm nina of jsi
+       $projID = $request->getParam('id');
+       $name = $request->getParam('cogProjName');
+       $file = $request->getUploadedFiles();
+       $date = new DateTime('NOW');
+       $dateDateTime = $date->format('Y-m-d H:i:s');
+       $path = '';
+       $result = null;
+       $imageName = null;
+
+        $projInfo = $container->cogworks->query("
+            select * from projects
+            where id = '$projID'
+        ")->fetch(PDO::FETCH_ASSOC);
+        $cogOrgID = $projInfo['organization_id'];
+        $cogInfo = $container->cogworks->query("
+            select * from cog_files
+            where id = '$projID'
+        ")->fetch(PDO::FETCH_ASSOC);
+        $cogUserID = $cogInfo['user_id'];
+       
+       if(!empty($file))
+       {
+            $imagePath = getCogImageThumbnailDirectory($projID, $cogOrgID, $cogUserID, 'projects');
+            $uploadedFile = $file['file'];
+            $imageName = $file['file']->getClientFilename();
+            $uploadedFile->moveTo($imagePath . $imageName);
+            chmod($imagePath . $imageName,0777);
+
+            $prepare = $container->cogworks->prepare("
+                update projects
+                set
+                project = '$name',
+                image = '$imageName',
+                updated = '$dateDateTime'
+                where id = '$projID'
+            ");
+       }
+       else
+       {
+            $prepare = $container->cogworks->prepare("
+                update projects
+                set
+                project = '$name',
+                updated = '$dateDateTime'
+                where id = '$projID'
+            ");
+       }
+
+       $result = $prepare->execute();
+       return json_encode($result);
+   });
 };

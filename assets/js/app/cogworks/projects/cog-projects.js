@@ -9,6 +9,10 @@ function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, 
     {
         $state.go('cog-projects.files', {'project': id});
     };
+    var updateProject = function(id)
+    {
+        $state.go('cog-projects.update', {'id': id});
+    }
     var viewFile = function(id)
     {
         //console.log(id);
@@ -17,39 +21,52 @@ function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, 
     {};
     var viewList = function()
     {};
-    var removeFile = function(id)
+    var removeFile = function(id, files)
     {
-        SweetAlert.swal({
-            title: "Are you sure?",
-            text: "This Project will no longer be active.",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "No, cancel!",
-            closeOnConfirm: false,
-            closeOnCancel: false },
-        function (isConfirm) {
-            if (isConfirm) {
-                $http.post((root + "cogworks/projects/deactivate"), {id: id})
-                .then(function (response) {
-                    if(response.data == 'true')
-                    {
-                        cogProjects.getActiveProjects(self);
-                        SweetAlert.swal("Deleted!", "Project is successfully removed", "success");
-                    }
-                    else
-                    {
-                        SweetAlert.swal("Failed!", "Project is not been removed. Try it again.", "error");
-                    }
-                }, function (response) {
-                    SweetAlert.swal("Error", "Something went wrong. Try it again.", "error");
-                });
-                
-            } else {
-                SweetAlert.swal("Cancelled", "You cancelled your action", "error");
-            }
-        });
+        if(files > 0)
+        {
+            SweetAlert.swal({
+                title: "Cannot Remove Project",
+                text: "There are existing files in this Project. It's either you delete all remaining files or distribute them to other Projects. Then proceed on removing this."
+            }, function(isConfirm){
+                if(isConfirm)
+                {}
+            });
+        }
+        else
+        {
+            SweetAlert.swal({
+                title: "Are you sure?",
+                text: "This Project will no longer be active.",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "No, cancel!",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $http.post((root + "cogworks/projects/deactivate"), {id: id})
+                    .then(function (response) {
+                        if(response.data == 'true')
+                        {
+                            cogProjects.getActiveProjects(self);
+                            SweetAlert.swal("Deleted!", "Project is successfully removed", "success");
+                        }
+                        else
+                        {
+                            SweetAlert.swal("Failed!", "Project is not been removed. Try it again.", "error");
+                        }
+                    }, function (response) {
+                        SweetAlert.swal("Error", "Something went wrong. Try it again.", "error");
+                    });
+                    
+                } else {
+                    SweetAlert.swal("Cancelled", "You cancelled your action", "error");
+                }
+            });
+        }
     };
     self.viewByThumnail = function(event)
     {
@@ -101,16 +118,17 @@ function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, 
     };
     self.details = function(event)
     {
-        
+        // reserve
     };
     self.update = function(event)
     {
-        
+        var elem = $(event.target);
+        updateProject(elem.attr('data-id'));
     };
     self.remove = function(event)
     {
         var elem = $(event.target);
-        removeFile(elem.attr('data-id'));
+        removeFile(elem.attr('data-id'), parseInt(elem.attr('data-files')));
     };
 }
 

@@ -12,7 +12,7 @@ function cogFilesUpdateCtrl($rootScope, $scope, $element, $state, $http, cogProj
     cogFilesDetails.getDetails(self, {id: cogID});
     self.reset = function(event)
     {
-        $state.reload();
+        $state.go($state.current, {}, {reload: true});
     };
     self.submit = function(event)
     {

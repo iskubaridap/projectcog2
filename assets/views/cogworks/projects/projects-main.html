@@ -30,9 +30,9 @@
                                 </a>
                                 <ul uib-dropdown-menu="" class="dropdown-menu">
                                     <li><a data-id="{{cogProject.activeProjects[$index].id}}" ng-click="cogProject.open($event)">Open</a></li>
-                                    <li><a data-id="{{cogProject.activeProjects[$index].id}}" ng-click="cogProject.details($event)">Details</a></li>
+                                    <!-- <li><a data-id="{{cogProject.activeProjects[$index].id}}" ng-click="cogProject.details($event)">Details</a></li> -->
                                     <li><a data-id="{{cogProject.activeProjects[$index].id}}" ng-click="cogProject.update($event)">Update</a></li>
-                                    <li><a data-id="{{cogProject.activeProjects[$index].id}}" ng-click="cogProject.remove($event)">Remove</a></li>
+                                    <li><a data-id="{{cogProject.activeProjects[$index].id}}" data-files="{{cogProject.activeProjects[$index].cogfiles}}" ng-click="cogProject.remove($event)">Remove</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -58,9 +58,9 @@
                                 </a>
                                 <ul uib-dropdown-menu="" class="dropdown-menu">
                                     <li><a data-id="{{cogProject.activeProjects[$index + 1].id}}" ng-click="cogProject.open($event)">Open</a></li>
-                                    <li><a data-id="{{cogProject.activeProjects[$index + 1].id}}" ng-click="cogProject.details($event)">Details</a></li>
+                                    <!-- <li><a data-id="{{cogProject.activeProjects[$index + 1].id}}" ng-click="cogProject.details($event)">Details</a></li> -->
                                     <li><a data-id="{{cogProject.activeProjects[$index + 1].id}}" ng-click="cogProject.update($event)">Update</a></li>
-                                    <li><a data-id="{{cogProject.activeProjects[$index + 1].id}}" ng-click="cogProject.remove($event)">Remove</a></li>
+                                    <li><a data-id="{{cogProject.activeProjects[$index + 1].id}}" data-files="{{cogProject.activeProjects[$index + 1].cogfiles}}" ng-click="cogProject.remove($event)">Remove</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -86,9 +86,9 @@
                                 </a>
                                 <ul uib-dropdown-menu="" class="dropdown-menu">
                                     <li><a data-id="{{cogProject.activeProjects[$index + 2].id}}" ng-click="cogProject.open($event)">Open</a></li>
-                                    <li><a data-id="{{cogProject.activeProjects[$index + 2].id}}" ng-click="cogProject.details($event)">Details</a></li>
+                                    <!-- <li><a data-id="{{cogProject.activeProjects[$index + 2].id}}" ng-click="cogProject.details($event)">Details</a></li> -->
                                     <li><a data-id="{{cogProject.activeProjects[$index + 2].id}}" ng-click="cogProject.update($event)">Update</a></li>
-                                    <li><a data-id="{{cogProject.activeProjects[$index + 2].id}}" ng-click="cogProject.remove($event)">Remove</a></li>
+                                    <li><a data-id="{{cogProject.activeProjects[$index + 2].id}}" data-files="{{cogProject.activeProjects[$index + 2].cogfiles}}" ng-click="cogProject.remove($event)">Remove</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -114,9 +114,9 @@
                                 </a>
                                 <ul uib-dropdown-menu="" class="dropdown-menu">
                                     <li><a data-id="{{cogProject.activeProjects[$index + 3].id}}" ng-click="cogProject.open($event)">Open</a></li>
-                                    <li><a data-id="{{cogProject.activeProjects[$index + 3].id}}" ng-click="cogProject.details($event)">Details</a></li>
+                                    <!-- <li><a data-id="{{cogProject.activeProjects[$index + 3].id}}" ng-click="cogProject.details($event)">Details</a></li> -->
                                     <li><a data-id="{{cogProject.activeProjects[$index + 3].id}}" ng-click="cogProject.update($event)">Update</a></li>
-                                    <li><a data-id="{{cogProject.activeProjects[$index + 3].id}}" ng-click="cogProject.remove($event)">Remove</a></li>
+                                    <li><a data-id="{{cogProject.activeProjects[$index + 3].id}}" data-files="{{cogProject.activeProjects[$index + 3].cogfiles}}" ng-click="cogProject.remove($event)">Remove</a></li>
                                 </ul>
                             </div>
                         </div>
