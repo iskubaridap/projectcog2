@@ -278,5 +278,90 @@ function rrmdir($dir)
         rmdir($dir);
     }
 }
+function getUserInfo($id, $container)
+{
+    check_session();
+    $userInfo = null;
+    $userID = $id;
+    $userInfo = $container->projectcog->query("
+        select users.id, users.user, users.firstname, users.lastname, users.middlename,
+            users.email, users.username, users.password, users.image, users.address,
+            users.country, users.organization_id, organizations.organization,
+            users.position_id, positions.position, users.last_login, users.account_id,
+            account_types.account_type, allowed_users.allowed_user, users.status_id,
+            statues.status, users.updated, users.created
+        from users, organizations, positions, accounts, account_types, allowed_users, statues
+        where users.id = '$userID' and users.organization_id = organizations.id and
+            users.position_id = positions.id and users.account_id = accounts.id and
+            accounts.account_type_id = account_types.id and
+            accounts.allowed_users_id = allowed_users.id and users.status_id = statues.id
+    ")->fetch(PDO::FETCH_ASSOC);
+
+    if(is_array($userInfo) && count($userInfo) > 0)
+    {
+        if($userInfo['organization_id'] == 1)
+        {
+            $userInfo['superAdmin'] = true;
+        }
+        else
+        {
+            $userInfo['superAdmin'] = false;
+        }
+    }
+    else
+    {
+        $userInfo = null;
+    }
+
+    return $userInfo;
+}
+function identifyLoggedUser($container)
+{
+    check_session();
+    $userInfo = null;
+    $userID = $_SESSION['id'];
+    $userInfo = $container->projectcog->query("
+        select users.id, users.user, users.firstname, users.lastname, users.middlename,
+            users.email, users.username, users.password, users.image, users.address,
+            users.country, users.organization_id, organizations.organization,
+            users.position_id, positions.position, users.last_login, users.account_id,
+            account_types.account_type, allowed_users.allowed_user, users.status_id,
+            statues.status, users.updated, users.created
+        from users, organizations, positions, accounts, account_types, allowed_users, statues
+        where users.id = '$userID' and users.organization_id = organizations.id and
+            users.position_id = positions.id and users.account_id = accounts.id and
+            accounts.account_type_id = account_types.id and
+            accounts.allowed_users_id = allowed_users.id and users.status_id = statues.id
+    ")->fetch(PDO::FETCH_ASSOC);
+
+    if(is_array($userInfo) && count($userInfo) > 0)
+    {
+        if($userInfo['organization_id'] == 1)
+        {
+            $userInfo['superAdmin'] = true;
+        }
+        else
+        {
+            $userInfo['superAdmin'] = false;
+        }
+    }
+    else
+    {
+        $userInfo = null;
+    }
+
+    return $userInfo;
+}
+function custom_redirect($loc) {
+    echo "<script language='javascript'> window.location = '" . $loc . "'</script>";
+}
+
+function check_session() {
+    @session_start();
+    
+    if(!isset($_SESSION["logged"])) {
+        custom_redirect(ROOT . "#/login");
+    }
+}
 
 ?>

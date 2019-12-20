@@ -31,7 +31,7 @@ function cogDevelopersCtrl($rootScope, $scope, $element, $state, $http, $timeout
             closeOnCancel: false },
         function (isConfirm) {
             if (isConfirm) {
-                $http.post((root + "cogworks/developers/deactivate"), {id: id})
+                $http.post("./cogworks/developers/deactivate", {id: id})
                 .then(function (response) {
                     if(response.data == 'true')
                     {

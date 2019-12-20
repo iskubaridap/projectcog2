@@ -1,7 +1,7 @@
 <div id="section-projects-cogworks-files" ng-controller="cogFilesCtrl as cogFile">
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-12">
-            <h2><span ng-if="cogFile.projID != 'all' && cogFile.cogProj !== null">{{cogFile.cogProj}}: </span>Cog Files <span class="pull-right">Total: {{(cogFile.activeFiles.length > 0 ? cogFile.activeFiles.length : 0)}}</span></h2>
+            <h2><span ng-if="cogFile.projID != 'all' && cogFile.cogProj !== undefined">{{cogFile.cogProj}}: </span>Cog Files <span class="pull-right">Total: {{(cogFile.activeFiles.length > 0 ? cogFile.activeFiles.length : 0)}}</span></h2>
             <div class="pull-left">
                 <button ng-click="cogFile.orderByName($event)" type="button" class="btn btn-xs btn-link">Name</button> |
                 <span ng-if="cogFile.projID != 'all' && cogFile.cogProj === null"><button ng-click="cogFile.orderByProject($event)" type="button" class="btn btn-xs btn-link">Project</button> |</span>

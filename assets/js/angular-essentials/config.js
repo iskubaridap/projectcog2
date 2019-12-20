@@ -17,7 +17,29 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
     });
 
     $stateProvider
-
+    
+        .state('login', {
+            url: "/login",
+            templateUrl: "assets/views/login.html",
+            data: { pageTitle: 'Login', specialClass: 'gray-bg' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'login',
+                            files: ['assets/js/app/login/login.js', 'assets/css/app/login/login.css']
+                        },
+                        {
+                            files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']
+                        },
+                        {
+                            name: 'oitozero.ngSweetAlert',
+                            files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        }
+                    ])
+                }
+            }
+        })
         .state('cog-home', {
             abstract: true,
             url: "/cogworks/home",
@@ -350,6 +372,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
 angular
     .module('mcafee')
     .config(config)
-    .run(function($rootScope, $state) {
+    .run(function($rootScope, $state, loginService) {
+        $state.userLogged();
         $rootScope.$state = $state;
     });

@@ -188,7 +188,7 @@ return function (App $app) {
         return json_encode($result);
     });
     $app->post('/cogworks/cog-files/update', function ($request, $response, $args) use ($container) {
-         // @session_start();
+        // @session_start();
         // $result = null;
         // $userID = $_SESSION['id'];
         // $userID = 5; // temporary value...this assumes that i'm nina of jsi
@@ -265,5 +265,13 @@ return function (App $app) {
 
         $result = $prepare->execute();
         return json_encode($result);
+    });
+    $app->post('/cogworks/cog-files/clone', function ($request, $response, $args) use ($container) {
+        // @session_start();
+        // $result = null;
+        // $userID = $_SESSION['id'];
+        // $userID = 5; // temporary value...this assumes that i'm nina of jsi
+        $userID = 5; // temporary value...this assumes that i'm nina of jsi
+        $cogID = $request->getParam('id');
     });
 };

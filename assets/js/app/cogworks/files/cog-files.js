@@ -4,7 +4,6 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, cog
     var self = this;
     var cogProjID = $state.params.project;
     self.cogProj = cogProjID;
-    self.cogProj = null;
     self.activeFiles = undefined;
     cogProject.getProject(self, {id: cogProjID}, function(data){
         if(data != 'false')
@@ -90,7 +89,7 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, cog
             closeOnCancel: false },
         function (isConfirm) {
             if (isConfirm) {
-                $http.post((root + "cogworks/cog-files/deactivate"), {id: id})
+                $http.post("./cogworks/cog-files/deactivate", {id: id})
                 .then(function (response) {
                     if(response.data == 'true')
                     {

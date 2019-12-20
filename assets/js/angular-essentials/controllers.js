@@ -6,12 +6,20 @@
 /**
  * MainCtrl - controller
  */
-function MainCtrl() {
+function MainCtrl($http, $state) {
     var self = this;
 
     this.userName = 'Example user';
     this.helloText = 'Welcome in SeedProject';
     this.descriptionText = 'It is an application skeleton for a typical AngularJS web app. You can use it to quickly bootstrap your angular webapp projects and dev environment for these projects.';
+
+    self.logout = function(event)
+    {
+        $http.get('./logout')
+        .then(function (response) {
+            $state.go('login');
+        });
+    };
 };
 
 /*

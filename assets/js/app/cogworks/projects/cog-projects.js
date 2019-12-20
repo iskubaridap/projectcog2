@@ -47,7 +47,7 @@ function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, 
                 closeOnCancel: false },
             function (isConfirm) {
                 if (isConfirm) {
-                    $http.post((root + "cogworks/projects/deactivate"), {id: id})
+                    $http.post("./cogworks/projects/deactivate", {id: id})
                     .then(function (response) {
                         if(response.data == 'true')
                         {
