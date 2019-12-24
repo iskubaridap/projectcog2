@@ -243,6 +243,15 @@ function sectionCogworksFilesUpdate($rootScope) {
         link: function(scope, elem, attrs){}
     };
 }
+function tasksHome($rootScope) {
+    return {
+        restrict: 'E',
+        scope: {
+        },
+        templateUrl: 'assets/views/cogworks/tasks/tasks-home.html',
+        link: function(scope, elem, attrs){}
+    };
+}
 /**
  *
  * Pass all functions into module
@@ -259,4 +268,5 @@ angular
     .directive('sectionCogworksDevelopers', sectionCogworksDevelopers)
     .directive('sectionCogworksFilesProjects', sectionCogworksFilesProjects)
     .directive('sectionCogworksFilesDetails', sectionCogworksFilesDetails)
-    .directive('sectionCogworksFilesUpdate', sectionCogworksFilesUpdate);
+    .directive('sectionCogworksFilesUpdate', sectionCogworksFilesUpdate)
+    .directive('tasksHome', tasksHome);
