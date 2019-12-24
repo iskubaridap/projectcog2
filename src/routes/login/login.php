@@ -21,7 +21,7 @@ return function (App $app) {
 
         @session_destroy();
         
-        custom_redirect((ROOT . '#/login'));
+        custom_redirect('login');
     });
     
     $app->post('/login/validate', function ($request, $response, $args) use ($container) {
@@ -69,6 +69,6 @@ return function (App $app) {
 
         return 'true';
         // route to dashboard for now
-        // custom_redirect((ROOT . 'dashboard#/login'));
+        custom_redirect('login');
     });
 };

@@ -1,9 +1,11 @@
 var cogProjectsModule = angular.module("cog-projects", []);
-function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogProjects, SweetAlert)
+function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, loginService, cogProjects, SweetAlert)
 {
     var self = this;
     self.activeProjects = undefined;
-    cogProjects.getActiveProjects(self);
+    cogProjects.getActiveProjects(self, {}, function(data){
+        loginService.userLogged(data);
+    });
 
     var openProject = function(id)
     {

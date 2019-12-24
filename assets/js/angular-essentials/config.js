@@ -372,7 +372,12 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
 angular
     .module('mcafee')
     .config(config)
-    .run(function($rootScope, $state, loginService) {
-        $state.userLogged();
+    .run(function($rootScope, $state, $http, loginService) {
+        // console.log($state);
+        /* if($state.current.name)
+        $http.post("./login/validate")
+        .then(function (response) {
+            loginService.userLogged(response.data);
+        }); */
         $rootScope.$state = $state;
     });

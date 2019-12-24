@@ -35,6 +35,8 @@ $projectcogUsers = require __DIR__ . '/../src/routes/projectcog/users.php';
 $cogDevelopers = require __DIR__ . '/../src/routes/cogworks/developers.php';
 $cogProjects = require __DIR__ . '/../src/routes/cogworks/projects.php';
 $cogFiles = require __DIR__ . '/../src/routes/cogworks/cog-files.php';
+$tasks = require __DIR__ . '/../src/routes/tasks/tasks.php';
+$nessages = require __DIR__ . '/../src/routes/messages/messages.php';
 
 $routes($app);
 $dashboard($app);

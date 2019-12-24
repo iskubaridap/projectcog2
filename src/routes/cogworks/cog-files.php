@@ -9,11 +9,10 @@ return function (App $app) {
     $container = $app->getContainer();
     
     $app->post('/cogworks/cog-files/retrieve/active', function ($request, $response, $args) use ($container) {
-        // @session_start();
-        // $result = null;
-        // $userID = $_SESSION['id'];
-        $userPosition = 1;
-        $userID = 1; // temporary value
+        $loggedUser = identifyLoggedUser($container);
+        $userID = $loggedUser['id'];
+        $userPosition = $loggedUser['position_id'];
+        $userOrg = $loggedUser['organization_id'];
         $result = array();
         $projectID = $request->getParam('projID');
 
@@ -26,8 +25,6 @@ return function (App $app) {
             select * from organizations
             order by organization asc
         ")->fetchAll(PDO::FETCH_ASSOC);
-
-        $userOrg = $user['organization_id'];
 
         // This assumes that the user is the Admin
         if($userPosition == 1)
@@ -65,12 +62,12 @@ return function (App $app) {
             {
                 $cogFiles = $container->cogworks->query("
                     select * from cog_files
-                    where status_id = '1' and user_id = '$userID' and organization_id = '$userOrg'
+                    where user_id = '$userID' and status_id = '1'
                     order by cog_file asc
                 ")->fetchAll(PDO::FETCH_ASSOC);
                 $projects = $container->cogworks->query("
                     select * from projects
-                    where status_id = '1' and organization_id = '$userOrg'
+                    where organization_id = '$userOrg' and status_id = '1'
                     order by project asc
                 ")->fetchAll(PDO::FETCH_ASSOC);
             }
@@ -78,12 +75,12 @@ return function (App $app) {
             {
                 $cogFiles = $container->cogworks->query("
                     select * from cog_files
-                    where status_id = '1' and user_id = '$userID' and organization_id = '$userOrg' and project_id = '$projectID'
+                    where user_id = '$userID' and project_id = '$projectID' and status_id = '1'
                     order by cog_file asc
                 ")->fetchAll(PDO::FETCH_ASSOC);
                 $projects = $container->cogworks->query("
                     select * from projects
-                    where id = '$projectID' and organization_id = '$userOrg'
+                    where id = '$projectID' and organization_id = '$userOrg' and status_id = '1'
                     order by project asc
                 ")->fetchAll(PDO::FETCH_ASSOC);
             }

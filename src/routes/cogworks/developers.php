@@ -8,11 +8,9 @@ return function (App $app) {
     $container = $app->getContainer();
 
     $app->post('/cogworks/developers/retrieve/active', function ($request, $response, $args) use ($container) {
-        // @session_start();
-        // $result = null;
-        // $userID = $_SESSION['id'];
-        $userPosition = 1;
-        $userOrg = 1;
+        $loggedUser = identifyLoggedUser($container);
+        $userPosition = $loggedUser['position_id'];
+        $userOrg = $loggedUser['organization_id'];
 
         if($userPosition == 1)
         {

@@ -1,9 +1,11 @@
 var cogDevelopers = angular.module("cog-developers", []);
-function cogDevelopersCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogDevelopers, SweetAlert)
+function cogDevelopersCtrl($rootScope, $scope, $element, $state, $http, $timeout, loginService, cogDevelopers, SweetAlert)
 {
     var self = this;
     self.activeDevelopers = undefined;
-    cogDevelopers.getActiveDevelopers(self);
+    cogDevelopers.getActiveDevelopers(self, {}, function(data){
+        loginService.userLogged(data);
+    });
 
     var viewUser = function(id)
     {

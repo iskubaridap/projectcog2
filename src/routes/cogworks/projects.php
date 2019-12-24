@@ -8,13 +8,10 @@ return function (App $app) {
     $container = $app->getContainer();
 
     $app->post('/cogworks/projects/retrieve/active', function ($request, $response, $args) use ($container) {
-        // @session_start();
-        // $result = null;
-        // $userID = $_SESSION['id'];
-        $userID = 1;
-        $userPosition = 1;
-        // $userOrg = 1;
-        $userOrg = 5; // this assumes that the user's org is "projectcog"
+        $loggedUser = identifyLoggedUser($container);
+        $userID = $loggedUser['id'];
+        $userPosition = $loggedUser['position_id'];
+        $userOrg = $loggedUser['organization_id'];
         $result = array();
 
         $user = $container->projectcog->query("

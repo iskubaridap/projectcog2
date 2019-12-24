@@ -1,7 +1,11 @@
 var loginService = function($state)
 {
-  $state.userLogged = function(){
-    return false;
+  var self = this;
+  self.userLogged = function(data){
+    if(typeof data == 'string')
+    {
+      $state.go('login');
+    }
   };
 }
 var loggedUserinfo = function($http)

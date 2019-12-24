@@ -70,6 +70,24 @@ return function (App $app) {
         return new App\Action\HomeAction($c->get('view'), $c->get('logger'), $c['cogworks']); 
     };
 
+    $container['task'] = function ($c) { 
+        $settings = $c->get('settings')['task'];
+
+        return new PDO($settings['dsn'], $settings['username'], $settings['password']); 
+    };
+    $container['App\Action\HomeAction'] = function ($c) { 
+        return new App\Action\HomeAction($c->get('view'), $c->get('logger'), $c['task']); 
+    };
+
+    $container['message'] = function ($c) { 
+        $settings = $c->get('settings')['message'];
+
+        return new PDO($settings['dsn'], $settings['username'], $settings['password']); 
+    };
+    $container['App\Action\HomeAction'] = function ($c) { 
+        return new App\Action\HomeAction($c->get('view'), $c->get('logger'), $c['message']); 
+    };
+
     // monolog
     $container['logger'] = function ($c) {
         $settings = $c->get('settings')['logger'];

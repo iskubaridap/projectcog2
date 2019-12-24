@@ -61,6 +61,16 @@ return [
             'username' => 'root',
             'password' => 'P@ssw0rd',
         ],
+        'task' => [ 
+            'dsn' => 'mysql:host=localhost;dbname=task;charset=UTF8',
+            'username' => 'root',
+            'password' => 'P@ssw0rd',
+        ],
+        'message' => [ 
+            'dsn' => 'mysql:host=localhost;dbname=message;charset=UTF8',
+            'username' => 'root',
+            'password' => 'P@ssw0rd',
+        ],
 
         // Monolog settings
         'logger' => [
