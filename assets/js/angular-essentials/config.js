@@ -53,6 +53,10 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 loadPlugin: function ($ocLazyLoad) {
                     return $ocLazyLoad.load([
                         {
+                            name: 'tasks',
+                            files: ['assets/js/app/tasks/tasks.js']
+                        },
+                        {
                             name: 'cog-developers',
                             files: ['assets/js/app/cogworks/developers/cog-developers.js']
                         },

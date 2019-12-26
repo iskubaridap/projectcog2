@@ -73,6 +73,16 @@
     max-width: 150px;
     height: auto;
 }
+#tasks-home ul li
+{
+    display: none;
+}
+#tasks-home ul li:nth-child(1),
+#tasks-home ul li:nth-child(2),
+#tasks-home ul li:nth-child(3)
+{
+    display: block;
+}
 
 @media screen and (max-width: 1023px) {
     .biggest-font {

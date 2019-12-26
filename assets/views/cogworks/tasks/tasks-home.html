@@ -1,4 +1,4 @@
-<div id="tasks-home">
+<div id="tasks-home" ng-controller="tasksCtrl as tasks">
     <div class="row">
         <div class="col-md-12">
             <div class="ibox">
@@ -6,57 +6,50 @@
                     <h5>Tasks</h5>
                     <a class="btn btn-primary btn-xs pull-right"><i class="fa fa-tasks"></i>&nbsp;&nbsp;&nbsp;Visit Page</a>
                 </div>
-                <div class="col-md-4">
-                    <div class="ibox">
-                        <div class="ibox-content">
-                            <h3>To-do</h3>
-                            <p class="small"><i class="fa fa-hand-o-up"></i> Drag task between list</p>
-                            <ul ui-sortable="sortableOptions" class="sortable-list connectList agile-list ng-pristine ng-untouched ng-valid ng-isolate-scope ui-sortable ng-not-empty" ng-model="todoList">
-                                <li class="warning-element ui-sortable-handle">
-                                    Simply dummy text of the printing and typesetting industry.
-                                    <div class="agile-detail ng-binding">
-                                        <a href="#" class="pull-right btn btn-xs btn-white ng-binding">Mark</a>
-                                        <i class="fa fa-clock-o"></i> 12.10.2015
-                                    </div>
-                                </li>
-                            </ul>
-                        
+
+                <section-loader-indicator text="Preparing to show all Tasks" object="tasks.todo" ng-if="tasks.todo === undefined || tasks.todo.error !== undefined"></section-loader-indicator>
+                <section-data-empty text="Tasks are Empty." ng-if="tasks.todo !== undefined && tasks.todo === null"></section-data-empty>
+
+                <div class="row" ng-if="tasks.todo !== undefined && tasks.todo !== null">
+                    <div class="col-md-4">
+                        <div class="ibox">
+                            <div class="ibox-content">
+                                <h3>To-Do <span class="pull-right">{{tasks.todo.todoCount}}</span></h3>
+                                <p ng-if="tasks.todo.todo === false">Data is Empty</p>
+                                <ul ng-if="tasks.todo.todo !== false" ui-sortable="sortableOptions" class="sortable-list connectList agile-list" ng-model="todoList">
+                                    <ng-bind-html
+                                        ng-bind-html="tasks.todoLists()">
+                                    </ng-bind-html>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="ibox">
-                        <div class="ibox-content">
-                            <h3>In Progress</h3>
-                            <p class="small"><i class="fa fa-hand-o-up"></i> Drag task between list</p>
-                            <ul ui-sortable="sortableOptions" class="sortable-list connectList agile-list ng-pristine ng-untouched ng-valid ng-isolate-scope ui-sortable ng-not-empty" ng-model="todoList">
-                                <li class="warning-element ui-sortable-handle">
-                                    Simply dummy text of the printing and typesetting industry.
-                                    <div class="agile-detail ng-binding">
-                                        <a href="#" class="pull-right btn btn-xs btn-white ng-binding">Mark</a>
-                                        <i class="fa fa-clock-o"></i> 12.10.2015
-                                    </div>
-                                </li>
-                            </ul>
+    
+                    <div class="col-md-4">
+                        <div class="ibox">
+                            <div class="ibox-content">
+                                <h3>In Progress <span class="pull-right">{{tasks.todo.inProgressCount}}</span></h3>
+                                <p ng-if="tasks.todo.inProgress === false">Data is Empty</p>
+                                <ul ng-if="tasks.todo.inProgress !== false" ui-sortable="sortableOptions" class="sortable-list connectList agile-list" ng-model="todoList">
+                                    <ng-bind-html
+                                        ng-bind-html="tasks.inProgressLists()">
+                                    </ng-bind-html>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="ibox">
-                        <div class="ibox-content">
-                            <h3>Completed</h3>
-                            <p class="small"><i class="fa fa-hand-o-up"></i> Drag task between list</p>
-                            <ul ui-sortable="sortableOptions" class="sortable-list connectList agile-list ng-pristine ng-untouched ng-valid ng-isolate-scope ui-sortable ng-not-empty" ng-model="todoList">
-                                <li class="warning-element ui-sortable-handle">
-                                    Simply dummy text of the printing and typesetting industry.
-                                    <div class="agile-detail ng-binding">
-                                        <a href="#" class="pull-right btn btn-xs btn-white ng-binding">Mark</a>
-                                        <i class="fa fa-clock-o"></i> 12.10.2015
-                                    </div>
-                                </li>
-                            </ul>
+    
+                    <div class="col-md-4">
+                        <div class="ibox">
+                            <div class="ibox-content">
+                                <h3>Completed <span class="pull-right">{{tasks.todo.completedCount}}</span></h3>
+                                <p ng-if="tasks.todo.completed === false">Data is Empty</p>
+                                <ul ng-if="tasks.todo.completed !== false" ui-sortable="sortableOptions" class="sortable-list connectList agile-list" ng-model="todoList">
+                                    <ng-bind-html
+                                        ng-bind-html="tasks.completedLists()">
+                                    </ng-bind-html>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>

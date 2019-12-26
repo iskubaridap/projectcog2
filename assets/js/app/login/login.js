@@ -1,5 +1,5 @@
 var login = angular.module("login", []);
-function loginCtrl($rootScope, $scope, $state, $element, $http, loggedUserinfo, SweetAlert)
+function loginCtrl($rootScope, $scope, $state, $element, $http, loginService, SweetAlert)
 {
     var self = this;
     

@@ -18,7 +18,7 @@ return function (App $app) {
 
         $result = $container->task->query("
             select * from tasks
-            where status_id = '1'
+            where user_id = '$userID' and status_id = '1'
             order by created asc
         ")->fetchAll(PDO::FETCH_ASSOC);
 
@@ -107,7 +107,7 @@ return function (App $app) {
 
         return json_encode($result);
     });
-    $app->post('/tasks/todo/retrieve', function ($request, $response, $args) use ($container) {
+    $app->post('/tasks/retrieve/todo', function ($request, $response, $args) use ($container) {
         $loggedUser = identifyLoggedUser($container);
         $userID = $loggedUser['id'];
         $userPosition = $loggedUser['position_id'];
@@ -117,20 +117,36 @@ return function (App $app) {
 
         $todo = $container->task->query("
             select * from todo_lists
-            where id = '$userOrg' and task_state_id = 1
+            where organization_id = '$userOrg' and task_state_id = 1
         ")->fetch(PDO::FETCH_ASSOC);
         $inProgress = $container->task->query("
             select * from todo_lists
-            where id = '$userOrg' and task_state_id = 2
+            where organization_id = '$userOrg' and task_state_id = 2
         ")->fetch(PDO::FETCH_ASSOC);
         $completed = $container->task->query("
             select * from todo_lists
-            where id = '$userOrg' and task_state_id = 3
+            where organization_id = '$userOrg' and task_state_id = 3
+        ")->fetch(PDO::FETCH_ASSOC);
+
+        $todoCount = $container->task->query("
+            select count(id) from tasks
+            where user_id = '$userID' and task_type_id = 1 and task_state_id = 1
+        ")->fetch(PDO::FETCH_ASSOC);
+        $inProgressCount = $container->task->query("
+            select count(id) from tasks
+            where user_id = '$userID' and task_type_id = 1 and task_state_id = 2
+        ")->fetch(PDO::FETCH_ASSOC);
+        $completedCount = $container->task->query("
+            select count(id) from tasks
+            where user_id = '$userID' and task_type_id = 1 and task_state_id = 3
         ")->fetch(PDO::FETCH_ASSOC);
 
         $result['todo'] = $todo;
+        $result['todoCount'] = (int) $todoCount['count(id)'];
         $result['inProgress'] = $inProgress;
+        $result['inProgressCount'] = (int) $inProgressCount['count(id)'];
         $result['completed'] = $completed;
+        $result['completedCount'] = (int) $completedCount['count(id)'];
 
         return json_encode($result);
     });
