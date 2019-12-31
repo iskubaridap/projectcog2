@@ -44,21 +44,64 @@ return function (App $app) {
         $userID = $loggedUser['id'];
         $userPosition = $loggedUser['position_id'];
         $userOrg = $loggedUser['organization_id'];
-        $id = $request->getParam('id');
+        $usersAry = json_decode($request->getParam('users'));
         $content = addslashes($request->getParam('content'));
-        $type = $request->getParam('type');
         $state = $request->getParam('state');
+        $type = $request->getParam('type');
         $priority = $request->getParam('priority');
         $program = $request->getParam('program');
         $result = null;
+        $items = array();
+        $date = null;
+        $org = null;
 
-        $result = $container->task->exec("
-            insert into tasks
-            (users_id, task_content, task_type_id, task_state_id, priority_level, program_id, status_id)
-            values('$id', '$content', '$type', '$state', '$priority', '$program', 2)
-        ");
+        foreach($usersAry as $id)
+        {
+            $result = $container->task->exec("
+                insert into tasks
+                (user_id, task_content, task_type_id, task_state_id, priority_level, program_id, status_id)
+                values('$id', '$content', '$type', '$state', '$priority', '$program', 1)
+            ");
+            if(!$result)
+            {
+                break;
+            }
+            if($date == null)
+            {
+                $resultObj = $container->task->query("
+                    select * from tasks
+                    where user_id = '$id'
+                    order by created desc limit 1
+                ")->fetch(PDO::FETCH_ASSOC);
+                $date = date("Y-m-d", strtotime($resultObj['created']));
+            }
+            $tmpAry = array();
+            $user = getUserInfo($id, $container);
+            $tmpAry['content'] = $content;
+            $tmpAry['date'] = $date;
+            $tmpAry['tagName'] = $user['user'];
+            $tmpAry['program'] = $program;
 
-        return json_encode($result);
+            switch($priority)
+            {
+                case '1':
+                    $tmpAry['statusClass'] = 'danger';
+                    break;
+                case '2':
+                    $tmpAry['statusClass'] = 'warning';
+                    break;
+                case '3':
+                    $tmpAry['statusClass'] = 'success';
+                    break;
+                case '4':
+                    $tmpAry['statusClass'] = 'info';
+                    break;
+            }
+            array_push($items, $tmpAry);
+        }
+
+        return json_encode($items);
+        // return 'true';
     });
     $app->post('/tasks/update', function ($request, $response, $args) use ($container) {
         $loggedUser = identifyLoggedUser($container);
@@ -112,41 +155,28 @@ return function (App $app) {
         $userID = $loggedUser['id'];
         $userPosition = $loggedUser['position_id'];
         $userOrg = $loggedUser['organization_id'];
-        $id = $request->getParam('id');
+        $program = $request->getParam('program');
         $result = null;
 
         $todo = $container->task->query("
             select * from todo_lists
-            where organization_id = '$userOrg' and task_state_id = 1
+            where organization_id = '$userOrg' and task_state_id = 1 and program_id = '$program' and status_id = '1'
         ")->fetch(PDO::FETCH_ASSOC);
         $inProgress = $container->task->query("
             select * from todo_lists
-            where organization_id = '$userOrg' and task_state_id = 2
+            where organization_id = '$userOrg' and task_state_id = 2 and program_id = '$program' and status_id = '1'
         ")->fetch(PDO::FETCH_ASSOC);
         $completed = $container->task->query("
             select * from todo_lists
-            where organization_id = '$userOrg' and task_state_id = 3
-        ")->fetch(PDO::FETCH_ASSOC);
-
-        $todoCount = $container->task->query("
-            select count(id) from tasks
-            where user_id = '$userID' and task_type_id = 1 and task_state_id = 1
-        ")->fetch(PDO::FETCH_ASSOC);
-        $inProgressCount = $container->task->query("
-            select count(id) from tasks
-            where user_id = '$userID' and task_type_id = 1 and task_state_id = 2
-        ")->fetch(PDO::FETCH_ASSOC);
-        $completedCount = $container->task->query("
-            select count(id) from tasks
-            where user_id = '$userID' and task_type_id = 1 and task_state_id = 3
+            where organization_id = '$userOrg' and task_state_id = 3 and program_id = '$program' and status_id = '1'
         ")->fetch(PDO::FETCH_ASSOC);
 
         $result['todo'] = $todo;
-        $result['todoCount'] = (int) $todoCount['count(id)'];
+        $result['todoCount'] = count(json_decode($todo['todo_list_content']));
         $result['inProgress'] = $inProgress;
-        $result['inProgressCount'] = (int) $inProgressCount['count(id)'];
+        $result['inProgressCount'] = count(json_decode($inProgress['todo_list_content']));
         $result['completed'] = $completed;
-        $result['completedCount'] = (int) $completedCount['count(id)'];
+        $result['completedCount'] = count(json_decode($completed['todo_list_content']));
 
         return json_encode($result);
     });
@@ -164,7 +194,7 @@ return function (App $app) {
         $result = $container->task->exec("
             insert into todo_lists
             (todo_list_content, organization_id, task_state_id, program_id, status_id)
-            values('$content', '$userOrg', '$state', '$program', 2)
+            values('$content', '$userOrg', '$state', '$program', 1)
         ");
 
         return json_encode($result);
@@ -176,19 +206,36 @@ return function (App $app) {
         $userOrg = $loggedUser['organization_id'];
         $id = $request->getParam('id');
         $content = addslashes($request->getParam('content'));
+        $state = $request->getParam('state');
+        $program = $request->getParam('program');
         $result = null;
         $date = new DateTime('NOW');
         $dateDateTime = $date->format('Y-m-d H:i:s');
 
-        $prepare = $container->task->prepare("
-            update todo_lists
-            set
-            todo_list_content = '$content',
-            updated = '$dateDateTime'
-            where id = '$id'
-        ");
+        $todoObj = $container->task->query("
+            select * from todo_lists
+            where organization_id = '$userOrg' and task_state_id = '$state' and program_id = '$program'
+        ")->fetch(PDO::FETCH_ASSOC);
 
-        $result = $prepare->execute();
+        if(is_array($todoObj) && count($todoObj) > 0)
+        {
+            $prepare = $container->task->prepare("
+                update todo_lists
+                set
+                todo_list_content = '$content',
+                updated = '$dateDateTime'
+                where organization_id = '$userOrg' and task_state_id = '$state' and program_id = '$program'
+            ");
+            $result = $prepare->execute();
+        }
+        else
+        {
+            $result = $container->task->exec("
+                insert into todo_lists
+                (todo_list_content, organization_id, task_state_id, program_id, status_id)
+                values('$content', '$userOrg', '$state', '$program', 1)
+            ");
+        }
 
         return json_encode($result);
     });

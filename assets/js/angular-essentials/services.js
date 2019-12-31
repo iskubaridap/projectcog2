@@ -68,7 +68,7 @@ var tasks = function($http){
           });
   };
   this.getTodo = function(obj, confing, callback){
-    return $http.post("./tasks/retrieve/todo")
+    return $http.post("./tasks/retrieve/todo", {program: 3})
         .then(function (response) {
             obj.todo = ((response.data).toString().length > 0) ? response.data : null;
             try
@@ -199,7 +199,7 @@ var cogProjects = function($http){
 };
 
 angular
-    .module('mcafee')
+    .module('projectcog')
     .service('loginService', loginService)
     .service('tasks', tasks)
     .service('cogDevelopers', cogDevelopers)

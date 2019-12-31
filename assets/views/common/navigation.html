@@ -49,8 +49,8 @@
             <li>
                 <a><i class="fa fa-envelope"></i> <span>Messages</span></a>
             </li>
-            <li>
-                <a><i class="fa fa-edit"></i> <span>Task</span></a>
+            <li ng-class="{active: $state.includes('tasks')}">
+                <a ui-sref="tasks.todo"><i class="fa fa-edit"></i> <span>Task</span></a>
             </li>
             <li>
                 <a><i class="fa fa-code"></i> <span>Pods / What-Nots</span></a>

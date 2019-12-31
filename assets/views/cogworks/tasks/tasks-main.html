@@ -1,0 +1,73 @@
+<div id="tasks-main" ng-controller="tasksCtrl as tasks">
+    <div class="row wrapper border-bottom white-bg page-heading" style="margin-bottom: 15px">
+        <div class="col-lg-12">
+            <h2>Tasks</h2>
+        </div>
+    </div>
+    <section-loader-indicator text="Preparing to show all Tasks" object="tasks.todo" ng-if="tasks.todo === undefined || tasks.todo.error !== undefined"></section-loader-indicator>
+    <section-data-empty text="Tasks are Empty." ng-if="tasks.todo !== undefined && tasks.todo === null"></section-data-empty>
+    <div class="row" ng-if="tasks.todo !== undefined && tasks.todo !== null">
+        <div class="col-md-4">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <h3 class="tasks-heading">To-Do</h3>
+                    <span id="todo-loading-indicator" class="ibox-saving-loading-indicator pull-right">saving changes... <img class="ibox-saving-loading-indicator-loding-icon" src="assets/img/icon/loading.gif"></span>
+                    <span id="todo-loading-error-indicator" class="ibox-saving-loading-indicator text-danger pull-right">Fail! Something went wrong.</span>
+                    <p class="small"><i class="fa fa-hand-o-up"></i> Drag task between list <span ng-click="tasks.add($event)" class="btn btn-success btn-xs pull-right"><i class="fa fa-plus-circle"></i> Add</span></p>
+                    <p ng-if="tasks.todo.todo === false">Data is Empty</p>
+                    <ul ui-sortable="tasks.todoOptions" class="sortable-list connectList agile-list" ng-model="tasks.todoList">
+                        <li class="{{task.statusClass}}-element" ng-repeat="task in tasks.todoList">
+                            {{task.content}}
+                            <div class="agile-detail">
+                                <a class="pull-right btn btn-xs btn-white">{{task.tagName}}</a>
+                                <i class="fa fa-clock-o"></i> {{task.date}}
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <h3 class="tasks-heading">In Progress</h3>
+                    <span id="in-progress-loading-indicator" class="ibox-saving-loading-indicator pull-right">saving changes... <img class="ibox-saving-loading-indicator-loding-icon" src="assets/img/icon/loading.gif"></span>
+                    <span id="in-progress-loading-error-indicator" class="ibox-saving-loading-indicator text-danger pull-right">Fail! Something went wrong.</span>
+                    <p class="small"><i class="fa fa-hand-o-up"></i> Drag task between list</p>
+                    <p ng-if="tasks.todo.inProgress === false">Data is Empty</p>
+                    <ul ui-sortable="tasks.inProgressOptions" class="sortable-list connectList agile-list" ng-model="tasks.inProgressList">
+                        <li class="{{task.statusClass}}-element" ng-repeat="task in tasks.inProgressList">
+                            {{task.content}}
+                            <div class="agile-detail">
+                                <a class="pull-right btn btn-xs btn-white">{{task.tagName}}</a>
+                                <i class="fa fa-clock-o"></i> {{task.date}}
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <h3 class="tasks-heading">Completed</h3>
+                    <span id="completed-loading-indicator" class="ibox-saving-loading-indicator pull-right">saving changes... <img class="ibox-saving-loading-indicator-loding-icon" src="assets/img/icon/loading.gif"></span>
+                    <span id="completed-loading-error-indicator" class="ibox-saving-loading-indicator text-danger pull-right">Fail! Something went wrong.</span>
+                    <p class="small"><i class="fa fa-hand-o-up"></i> Drag task between list</p>
+                    <p ng-if="tasks.todo.completed === false">Data is Empty</p>
+                    <ul ui-sortable="tasks.completedOptions" class="sortable-list connectList agile-list" ng-model="tasks.completedList">
+                        <li class="{{task.statusClass}}-element" ng-repeat="task in tasks.completedList">
+                            {{task.content}}
+                            <div class="agile-detail">
+                                <a class="pull-right btn btn-xs btn-white">{{task.tagName}}</a>
+                                <i class="fa fa-clock-o"></i> {{task.date}}
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

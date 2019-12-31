@@ -338,6 +338,30 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 }
             }
         })
+        .state('tasks', {
+            abstract: true,
+            url: "/tasks",
+            templateUrl: "assets/views/common/content.html",
+        })
+        .state('tasks.todo', {
+            url: "/todo",
+            templateUrl: "assets/views/cogworks/tasks/tasks-main.html",
+            data: { pageTitle: 'Tasks' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'tasks',
+                            files: ['assets/js/app/tasks/tasks.js']
+                        },
+                        {
+                            name: 'ui.sortable',
+                            files: ['assets/js/plugins/ui-sortable/sortable.js']
+                        }
+                    ]);
+                }
+            }
+        })
         .state('minor', {
             url: "/minor",
             templateUrl: "assets/views/common/content.html"
@@ -374,7 +398,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             })
 }
 angular
-    .module('mcafee')
+    .module('projectcog')
     .config(config)
     .run(function($rootScope, $state, $http, loginService) {
         // console.log($state);

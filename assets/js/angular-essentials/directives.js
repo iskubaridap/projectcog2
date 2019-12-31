@@ -257,7 +257,7 @@ function tasksHome($rootScope) {
  * Pass all functions into module
  */
 angular
-    .module('mcafee')
+    .module('projectcog')
     .directive('pageTitle', pageTitle)
     .directive('sideNavigation', sideNavigation)
     .directive('iboxTools', iboxTools)

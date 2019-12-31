@@ -68,5 +68,5 @@ function config($translateProvider) {
 }
 
 angular
-    .module('mcafee')
+    .module('projectcog')
     .config(config)

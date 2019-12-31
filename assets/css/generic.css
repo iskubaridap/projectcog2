@@ -83,6 +83,40 @@
 {
     display: block;
 }
+.ibox-loading-indicator,
+.ibox-saving-loading-indicator,
+.ibox-todo-users-loading-indicator
+{
+    font-weight: normal;
+    font-size: small;
+    color: #676a6c
+}
+.ibox-saving-loading-indicator.text-danger
+{
+    color: #ed5565;
+}
+.ibox-loading-indicator-loding-icon,
+.ibox-saving-loading-indicator-loding-icon,
+.ibox-todo-users-loading-indicator-loding-icon
+{
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+.tasks-heading
+{
+    display: inline-block;
+}
+.ibox-loading-indicator,
+.ibox-saving-loading-indicator
+{
+    display: none;
+}
+.ibox-sub-title {
+    margin-bottom: 0;
+    font-weight: bold;
+    text-transform: uppercase;
+}
 
 @media screen and (max-width: 1023px) {
     .biggest-font {

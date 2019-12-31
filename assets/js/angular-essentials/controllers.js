@@ -29,5 +29,5 @@ function MainCtrl($http, $state, $scope) {
 
 
 angular
-    .module('mcafee')
+    .module('projectcog')
     .controller('MainCtrl', MainCtrl)

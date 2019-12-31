@@ -1,0 +1,55 @@
+<div class="inmodal">
+    <div class="modal-header">
+        <h4 class="modal-title">Add Tasks</h4>
+        <small class="font-bold">Type the task in the text box then assign it to your available users below.</small>
+    </div>
+    <div class="modal-body">
+        <p id="todo-modal-error" class="text-danger"></p>
+        <p class="ibox-sub-title">Assign it to... <span ng-if="todoUsers === undefined" id="todo-users-loading-indicator" class="text-lowercase ibox-todo-users-loading-indicator pull-right">retrieving users... <img class="ibox-todo-users-loading-indicator-loding-icon" src="assets/img/icon/loading.gif"></span></p>
+        <div id="todo-list-users-wrap">
+            <p ng-if="todoUsers !== undefined && todoUsers === null">No Users available...</p>
+            <div ng-if="todoUsers !== undefined && todoUsers !== null">
+                <div class="row" ng-repeat="item in todoUsers" ng-if="$index % 3 == 0">
+                    <div class="col-md-4" ng-if="todoUsers[$index] !== undefined">
+                        <div class="checkbox">
+                            <label><input class="todo-list-users-input" type="checkbox" data-id="{{todoUsers[$index].id}}" data-name="{{todoUsers[$index].user}}" value="{{todoUsers[$index].id}}" ng-click="toggleSelection(todoUsers[$index].id)">{{todoUsers[$index].user}}</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4" ng-if="todoUsers[$index + 1] !== undefined">
+                        <div class="checkbox">
+                            <label><input class="todo-list-users-input" type="checkbox" data-id="{{todoUsers[$index + 1].id}}" data-name="{{todoUsers[$index + 1].user}}" value="{{todoUsers[$index + 1].id}}" ng-click="toggleSelection(todoUsers[$index + 1].id)">{{todoUsers[$index + 1].user}}</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4" ng-if="todoUsers[$index + 2] !== undefined">
+                        <div class="checkbox">
+                            <label><input class="todo-list-users-input" type="checkbox" data-id="{{todoUsers[$index + 2].id}}" data-name="{{todoUsers[$index + 2].user}}" value="{{todoUsers[$index + 2].id}}" ng-click="toggleSelection(todoUsers[$index + 2].id)">{{todoUsers[$index + 2].user}}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="todo-list-task-textarea-wrap">
+            <p class="ibox-sub-title" style="float: none; margin-bottom: 10px">Indicate the task here.</p>
+            <textarea id="todo-list-task-textarea" class="form-control" ng-model="todoTask" rows="3"></textarea>
+        </div>
+        <div id="todo-list-task-priority-level-wrap">
+            <p class="ibox-sub-title" style="margin-bottom: 10px">Indicate the task priority level here.</p>
+            <label class="radio-inline text-danger">
+                <input class="todo-list-task-priority-radio-options" ng-model="priority" type="radio" name="inlineRadioOptions" id="todo-list-level-1" value="1"> Level 1
+            </label>
+            <label class="radio-inline text-warning">
+                <input class="todo-list-task-priority-radio-options" ng-model="priority" type="radio" name="inlineRadioOptions" id="todo-list-level-2" value="2"> Level 2
+            </label>
+            <label class="radio-inline text-info">
+                <input class="todo-list-task-priority-radio-options" ng-model="priority" type="radio" name="inlineRadioOptions" id="todo-list-level-3" value="3"> Level 3
+            </label>
+            <label class="radio-inline text-success">
+                <input class="todo-list-task-priority-radio-options" ng-model="priority" ng-checked="true" type="radio" name="inlineRadioOptions" id="todo-list-level-4" value="4"> Level 4
+            </label>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" ng-click="ok()">Add Tasks</button>
+        <button type="button" class="btn btn-white" ng-click="cancel()">Cancel</button>
+    </div>
+</div>

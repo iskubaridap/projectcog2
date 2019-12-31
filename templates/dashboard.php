@@ -5,7 +5,7 @@
 -->
 
 <!DOCTYPE html>
-<html ng-app="mcafee">
+<html ng-app="projectcog">
     <head>
 
         <meta http-equiv="Content-type" content="text/html;charset=utf-8" />
