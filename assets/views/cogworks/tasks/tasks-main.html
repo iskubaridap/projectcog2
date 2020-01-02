@@ -14,9 +14,28 @@
                     <span id="todo-loading-indicator" class="ibox-saving-loading-indicator pull-right">saving changes... <img class="ibox-saving-loading-indicator-loding-icon" src="assets/img/icon/loading.gif"></span>
                     <span id="todo-loading-error-indicator" class="ibox-saving-loading-indicator text-danger pull-right">Fail! Something went wrong.</span>
                     <p class="small"><i class="fa fa-hand-o-up"></i> Drag task between list <span ng-click="tasks.add($event)" class="btn btn-success btn-xs pull-right"><i class="fa fa-plus-circle"></i> Add</span></p>
-                    <p ng-if="tasks.todo.todo === false">Data is Empty</p>
                     <ul ui-sortable="tasks.todoOptions" class="sortable-list connectList agile-list" ng-model="tasks.todoList">
-                        <li class="{{task.statusClass}}-element" ng-repeat="task in tasks.todoList">
+                        <li class="{{task.statusClass}}-element" ng-mousedown="tasks.moveElement($event)" ng-mouseenter="tasks.editTask($event)" ng-mouseleave="tasks.exitEditTask($event)" ng-repeat="task in tasks.todoList track by $index" data-id="{{task.id}}">
+                            <div class="task-edit-wrap">
+                                <div class="text-right task-priority-wrap">
+                                    <label class="radio-inline text-danger">
+                                        <input class="todo-list-task-priority-radio-options" ng-click="tasks.changePriority($event, 'todo')" data-id="{{task.id}}" ng-checked="task.priority == 1" type="radio" name="inlineRadioOptions-{{task.id}}" value="1"> 1
+                                    </label>
+                                    <label class="radio-inline text-warning">
+                                        <input class="todo-list-task-priority-radio-options" ng-click="tasks.changePriority($event, 'todo')" data-id="{{task.id}}" ng-checked="task.priority == 2" type="radio" name="inlineRadioOptions-{{task.id}}" value="2"> 2
+                                    </label>
+                                    <label class="radio-inline text-info">
+                                        <input class="todo-list-task-priority-radio-options" ng-click="tasks.changePriority($event, 'todo')" data-id="{{task.id}}" ng-checked="task.priority == 3" type="radio" name="inlineRadioOptions-{{task.id}}" value="3"> 3
+                                    </label>
+                                    <label class="radio-inline text-success">
+                                        <input class="todo-list-task-priority-radio-options" ng-click="tasks.changePriority($event, 'todo')" data-id="{{task.id}}" ng-checked="task.priority == 4" type="radio" name="inlineRadioOptions-{{task.id}}" value="4"> 4
+                                    </label>
+                                </div>
+                                <div class="task-edit-btn text-right m-xxs">
+                                    <span ng-click="tasks.changePriorityBtn($event)" class="btn btn-success btn-xs">priority</span>
+                                    <span ng-click="tasks.removeTask($event)" data-id="{{task.id}}" data-status="todo" class="btn btn-danger btn-xs fa fa-trash-o"></span>
+                                </div>
+                            </div>
                             {{task.content}}
                             <div class="agile-detail">
                                 <a class="pull-right btn btn-xs btn-white">{{task.tagName}}</a>
@@ -35,9 +54,28 @@
                     <span id="in-progress-loading-indicator" class="ibox-saving-loading-indicator pull-right">saving changes... <img class="ibox-saving-loading-indicator-loding-icon" src="assets/img/icon/loading.gif"></span>
                     <span id="in-progress-loading-error-indicator" class="ibox-saving-loading-indicator text-danger pull-right">Fail! Something went wrong.</span>
                     <p class="small"><i class="fa fa-hand-o-up"></i> Drag task between list</p>
-                    <p ng-if="tasks.todo.inProgress === false">Data is Empty</p>
                     <ul ui-sortable="tasks.inProgressOptions" class="sortable-list connectList agile-list" ng-model="tasks.inProgressList">
-                        <li class="{{task.statusClass}}-element" ng-repeat="task in tasks.inProgressList">
+                        <li class="{{task.statusClass}}-element" ng-mousedown="tasks.moveElement($event)" ng-mouseenter="tasks.editTask($event)" ng-mouseleave="tasks.exitEditTask($event)" ng-repeat="task in tasks.inProgressList track by $index" data-id="{{task.id}}">
+                            <div class="task-edit-wrap">
+                                <div class="text-right task-priority-wrap">
+                                    <label class="radio-inline text-danger">
+                                        <input class="todo-list-task-priority-radio-options" ng-click="tasks.changePriority($event, 'inProgress')" data-id="{{task.id}}" ng-checked="task.priority == 1" type="radio" name="inlineRadioOptions-{{task.id}}" value="1"> 1
+                                    </label>
+                                    <label class="radio-inline text-warning">
+                                        <input class="todo-list-task-priority-radio-options" ng-click="tasks.changePriority($event, 'inProgress')" data-id="{{task.id}}" ng-checked="task.priority == 2" type="radio" name="inlineRadioOptions-{{task.id}}" value="2"> 2
+                                    </label>
+                                    <label class="radio-inline text-info">
+                                        <input class="todo-list-task-priority-radio-options" ng-click="tasks.changePriority($event, 'inProgress')" data-id="{{task.id}}" ng-checked="task.priority == 3" type="radio" name="inlineRadioOptions-{{task.id}}" value="3"> 3
+                                    </label>
+                                    <label class="radio-inline text-success">
+                                        <input class="todo-list-task-priority-radio-options" ng-click="tasks.changePriority($event, 'inProgress')" data-id="{{task.id}}" ng-checked="task.priority == 4" type="radio" name="inlineRadioOptions-{{task.id}}" value="4"> 4
+                                    </label>
+                                </div>
+                                <div class="task-edit-btn text-right m-xxs">
+                                    <span ng-click="tasks.changePriorityBtn($event)" class="btn btn-success btn-xs">priority</span>
+                                    <span ng-click="tasks.removeTask($event)" data-id="{{task.id}}" data-status="inProgress" class="btn btn-danger btn-xs fa fa-trash-o"></span>
+                                </div>
+                            </div>
                             {{task.content}}
                             <div class="agile-detail">
                                 <a class="pull-right btn btn-xs btn-white">{{task.tagName}}</a>
@@ -56,9 +94,28 @@
                     <span id="completed-loading-indicator" class="ibox-saving-loading-indicator pull-right">saving changes... <img class="ibox-saving-loading-indicator-loding-icon" src="assets/img/icon/loading.gif"></span>
                     <span id="completed-loading-error-indicator" class="ibox-saving-loading-indicator text-danger pull-right">Fail! Something went wrong.</span>
                     <p class="small"><i class="fa fa-hand-o-up"></i> Drag task between list</p>
-                    <p ng-if="tasks.todo.completed === false">Data is Empty</p>
                     <ul ui-sortable="tasks.completedOptions" class="sortable-list connectList agile-list" ng-model="tasks.completedList">
-                        <li class="{{task.statusClass}}-element" ng-repeat="task in tasks.completedList">
+                        <li class="{{task.statusClass}}-element" ng-mousedown="tasks.moveElement($event)" ng-mouseenter="tasks.editTask($event)" ng-mouseleave="tasks.exitEditTask($event)" ng-repeat="task in tasks.completedList track by $index" data-id="{{task.id}}">
+                            <div class="task-edit-wrap">
+                                <div class="text-right task-priority-wrap">
+                                    <label class="radio-inline text-danger">
+                                        <input class="todo-list-task-priority-radio-options" ng-click="tasks.changePriority($event, 'completed')" data-id="{{task.id}}" ng-checked="task.priority == 1" type="radio" name="inlineRadioOptions-{{task.id}}" value="1"> 1
+                                    </label>
+                                    <label class="radio-inline text-warning">
+                                        <input class="todo-list-task-priority-radio-options" ng-click="tasks.changePriority($event, 'completed')" data-id="{{task.id}}" ng-checked="task.priority == 2" type="radio" name="inlineRadioOptions-{{task.id}}" value="2"> 2
+                                    </label>
+                                    <label class="radio-inline text-info">
+                                        <input class="todo-list-task-priority-radio-options" ng-click="tasks.changePriority($event, 'completed')" data-id="{{task.id}}" ng-checked="task.priority == 3" type="radio" name="inlineRadioOptions-{{task.id}}" value="3"> 3
+                                    </label>
+                                    <label class="radio-inline text-success">
+                                        <input class="todo-list-task-priority-radio-options" ng-click="tasks.changePriority($event, 'completed')" data-id="{{task.id}}" ng-checked="task.priority == 4" type="radio" name="inlineRadioOptions-{{task.id}}" value="4"> 4
+                                    </label>
+                                </div>
+                                <div class="task-edit-btn text-right m-xxs">
+                                    <span ng-click="tasks.changePriorityBtn($event)" class="btn btn-success btn-xs">priority</span>
+                                    <span ng-click="tasks.removeTask($event)" data-id="{{task.id}}" data-status="completed" class="btn btn-danger btn-xs fa fa-trash-o"></span>
+                                </div>
+                            </div>
                             {{task.content}}
                             <div class="agile-detail">
                                 <a class="pull-right btn btn-xs btn-white">{{task.tagName}}</a>

@@ -117,6 +117,11 @@
     font-weight: bold;
     text-transform: uppercase;
 }
+.task-edit-wrap,
+.task-priority-wrap
+{
+    display: none;
+}
 
 @media screen and (max-width: 1023px) {
     .biggest-font {

@@ -62,6 +62,11 @@ return function (App $app) {
                 (user_id, task_content, task_type_id, task_state_id, priority_level, program_id, status_id)
                 values('$id', '$content', '$type', '$state', '$priority', '$program', 1)
             ");
+            $taskObj = $container->task->query("
+                select * from tasks
+                order by id desc limit 1
+            ")->fetch(PDO::FETCH_ASSOC);
+
             if(!$result)
             {
                 break;
@@ -77,10 +82,12 @@ return function (App $app) {
             }
             $tmpAry = array();
             $user = getUserInfo($id, $container);
+            $tmpAry['id'] = $taskObj['id'];
             $tmpAry['content'] = $content;
             $tmpAry['date'] = $date;
             $tmpAry['tagName'] = $user['user'];
             $tmpAry['program'] = $program;
+            $tmpAry['priority'] = $priority;
 
             switch($priority)
             {
@@ -103,23 +110,17 @@ return function (App $app) {
         return json_encode($items);
         // return 'true';
     });
-    $app->post('/tasks/update', function ($request, $response, $args) use ($container) {
-        $loggedUser = identifyLoggedUser($container);
-        $userID = $loggedUser['id'];
-        $userPosition = $loggedUser['position_id'];
-        $userOrg = $loggedUser['organization_id'];
+    $app->post('/tasks/update/priority', function ($request, $response, $args) use ($container) {
         $id = $request->getParam('id');
-        $content = addslashes($request->getParam('content'));
-        $state = $request->getParam('state');
+        $priority = $request->getParam('priority');
         $result = null;
         $date = new DateTime('NOW');
         $dateDateTime = $date->format('Y-m-d H:i:s');
 
         $prepare = $container->task->prepare("
-            update task
+            update tasks
             set
-            task_content = '$content',
-            task_state_id = '$state',
+            priority_level = '$priority',
             updated = '$dateDateTime'
             where id = '$id'
         ");
@@ -128,20 +129,17 @@ return function (App $app) {
 
         return json_encode($result);
     });
-    $app->post('/tasks/deactivate', function ($request, $response, $args) use ($container) {
-        $loggedUser = identifyLoggedUser($container);
-        $userID = $loggedUser['id'];
-        $userPosition = $loggedUser['position_id'];
-        $userOrg = $loggedUser['organization_id'];
+    $app->post('/tasks/update/state', function ($request, $response, $args) use ($container) {
         $id = $request->getParam('id');
+        $state = $request->getParam('state');
         $result = null;
         $date = new DateTime('NOW');
         $dateDateTime = $date->format('Y-m-d H:i:s');
 
         $prepare = $container->task->prepare("
-            update task
+            update tasks
             set
-            status_id = '2',
+            task_state_id = '$state',
             updated = '$dateDateTime'
             where id = '$id'
         ");
@@ -217,6 +215,24 @@ return function (App $app) {
             where organization_id = '$userOrg' and task_state_id = '$state' and program_id = '$program'
         ")->fetch(PDO::FETCH_ASSOC);
 
+        // reserve code
+        /* $taskObj = $container->task->query("
+            select * from tasks
+            where id = '$id'
+        ")->fetch(PDO::FETCH_ASSOC);
+
+        if($taskObj['task_state_id'] != $state)
+        {
+            $taskPrepare = $container->task->prepare("
+                update tasks
+                set
+                task_state_id = '$state',
+                updated = '$dateDateTime'
+                where id = '$id'
+            ");
+            $taskPrepare->execute();
+        } */
+
         if(is_array($todoObj) && count($todoObj) > 0)
         {
             $prepare = $container->task->prepare("
@@ -236,6 +252,25 @@ return function (App $app) {
                 values('$content', '$userOrg', '$state', '$program', 1)
             ");
         }
+
+        // return json_encode($result);
+        return json_encode($state);
+    });
+    $app->post('/tasks/deactivate', function ($request, $response, $args) use ($container) {
+        $id = $request->getParam('id');
+        $date = new DateTime('NOW');
+        $dateDateTime = $date->format('Y-m-d H:i:s');
+        $result = null;
+        
+        $prepare = $container->task->prepare("
+            update tasks
+            set
+            status_id = '2',
+            updated = '$dateDateTime'
+            where id = '$id'
+        ");
+
+        $result = $prepare->execute();
 
         return json_encode($result);
     });
