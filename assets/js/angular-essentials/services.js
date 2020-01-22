@@ -197,6 +197,51 @@ var cogProjects = function($http){
         });
   };
 };
+var cogPodsWhatNots = function($http){
+  var self = this;
+  this.getActivePods = function(obj, config, callback){
+      return $http.post("./cogworks/pods/retrieve/active")
+      .then(function (response) {
+          var podObj = ((response.data).toString().length > 0) ? response.data : null;
+          obj.activePods = JSON.parse(podObj.pod);
+          console.log(obj.activePods);
+          try
+          {
+            callback(JSON.parse(podObj.pod));
+          }
+          catch(err)
+          {
+            // no callback function
+          }
+        }, function (response) {
+          obj.activePods = new Object();
+          obj.activePods.error = 'serverError';
+          obj.activePods.errorData = 'Cog Pods';
+          return null;
+        });
+  };
+  this.getActiveWhatNots = function(obj, config, callback){
+    return $http.post("./cogworks/what-nots/retrieve/active")
+    .then(function (response) {
+        var whatNotsObj = ((response.data).toString().length > 0) ? response.data : null;
+        obj.activeWhatNots = JSON.parse(whatNotsObj.what_not);
+        console.log(obj.activeWhatNots);
+        try
+        {
+          callback(JSON.parse(whatNotsObj.what_not));
+        }
+        catch(err)
+        {
+          // no callback function
+        }
+      }, function (response) {
+        obj.activeWhatNots = new Object();
+        obj.activeWhatNots.error = 'serverError';
+        obj.activeWhatNots.errorData = 'Cog What Nots';
+        return null;
+      });
+};
+};
 
 angular
     .module('projectcog')
@@ -206,4 +251,5 @@ angular
     .service('cogFiles', cogFiles)
     .service('cogFilesDetails', cogFilesDetails)
     .service('cogProject', cogProject)
-    .service('cogProjects', cogProjects);
+    .service('cogProjects', cogProjects)
+    .service('cogPodsWhatNots', cogPodsWhatNots);

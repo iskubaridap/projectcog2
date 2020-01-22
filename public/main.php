@@ -35,6 +35,7 @@ $projectcogUsers = require __DIR__ . '/../src/routes/projectcog/users.php';
 $cogDevelopers = require __DIR__ . '/../src/routes/cogworks/developers.php';
 $cogProjects = require __DIR__ . '/../src/routes/cogworks/projects.php';
 $cogFiles = require __DIR__ . '/../src/routes/cogworks/cog-files.php';
+$podsWhatNots = require __DIR__ . '/../src/routes/cogworks/pods-what-nots.php';
 $tasks = require __DIR__ . '/../src/routes/task/tasks.php';
 $messages = require __DIR__ . '/../src/routes/message/messages.php';
 
@@ -46,6 +47,7 @@ $projectcogUsers($app);
 $cogDevelopers($app);
 $cogProjects($app);
 $cogFiles($app);
+$podsWhatNots($app);
 $tasks($app);
 $messages($app);
 

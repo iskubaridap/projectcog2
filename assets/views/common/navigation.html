@@ -35,7 +35,7 @@
                 <a href="#"><i class="fa fa-folder"></i> <span class="nav-label">Projects </span><span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level collapse" ng-class="{in: $state.includes('cog-projects')}">
                     <li ui-sref-active="active"><a ui-sref="cog-projects.active"><i class="fa fa-folder-o"></i> View</a></li>
-                    <li><a><i class="fa fa-plus-circle"></i> Add</a></li>
+                    <li ui-sref-active="active"><a ui-sref="cog-projects.add"><i class="fa fa-plus-circle"></i> Add</a ui-sref="cog-projects.active"></li>
                 </ul>
             </li>
             
@@ -52,8 +52,8 @@
             <li ng-class="{active: $state.includes('tasks')}">
                 <a ui-sref="tasks.todo"><i class="fa fa-edit"></i> <span>Task</span></a>
             </li>
-            <li>
-                <a><i class="fa fa-code"></i> <span>Pods / What-Nots</span></a>
+            <li ng-class="{active: $state.include('pods-what-nots')}">
+                <a ui-sref="pods-what-nots.main"><i class="fa fa-code"></i> <span>Pods / What-Nots</span></a>
             </li>
 
             <!-- <li ng-class="{active: $state.includes('home')}">

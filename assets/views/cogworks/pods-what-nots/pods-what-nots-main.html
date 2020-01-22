@@ -1,0 +1,61 @@
+<div id="pods-what-nots-main" class="wrapper wrapper-content animated fadeInRight" ng-controller="cogPodsWhatNotsCtrl as podsWhatNots">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Pods</h5>
+                    <span id="pods-loading-indicator" class="ibox-saving-loading-indicator pull-right">saving changes... <img class="ibox-saving-loading-indicator-loding-icon" src="assets/img/icon/loading.gif"></span>
+                    <span id="pods-loading-error-indicator" class="ibox-saving-loading-indicator text-danger pull-right">Fail! Something went wrong.</span>
+                </div>
+                <div id="pods-section" class="ibox-content pods-what-nots-content">
+                    <section-loader-indicator text="Preparing to show Pods" object="podsWhatNots.activePods" ng-if="podsWhatNots.activePods === undefined || podsWhatNots.activePods.error !== undefined"></section-loader-indicator>
+                    <section-data-empty text="No data retrieved." ng-if="podsWhatNots.activePods !== undefined && podsWhatNots.activePods === null"></section-data-empty>
+                    <div ng-if="podsWhatNots.activePods !== undefined && podsWhatNots.activePods.error === undefined">
+                        <div class="row p-t-b-5 pods-row" ng-repeat="item in podsWhatNots.activePods" data-index="{{$index}}">
+                            <div class="col-md-10 col-sm-10 col-xs-6"><p class="m-n"><b>{{item.name}}</b></p class="m-n"></div>
+                            <div class="col-md-2 col-sm-2 col-xs-6"><span  data-index="{{$index}}" ng-click="podsWhatNots.deletePod($event)" tooltip-placement="top" uib-tooltip="Delete" class="btn btn-xs btn-danger fa fa-times"></span></div>
+                            <div class="pods-what-nots-row" ng-repeat="item2 in item.children">
+                                <div class="col-md-10 col-sm-10 col-xs-6 m-t-b-5">
+                                    <p class="m-l-15 m-n">
+                                        {{item2.package.name}} - {{$index}}
+                                    </p>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-6"><span  data-index="{{$index}}" ng-click="podsWhatNots.deleteWhatNotPod($event)" tooltip-placement="top" uib-tooltip="Delete" class="btn btn-xs btn-warning fa fa-times"></span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- pods -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>What-Nots</h5>
+                    <span id="what-nots-loading-indicator" class="ibox-saving-loading-indicator pull-right">saving changes... <img class="ibox-saving-loading-indicator-loding-icon" src="assets/img/icon/loading.gif"></span>
+                    <span id="what-nots-loading-error-indicator" class="ibox-saving-loading-indicator text-danger pull-right">Fail! Something went wrong.</span>
+                </div>
+                <div id="what-nots-section" class="ibox-content pods-what-nots-content">
+                    <section-loader-indicator text="Preparing to show What-Nots" object="podsWhatNots.activeWhatNots" ng-if="podsWhatNots.activeWhatNots === undefined || podsWhatNots.activeWhatNots.error !== undefined"></section-loader-indicator>
+                    <section-data-empty text="No data retrieved." ng-if="podsWhatNots.activeWhatNots !== undefined && podsWhatNots.activeWhatNots === null"></section-data-empty>
+                    <div ng-if="podsWhatNots.activeWhatNots !== undefined && podsWhatNots.activeWhatNots.error === undefined">
+                        <div class="row p-t-b-5" ng-repeat="item in podsWhatNots.activeWhatNots.children">
+                            <div class="col-md-6 col-sm-4 col-xs-4">
+                                <p class="m-n">{{item.package.name}}</p class="m-n">
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-xs-4">
+                                <input class="pods-cat ui-autocomplete-input" placeholder="Type the Pods name" autocomplete="off">
+                            </div>
+                            <div class="col-md-3 col-sm-4 col-xs-4">
+                                <span  data-index="{{$index}}" ng-click="podsWhatNots.addWhatNot($event)" tooltip-placement="top" uib-tooltip="Add to Pods" class="btn btn-xs btn-success fa fa-plus"></span>&nbsp;
+                                <span  data-index="{{$index}}" ng-click="podsWhatNots.deleteWhatNot($event)" tooltip-placement="top" uib-tooltip="Delete" class="btn btn-xs btn-danger fa fa-times"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- what-nots -->
+</div>

@@ -1,10 +1,15 @@
-var cogProjectUpdate = angular.module("cog-projects-update", []);
+var cogProjectAdd = angular.module("cog-projects-add", []);
 function cogProjectCtrl($rootScope, $scope, $element, $state, $http, cogProject, SweetAlert)
 {
     var self = this;
-    var cogProjID = $state.params.id;
-    self.title = 'Update';
-    cogProject.getProject(self, {id: cogProjID});
+    var cogProjID = 0; // initializing anonymous value
+    self.title = 'New Project';
+    self.project = {
+        id: cogProjID,
+        project: '',
+        image: 'assets/img/thumbnail/cog-project.svg'
+    };
+    
     self.reset = function(event)
     {
         $state.go($state.current, {}, {reload: true});
@@ -42,7 +47,7 @@ function cogProjectCtrl($rootScope, $scope, $element, $state, $http, cogProject,
             formData.append('cogProjName', cogProjectName);
 
             $http({
-                url: ( root + 'cogworks/projects/update'),
+                url: ( root + 'cogworks/projects/add'),
                 method: "POST",
                 data: formData,
                 headers: {'Content-Type': undefined}
@@ -61,4 +66,4 @@ function cogProjectCtrl($rootScope, $scope, $element, $state, $http, cogProject,
     };
 }
 
-cogProjectUpdate.controller('cogProjectCtrl', cogProjectCtrl);
+cogProjectAdd.controller('cogProjectCtrl', cogProjectCtrl);

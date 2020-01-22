@@ -152,6 +152,21 @@ function getCogImageDirectory($projID, $orgID, $userID, $folder)
 
     return $path;
 }
+function getCogProjectDirectory($projID, $orgID)
+{
+    $path = '';
+    // keeping the else if statement just in-case it might needed in the future
+    if($orgID == 1) {
+        $path = setCogworksDirectoryPath($orgID) . '/projects/' . $projID;
+    } else if($orgID == 2) {
+        $path = setCogworksDirectoryPath($orgID) . '/projects/' . $projID;
+    } else {
+        $path = setCogworksDirectoryPath($orgID) . '/projects/' . $projID;
+    }
+    generateDirectory($path);
+    $path = $path . '/';
+    return $path;
+}
 function getCogFileDirectory($projID, $orgID, $userID)
 {
     $path = '';
@@ -296,7 +311,7 @@ function getUserInfo($id, $container)
             accounts.allowed_users_id = allowed_users.id and users.status_id = statues.id
     ")->fetch(PDO::FETCH_ASSOC);
 
-    if(is_array($userInfo) && count($userInfo) > 0)
+    /* if(is_array($userInfo) && count($userInfo) > 0)
     {
         if($userInfo['organization_id'] == 1)
         {
@@ -310,7 +325,7 @@ function getUserInfo($id, $container)
     else
     {
         $userInfo = null;
-    }
+    } */
 
     return $userInfo;
 }

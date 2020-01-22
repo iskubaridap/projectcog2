@@ -312,7 +312,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
         })
         .state('cog-projects.update', {
             url: "/update/:id",
-            templateUrl: "assets/views/cogworks/projects/projects-update.html",
+            templateUrl: "assets/views/cogworks/projects/projects-add-update.html",
             data: { pageTitle: 'Project Update' },
             resolve: {
                 loadPlugin: function ($ocLazyLoad) {
@@ -320,6 +320,34 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                         {
                             name: 'cog-projects-update',
                             files: ['assets/js/app/cogworks/projects/cog-projects-update.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']
+                        },
+                        {
+                            name: 'oitozero.ngSweetAlert',
+                            files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        },
+                        {
+                            files: ['assets/css/plugins/dropzone/basic.css','assets/css/plugins/dropzone/dropzone.css','assets/js/plugins/dropzone/dropzone.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/jasny/jasny-bootstrap.min.js', 'assets/css/plugins/jasny/jasny-bootstrap.min.css' ]
+                        }
+                    ]);
+                }
+            }
+        })
+        .state('cog-projects.add', {
+            url: "/add",
+            templateUrl: "assets/views/cogworks/projects/projects-add-update.html",
+            data: { pageTitle: 'Project New Project' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'cog-projects-add',
+                            files: ['assets/js/app/cogworks/projects/cog-projects-add.js']
                         },
                         {
                             files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']
@@ -357,6 +385,33 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                         {
                             name: 'ui.sortable',
                             files: ['assets/js/plugins/ui-sortable/sortable.js']
+                        },
+                        {
+                            name: 'oitozero.ngSweetAlert',
+                            files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']
+                        }
+                    ]);
+                }
+            }
+        })
+        .state('pods-what-nots', {
+            abstract: true,
+            url: "/pods-what-nots",
+            templateUrl: "assets/views/common/content.html",
+        })
+        .state('pods-what-nots.main', {
+            url: "/main",
+            templateUrl: "assets/views/cogworks/pods-what-nots/pods-what-nots-main.html",
+            data: { pageTitle: 'Pods / What-Nots' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'pods-what-nots',
+                            files: ['assets/js/app/cogworks/pods-what-nots/pods-what-nots-main.js']
                         },
                         {
                             name: 'oitozero.ngSweetAlert',

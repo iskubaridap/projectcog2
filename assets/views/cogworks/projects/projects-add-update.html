@@ -1,15 +1,15 @@
-<div id="section-projects-update" ng-controller="cogProjectUpdateCtrl as cogProjectUpdate">
+<div id="section-projects-update" ng-controller="cogProjectCtrl as cogProject">
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-12">
-            <h2>Project Update <a ui-sref="cog-projects.active" class="btn btn-primary btn-xs pull-right"><i class="fa fa-folder"></i> Projects</a></h2>
+            <h2>Project {{cogProject.title}} <a ui-sref="cog-projects.active" class="btn btn-primary btn-xs pull-right"><i class="fa fa-folder"></i> Projects</a></h2>
         </div>
     </div>
-    <section-loader-indicator text="Preparing to show file Details" object="cogProjectUpdate.project" ng-if="cogProjectUpdate.project === undefined || cogProjectUpdate.project.error !== undefined"></section-loader-indicator>
-    <section-data-empty text="No data retrieved." ng-if="cogProjectUpdate.project !== undefined && cogProjectUpdate.project === null"></section-data-empty>
+    <section-loader-indicator text="Preparing to show file Details" object="cogProject.project" ng-if="cogProject.project === undefined || cogProject.project.error !== undefined"></section-loader-indicator>
+    <section-data-empty text="No data retrieved." ng-if="cogProject.project !== undefined && cogProject.project === null"></section-data-empty>
     
-    <div ng-if="cogProjectUpdate.project !== undefined && cogProjectUpdate.project.error === undefined">
-        <p ng-if="cogProjectUpdate.project.id === null" class="large-font m-t">File does not exist.</p>
-        <div ng-if="cogProjectUpdate.project.id !== null" class="m-t">
+    <div ng-if="cogProject.project !== undefined && cogProject.project.error === undefined">
+        <p ng-if="cogProject.project.id === null" class="large-font m-t">File does not exist.</p>
+        <div ng-if="cogProject.project.id !== null" class="m-t">
             <div class="row">
                 <div class="col-md-10 col-md-push-1">
                     <div class="ibox float-e-margins">
@@ -17,11 +17,11 @@
                             <div class="row">
                                 <div class="col-md-6 col-md-push-3">
                                     <div class="cog-image-preview-thumbnail m-md">
-                                        <img alt="image" class="" ng-src="{{cogProjectUpdate.project.image}}">
+                                        <img alt="image" class="" ng-src="{{cogProject.project.image}}">
                                     </div>
                                     <div class="fileinput fileinput-new input-group" data-provides="fileinput">
                                         <div class="form-control" data-trigger="fileinput"><i class="glyphicon glyphicon-file fileinput-exists"></i> <span class="fileinput-filename"></span></div>
-                                        <span class="input-group-addon btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists">Change</span><input data-orginal-value="{{cogProjectUpdate.project.imageValue}}" id="cog-project-update-image" class="cog-input" type="file" name="cog-project-update-image"></span>
+                                        <span class="input-group-addon btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists">Change</span><input data-orginal-value="{{cogProject.project.imageValue}}" id="cog-project-update-image" class="cog-input" type="file" name="cog-project-update-image"></span>
                                         <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
                                     </div>
                                 </div>
@@ -37,15 +37,15 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="control-label">Project Name</label>
-                                            <input data-orginal-value="{{cogProjectUpdate.project.project}}" id="cog-project-update-name" name="cog-project-update-name" type="text" class="cog-input form-control" value="{{cogProjectUpdate.project.project}}">
+                                            <input data-orginal-value="{{cogProject.project.project}}" id="cog-project-update-name" name="cog-project-update-name" type="text" class="cog-input form-control" value="{{cogProject.project.project}}">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="pull-right">
-                                            <button ng-click="cogProjectUpdate.reset($event)" class="btn btn-primary" type="button">Reset</button>
-                                            <button ng-click="cogProjectUpdate.submit($event)" class="btn btn-primary" type="button">Submit</button>
+                                            <button ng-click="cogProject.reset($event)" class="btn btn-primary" type="button">Reset</button>
+                                            <button ng-click="cogProject.submit($event)" class="btn btn-primary" type="button">Submit</button>
                                         </div>
                                     </div>
                                 </div>

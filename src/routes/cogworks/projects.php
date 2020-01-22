@@ -92,6 +92,63 @@ return function (App $app) {
         $result = $prepare->execute();
         return json_encode($result);
     });
+    $app->post('/cogworks/projects/add', function ($request, $response, $args) use ($container) {
+        $result = null;
+        $user = identifyLoggedUser($container);
+        $userID = $user['id'];
+        $name = $request->getParam('cogProjName');
+        $file = $request->getUploadedFiles();
+        $date = new DateTime('NOW');
+        $dateDateTime = $date->format('Y-m-d H:i:s');
+        $path = '';
+        $result = null;
+        $imageName = null;
+
+        $cogOrgID = $user['organization_id'];
+        $cogUserID = $userID;
+       
+        if(!empty($file)) {
+            $uploadedFile = $file['file'];
+            $imageName = $file['file']->getClientFilename();
+
+            $result = $container->cogworks->exec("
+                insert into projects
+                (project, image, organization_id)
+                values('$name', '$imageName', '$cogOrgID');
+            ");
+            
+            if($result) {
+                $proj = $container->cogworks->query("
+                    select * from projects
+                    where organization_id = '$cogOrgID' order by id desc limit 1
+                ")->fetch(PDO::FETCH_ASSOC);
+                $projID = $proj['id'];
+
+                $imagePath = getCogImageThumbnailDirectory($projID, $cogOrgID, $cogUserID, 'projects');
+                $uploadedFile->moveTo($imagePath . $imageName);
+                chmod($imagePath . $imageName,0777);
+            }
+            
+        } else {
+            $result = $container->cogworks->exec("
+                insert into projects
+                (project, organization_id)
+                values('$name', '$cogOrgID');
+            ");
+            if($result) {
+                $proj = $container->cogworks->query("
+                    select * from projects
+                    where organization_id = '$cogOrgID' order by id desc limit 1
+                ")->fetch(PDO::FETCH_ASSOC);
+                $projID = $proj['id'];
+            }
+        }
+
+        $path = setCogworksDirectoryPath($cogOrgID) . '/' . $cogOrgID . '/projects/' . $projID;
+        generateDirectory($path);
+        
+        return json_encode($path);
+    });
     $app->post('/cogworks/projects/retrieve/single', function ($request, $response, $args) use ($container) {
         $id = $request->getParam('id');
         $result = null;
