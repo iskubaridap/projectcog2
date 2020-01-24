@@ -113,6 +113,49 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 }
             }
         })
+        .state('cog-developers.add', {
+            url: "/user/add",
+            templateUrl: "assets/views/cogworks/developers/developers-cogworks-add.html",
+            data: { pageTitle: 'Developers' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'cog-user',
+                            files: ['assets/js/app/cogworks/user/cog-user.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']
+                        },
+                        {
+                            name: 'oitozero.ngSweetAlert',
+                            files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        },
+                        {
+                            files: ['assets/css/plugins/dropzone/basic.css','assets/css/plugins/dropzone/dropzone.css','assets/js/plugins/dropzone/dropzone.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/jasny/jasny-bootstrap.min.js', 'assets/css/plugins/jasny/jasny-bootstrap.min.css' ]
+                        }
+                    ]);
+                }
+            }
+        })
+        .state('cog-developers.profile', {
+            url: "/profile/:id",
+            templateUrl: "assets/views/cogworks/developers/developers-cogworks-profile.html",
+            data: { pageTitle: 'Developers Profile' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'cog-developers-profile',
+                            files: ['assets/js/app/cogworks/developers/cog-developers-profile.js']
+                        }
+                    ]);
+                }
+            }
+        })
         .state('cog-files', {
             abstract: true,
             url: "/cogworks/cog-files",

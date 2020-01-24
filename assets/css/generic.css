@@ -157,6 +157,31 @@
     background-color: #fff;
     width: 200px;
 }
+.img-profile-wrap {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+.img-profile-wrap img {
+    margin-left: auto;
+    margin-right: auto;
+    display: table;
+    max-width: 250px;
+}
+.cog-dev-profile-position {
+    font-weight: bold;
+}
+.cog-dev-profile-info {
+    margin-top: 20px;
+}
+.cog-dev-profile-wrap small{
+    font-weight: bold;
+}
+.cog-dev-profile-wrap {
+    margin-bottom: 20px;
+}
+.cog-dev-profile-wrap:last-child {
+    margin-bottom: 0;
+}
 
 @media screen and (max-width: 1023px) {
     .biggest-font {

@@ -26,7 +26,29 @@ var loginService = function($state)
         return null;
       });
   };
-}
+};
+var cogUsers = function($state) {
+  var self = this;
+  this.getUser = function(obj, config, callback){
+    return $http.post("./users/retrieve/single")
+    .then(function (response) {
+        obj.userObj = ((response.data).toString().length > 0) ? response.data : null;
+        try
+        {
+          callback(response.data);
+        }
+        catch(err)
+        {
+          // no callback function
+        }
+      }, function (response) {
+        obj.userObj = new Object();
+        obj.userObj.error = 'serverError';
+        obj.userObj.errorData = 'User';
+        return null;
+      });
+  };
+};
 var tasks = function($http){
   var self = this;
   this.getTasks = function(obj, confing, callback){
@@ -86,7 +108,29 @@ var tasks = function($http){
             return null;
           });
   };
-}
+};
+var cogPositions = function($http){
+  var self = this;
+  this.getPositions = function(obj, config, callback){
+      return $http.post("./users/retrieve/positions")
+      .then(function (response) {
+          obj.positions = ((response.data).toString().length > 0) ? response.data : null;
+          try
+          {
+            callback(response.data);
+          }
+          catch(err)
+          {
+            // no callback function
+          }
+        }, function (response) {
+          obj.positions = new Object();
+          obj.positions.error = 'serverError';
+          obj.positions.errorData = 'Positions';
+          return null;
+        });
+  };
+};
 var cogDevelopers = function($http){
     var self = this;
     this.getActiveDevelopers = function(obj, config, callback){
@@ -104,10 +148,29 @@ var cogDevelopers = function($http){
           }, function (response) {
             obj.activeDevelopers = new Object();
             obj.activeDevelopers.error = 'serverError';
-            obj.activeDevelopers.errorData = 'Developer';
+            obj.activeDevelopers.errorData = 'Developers';
             return null;
           });
     };
+    this.getDeveloper = function(obj, config, callback){
+      return $http.post("./cogworks/developers/profile", config)
+      .then(function (response) {
+          obj.developer = ((response.data).toString().length > 0) ? response.data : null;
+          try
+          {
+            callback(response.data);
+          }
+          catch(err)
+          {
+            // no callback function
+          }
+        }, function (response) {
+          obj.developer = new Object();
+          obj.developer.error = 'serverError';
+          obj.developer.errorData = 'Developer Profile';
+          return null;
+        });
+  };
 };
 var cogFiles = function($http){
   var self = this;
@@ -240,13 +303,15 @@ var cogPodsWhatNots = function($http){
         obj.activeWhatNots.errorData = 'Cog What Nots';
         return null;
       });
-};
+  };
 };
 
 angular
     .module('projectcog')
     .service('loginService', loginService)
     .service('tasks', tasks)
+    .service('cogUsers', cogUsers)
+    .service('cogPositions', cogPositions)
     .service('cogDevelopers', cogDevelopers)
     .service('cogFiles', cogFiles)
     .service('cogFilesDetails', cogFilesDetails)

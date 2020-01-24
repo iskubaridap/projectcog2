@@ -9,7 +9,7 @@ function cogDevelopersCtrl($rootScope, $scope, $element, $state, $http, $timeout
 
     var viewUser = function(id)
     {
-        //console.log(id);
+        $state.go('cog-developers.profile', {'id': id});
     };
     var updateUser = function(id)
     {

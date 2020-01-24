@@ -12,9 +12,30 @@ return function (App $app) {
     $app->post('/users/logged-user', function ($request, $response, $args) use ($container) {
         return json_encode(identifyLoggedUser($container));
     });
+    $app->post('/users/retrieve/positions', function ($request, $response, $args) use ($container) {
+        $user = identifyLoggedUser($container);
+        $result = null;
+
+        if($user['position_id'] == 1) {
+            $result = $container->projectcog->query("
+                select * from positions
+            ")->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            $result = $container->projectcog->query("
+                select * from positions
+                where id <> 1 and id <> 2
+            ")->fetchAll(PDO::FETCH_ASSOC);
+        }
+        return json_encode($result);
+    });
     $app->post('/users/retrieve/single', function ($request, $response, $args) use ($container) {
-        $id = $request->getParam('id');
-        return json_encode(getUserInfo($id, $container));
+        $userID = $request->getParam('id');
+        $user = getUserInfo($userID, $container);
+        $imgAry = getCogDeveloperThumbnail($user['organization_id'], $user['id'], $user['image'], $container);
+        $user['imageValue'] = $imgAry['imageValue'];
+        $user['image'] = $imgAry['path'];
+
+        return json_encode($user);
     });
     $app->post('/users/retrieve/organization-users', function ($request, $response, $args) use ($container) {
         $loggedUser = identifyLoggedUser($container);

@@ -251,6 +251,15 @@ function tasksHome($rootScope) {
         link: function(scope, elem, attrs){}
     };
 }
+function userForm($rootScope) {
+    return {
+        restrict: 'E',
+        scope: {
+        },
+        templateUrl: 'assets/views/cogworks/sections/user-form.html',
+        link: function(scope, elem, attrs){}
+    };
+}
 /**
  *
  * Pass all functions into module
@@ -268,4 +277,5 @@ angular
     .directive('sectionCogworksFilesProjects', sectionCogworksFilesProjects)
     .directive('sectionCogworksFilesDetails', sectionCogworksFilesDetails)
     .directive('sectionCogworksFilesUpdate', sectionCogworksFilesUpdate)
-    .directive('tasksHome', tasksHome);
+    .directive('tasksHome', tasksHome)
+    .directive('userForm', userForm);

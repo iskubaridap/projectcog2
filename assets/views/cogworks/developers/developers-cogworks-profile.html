@@ -1,0 +1,38 @@
+<div id="section-developer-profile" ng-controller="cogDeveloperProfileCtrl as devProfile">
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <section-loader-indicator text="Preparing to show Developer&apos;s Profile" object="devProfile.developer" ng-if="devProfile.developer === undefined || devProfile.developer.error !== undefined"></section-loader-indicator>
+        <section-data-empty text="Record for Active Developer is Empty." ng-if="devProfile.developer !== undefined && devProfile.developer === null"></section-data-empty>
+        <div ng-if="devProfile.developer !== undefined && devProfile.developer.error === undefined">
+            <p ng-if="devProfile.developer === 'false'" class="large-font m-t">User does not exist.</p>
+            <div class="row" ng-if="devProfile.developer !== 'false'">
+                <div class="col-md-8 col-md-push-2">
+                    <div class="ibox">
+                        <div class="ibox-content">
+                            <div class="img-profile-wrap text-center">
+                                <img alt="image" class="img-circle img-responsive" ng-src="{{devProfile.developer.image}}">
+                            </div>
+                            <div class="cog-dev-profile-wrap text-center">
+                                <p class="cog-dev-profile cog-dev-profile-position">{{devProfile.developer.position}}</p>
+                            </div>
+                            <div class="cog-dev-profile-info">
+                                <div class="cog-dev-profile-wrap">
+                                    <small>Name</small>
+                                    <p class="cog-dev-profile cog-dev-profile-name">{{devProfile.developer.user}}</p>
+                                </div>
+                                <div class="cog-dev-profile-wrap">
+                                    <small>Address</small>
+                                    <p class="cog-dev-profile cog-dev-profile-address">{{devProfile.developer.address}}</p>
+                                </div>
+                                <div class="cog-dev-profile-wrap">
+                                    <small>Country</small>
+                                    <p class="cog-dev-profile cog-dev-profile-country">{{devProfile.developer.country}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

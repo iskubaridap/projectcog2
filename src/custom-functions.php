@@ -4,6 +4,38 @@ function test()
 {
     echo 'hello world!';
 }
+function getCogDeveloperThumbnail($orgID, $userID, $img, $container)
+{
+    $ary = array();
+    $ary['imageValue'] = '';
+    $ary['path'] = '';
+    if($img == null || strlen($img) <= 0)
+    {
+        $ary['imageValue'] = '';
+        $ary['path'] = 'assets/img/thumbnail/thumbnail-profile-pic.png';
+    }
+    else
+    {
+        $ary['imageValue'] = $img;
+        if($orgID == 1)
+        {
+            $ary['folder'] = 'cogworks/admin/img/thumbnail/profiles/' . $userID;
+            $ary['path'] = 'cogworks/admin/img/thumbnail/profiles/' . $userID . '/' . $img;
+        }
+        else if($orgID == 2)
+        {
+            $ary['folder'] = 'cogworks/developers/' . $userID . '/img/thumbnail/profiles';
+            $ary['path'] = 'cogworks/developers/' . $userID . '/img/thumbnail/profiles/' . $img;
+        }
+        else
+        {
+            $ary['folder'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/profiles/' . $userID;
+            $ary['path'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/profiles/' . $userID . '/' . $img;
+        }
+    }
+    generateDirectory($ary['folder']);
+    return $ary;
+}
 function getCogProjectThumbnail($orgID, $projID, $img, $container)
 {
     $ary = array();
@@ -30,17 +62,21 @@ function getCogProjectThumbnail($orgID, $projID, $img, $container)
         }
         if($orgID == 1)
         {
+            $ary['folder'] = 'cogworks/admin/img/thumbnail/projects/' . $projID;
             $ary['path'] = 'cogworks/admin/img/thumbnail/projects/' . $projID . '/' . $img;
         }
         else if($orgID == 2)
         {
+            $ary['folder'] = 'cogworks/developers/' . $userID . '/img/thumbnail/projects/' . $projID;
             $ary['path'] = 'cogworks/developers/' . $userID . '/img/thumbnail/projects/' . $projID . '/' . $img;
         }
         else
         {
+            $ary['folder'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/projects/' . $projID;
             $ary['path'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/projects/' . $projID . '/' . $img;
         }
     }
+    generateDirectory($ary['folder']);
     return $ary;
 }
 function getCogFileThumbnail($orgID, $userID, $cogID, $img, $container)
@@ -73,26 +109,32 @@ function getCogFileThumbnail($orgID, $userID, $cogID, $img, $container)
         {
             if($userInfoOrgID == 1)
             {
+                $ary['folder'] = 'cogworks/admin/img/thumbnail/cog-files/' . $cogProjectID;
                 $ary['path'] = 'cogworks/admin/img/thumbnail/cog-files/' . $cogProjectID . '/' . $img;
             }
             else if($userInfoOrgID == 2) // belongs to no organization
             {
+                $ary['folder'] = 'cogworks/developers/' . $userInfoID . '/img/thumbnail/cog-files/' . $cogProjectID;
                 $ary['path'] = 'cogworks/developers/' . $userInfoID . '/img/thumbnail/cog-files/' . $cogProjectID . '/' . $img;
             }
             else
             {
+                $ary['folder'] = 'cogworks/organizations/' . $userInfoOrgID . '/img/thumbnail/cog-files/' . $cogProjectID;
                 $ary['path'] = 'cogworks/organizations/' . $userInfoOrgID . '/img/thumbnail/cog-files/' . $cogProjectID . '/' . $img;
             }
         }
         else if($orgID == 2)
         {
+            $ary['folder'] = 'cogworks/developers/' . $userID . '/img/thumbnail/cog-files/' . $cogProjectID;
             $ary['path'] = 'cogworks/developers/' . $userID . '/img/thumbnail/cog-files/' . $cogProjectID . '/' . $img;
         }
         else
         {
+            $ary['folder'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/cog-files/' . $cogProjectID;
             $ary['path'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/cog-files/' . $cogProjectID . '/' . $img;
         }
     }
+    generateDirectory($ary['folder']);
     return $ary;
 }
 function getCogImageThumbnailDirectory($projID, $orgID, $userID, $type)

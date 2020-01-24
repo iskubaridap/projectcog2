@@ -1,0 +1,117 @@
+<div id="section-user-form" ng-controller="cogUserCtrl as user">
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-12">
+            <h2>{{user.title}}</h2>
+        </div>
+    </div>
+    <section-loader-indicator text="Preparing to show file Details" object="user.userObj" ng-if="user.userObj === undefined || user.userObj.error !== undefined"></section-loader-indicator>
+    <section-data-empty text="No data retrieved." ng-if="user.userObj !== undefined && user.userObj === null"></section-data-empty>
+    
+    <div ng-if="user.userObj !== undefined && user.userObj.error === undefined">
+        <p ng-if="user.userObj.id === null" class="large-font m-t">User does not exist.</p>
+        <div ng-if="user.userObj.id !== null" class="m-t">
+            <div class="row">
+                <div class="col-md-10 col-md-push-1">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="col-md-6 col-md-push-3">
+                                    <div class="cog-image-preview-thumbnail m-md">
+                                        <img alt="image" class="" ng-src="{{user.userObj.image}}">
+                                    </div>
+                                    <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                                        <div class="form-control" data-trigger="fileinput"><i class="glyphicon glyphicon-file fileinput-exists"></i> <span class="fileinput-filename"></span></div>
+                                        <span class="input-group-addon btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists">Change</span><input data-orginal-value="{{user.userObj.imageValue}}" id="cog-user-image" class="cog-input" type="file" name="cog-user-image"></span>
+                                        <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="hr-line-dashed"></div>
+                                </div>
+                            </div>
+
+                            <form method="post" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label"><span class="text-danger">*</span> First Name</label>
+                                            <input data-orginal-value="{{user.userObj.firstname}}" id="cog-user-firstname" name="cog-user-firstname" type="text" class="cog-input form-control" value="{{user.userObj.firstname}}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label"><span class="text-danger">*</span> Middle Name</label>
+                                            <input data-orginal-value="{{user.userObj.middlename}}" id="cog-user-middlename" name="cog-user-middlename" type="text" class="cog-input form-control" value="{{user.userObj.middlename}}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="control-label"><span class="text-danger">*</span> Last Name</label>
+                                            <input data-orginal-value="{{user.userObj.lastname}}" id="cog-user-lastname" name="cog-user-lastname" type="text" class="cog-input form-control" value="{{user.userObj.lastname}}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label"><span class="text-danger">*</span> Email</label>
+                                            <input data-orginal-value="{{user.userObj.email}}" id="cog-user-email" name="cog-user-email" type="text" class="cog-input form-control" value="{{user.userObj.email}}" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label"><span class="text-danger">*</span> Password</label>
+                                            <input data-orginal-value="{{user.userObj.password}}" id="cog-user-password" name="cog-user-password" type="password" class="cog-input form-control" value="{{user.userObj.password}}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Address</label>
+                                            <input data-orginal-value="{{user.userObj.address}}" id="cog-user-address" name="cog-user-address" type="text" class="cog-input form-control" value="{{user.userObj.address}}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Country</label>
+                                            <input data-orginal-value="{{user.userObj.country}}" id="cog-user-country" name="cog-user-country" type="text" class="cog-input form-control" value="{{user.userObj.country}}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label"><span class="text-danger">*</span> Position</label>
+                                            <select id="cog-user-position-option" ng-model="user.positionsInitValue" ng-disabled="user.notAllow" ng-model="position" class="form-control m-b" name="cog-user-position" required>
+                                                <option ng-if="item.id != undefined" value="{{item.id}}" ng-repeat="item in user.positions">{{item.position}}</option>
+                                            </select>
+                                            <!-- <select id="position-option" ng-disabled="userUpdate.notAllow" ng-model="position" class="form-control m-b" name="position" required>
+                                                <option value="1" ng-if="main.usersDetails.position_id == 1">Super Admin</option>
+                                                <option value="2">Admin</option>
+                                                <option value="7">Global Admin</option>
+                                                <option value="6">Theater Lead</option>
+                                                <option value="3">Vice President</option>
+                                                <option value="5">Leader</option>
+                                            </select> -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="pull-right">
+                                            <button ng-click="user.reset($event)" class="btn btn-primary" type="button">Reset</button>
+                                            <button ng-click="user.submit($event)" class="btn btn-primary" type="button">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
