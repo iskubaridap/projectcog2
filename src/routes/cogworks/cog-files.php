@@ -75,9 +75,14 @@ return function (App $app) {
             {
                 $cogFiles = $container->cogworks->query("
                     select * from cog_files
-                    where user_id = '$userID' and project_id = '$projectID' and status_id = '1'
+                    where project_id = '$projectID' and status_id = '1'
                     order by cog_file asc
                 ")->fetchAll(PDO::FETCH_ASSOC);
+                /* $cogFiles = $container->cogworks->query("
+                    select * from cog_files
+                    where user_id = '$userID' and project_id = '$projectID' and status_id = '1'
+                    order by cog_file asc
+                ")->fetchAll(PDO::FETCH_ASSOC); */
                 $projects = $container->cogworks->query("
                     select * from projects
                     where id = '$projectID' and organization_id = '$userOrg' and status_id = '1'

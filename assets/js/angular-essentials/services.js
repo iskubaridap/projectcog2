@@ -1,4 +1,4 @@
-var loginService = function($state)
+var loginService = function($state, $http)
 {
   var self = this;
   self.userLogged = function(data){
@@ -25,7 +25,7 @@ var loginService = function($state)
         obj.loggedUser.errorData = 'Developer';
         return null;
       });
-  };
+  }
 };
 var cogUsers = function($state) {
   var self = this;
@@ -265,9 +265,8 @@ var cogPodsWhatNots = function($http){
   this.getActivePods = function(obj, config, callback){
       return $http.post("./cogworks/pods/retrieve/active")
       .then(function (response) {
-          var podObj = ((response.data).toString().length > 0) ? response.data : null;
-          obj.activePods = JSON.parse(podObj.pod);
-          console.log(obj.activePods);
+          var podObj = (response.data != 'false') ? response.data : null;
+          obj.activePods = (podObj != null) ? JSON.parse(podObj.pod) : null;
           try
           {
             callback(JSON.parse(podObj.pod));
@@ -286,9 +285,8 @@ var cogPodsWhatNots = function($http){
   this.getActiveWhatNots = function(obj, config, callback){
     return $http.post("./cogworks/what-nots/retrieve/active")
     .then(function (response) {
-        var whatNotsObj = ((response.data).toString().length > 0) ? response.data : null;
-        obj.activeWhatNots = JSON.parse(whatNotsObj.what_not);
-        console.log(obj.activeWhatNots);
+        var whatNotsObj = (response.data != 'false') ? response.data : null;
+        obj.activeWhatNots = (whatNotsObj != null) ? JSON.parse(whatNotsObj.what_not) : null;
         try
         {
           callback(JSON.parse(whatNotsObj.what_not));

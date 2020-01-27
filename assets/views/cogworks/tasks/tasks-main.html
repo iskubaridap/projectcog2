@@ -14,7 +14,7 @@
                         <h3 class="tasks-heading">To-Do</h3>
                         <span id="todo-loading-indicator" class="ibox-saving-loading-indicator pull-right">saving changes... <img class="ibox-saving-loading-indicator-loding-icon" src="assets/img/icon/loading.gif"></span>
                         <span id="todo-loading-error-indicator" class="ibox-saving-loading-indicator text-danger pull-right">Fail! Something went wrong.</span>
-                        <p class="small"><i class="fa fa-hand-o-up"></i> Drag task between list <span ng-click="tasks.add($event)" class="btn btn-success btn-xs pull-right"><i class="fa fa-plus-circle"></i> Add</span></p>
+                        <p class="small"><i class="fa fa-hand-o-up"></i> Drag task between list <span ng-if="positionID != '3'" ng-click="tasks.add($event)" class="btn btn-success btn-xs pull-right"><i class="fa fa-plus-circle"></i> Add</span></p>
                         <ul ui-sortable="tasks.todoOptions" class="sortable-list connectList agile-list" ng-model="tasks.todoList">
                             <li class="{{task.statusClass}}-element" ng-mousedown="tasks.moveElement($event)" ng-mouseenter="tasks.editTask($event)" ng-mouseleave="tasks.exitEditTask($event)" ng-repeat="task in tasks.todoList track by $index" data-id="{{task.id}}">
                                 <div class="task-edit-wrap">

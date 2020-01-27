@@ -7,7 +7,7 @@
                 <div ng-if="cogFile.activeFiles !== undefined && cogFile.activeFiles.error === undefined">
                     <div class="ibox-title">
                         <h5>Cog Files</h5>
-                        <a ui-sref="cog-files.active" class="btn btn-primary btn-xs pull-right"><i class="fa fa-files-o"></i>&nbsp;&nbsp;&nbsp;Visit Page</a>
+                        <a ui-sref="cog-files.active({project: 'all'})" class="btn btn-primary btn-xs pull-right"><i class="fa fa-files-o"></i>&nbsp;&nbsp;&nbsp;Visit Page</a>
                     </div>
                     <div class="ibox-content">
                         <table class="footable table table-stripped" data-page-size="10" data-filter=#filter>

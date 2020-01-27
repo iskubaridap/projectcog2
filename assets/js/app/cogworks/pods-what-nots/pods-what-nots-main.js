@@ -129,7 +129,7 @@ function cogPodsWhatNotsCtrl($rootScope, $scope, $element, $state, $http, cogPod
             source: category
         });
     });
-    cogPodsWhatNots.getActiveWhatNots(self);
+    cogPodsWhatNots.getActiveWhatNots(self, {}, function(data) {});
 
     self.deleteWhatNotPod = function(event) {
         var elem = $(event.target);

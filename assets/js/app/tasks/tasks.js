@@ -227,13 +227,18 @@ function tasksCtrl($rootScope, $scope, $element, $state, $http, $timeout, loginS
     };
     self.editTask = function(event){
         var elem = $(event.target);
-        elem.find('.task-edit-wrap').show();
-        $element.find('.task-edit-wrap').find('.task-priority-wrap').hide();
+
+        if($rootScope.positionID != '3') {
+            elem.find('.task-edit-wrap').show();
+            $element.find('.task-edit-wrap').find('.task-priority-wrap').hide();
+        }
     };
     self.exitEditTask = function(event){
         var elem = $(event.target);
-        $element.find('.task-edit-wrap').hide();
-        $element.find('.task-edit-wrap').find('.task-priority-wrap').hide();
+        if($rootScope.positionID != '3') {
+            $element.find('.task-edit-wrap').hide();
+            $element.find('.task-edit-wrap').find('.task-priority-wrap').hide();
+        }
     };
     self.changePriority = function(event, action){
         var id = $(event.target).attr('data-id');

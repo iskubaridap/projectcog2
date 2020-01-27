@@ -13,7 +13,19 @@ function loginCtrl($rootScope, $scope, $state, $element, $http, loginService, Sw
             
             if(response.data == 'true')
             {
-                $state.go('cog-home.main');
+                loginService.getLoggedUser(self, {}, function(data) {
+                    $rootScope.user = data.user;
+                    $rootScope.userID = data.id;
+                    $rootScope.position = data.position;
+                    $rootScope.positionID = data.position_id;
+                    $rootScope.organization = data.organization;
+                    $rootScope.organizationID = data.organization_id;
+                    $state.go('cog-home.main');
+                });
+                
+                // console.log($rootScope);
+                // console.log($scope);
+                // console.log($state);
             }
             else
             {
