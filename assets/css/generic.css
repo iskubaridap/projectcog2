@@ -182,6 +182,15 @@
 .cog-dev-profile-wrap:last-child {
     margin-bottom: 0;
 }
+.item-deleted .contact-box.center-version > a {
+    background-image: url(../img/background/bg-deleted.svg);
+    background-repeat: no-repeat;
+    background-size: 80%;
+    background-position: center;
+}
+/* .item-deleted .contact-box.center-version > a img {
+    opacity: 0.5;
+} */
 
 @media screen and (max-width: 1023px) {
     .biggest-font {

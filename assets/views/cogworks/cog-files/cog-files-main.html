@@ -30,11 +30,12 @@
                                     <li><a data-id="{{cogFile.activeFiles[$index].id}}" ng-click="cogFile.details($event)">Details</a></li>
                                     <li><a data-id="{{cogFile.activeFiles[$index].id}}" ng-click="cogFile.duplicate($event)">Clone</a></li>
                                     <li><a data-id="{{cogFile.activeFiles[$index].id}}" ng-click="cogFile.update($event)">Update</a></li>
-                                    <li><a data-id="{{cogFile.activeFiles[$index].id}}" ng-click="cogFile.remove($event)">Remove</a></li>
+                                    <li ng-if="cogFile.activeFiles[$index].status == '1'"><a data-id="{{cogFile.activeFiles[$index].id}}" ng-click="cogFile.remove($event)">Remove</a></li>
+                                    <li ng-if="cogFile.activeFiles[$index].status == '2'"><a data-id="{{cogFile.activeFiles[$index].id}}" ng-click="cogFile.restore($event)">Restore</a></li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="ibox-content">
+                        <div class="ibox-content{{(cogFile.activeFiles[$index].status == '2') ? ' item-deleted' : ''}}">
                             <div class="contact-box center-version">
                                 <a>
                                     <img alt="image" class="" ng-src="{{cogFile.activeFiles[$index].image}}">
@@ -61,11 +62,12 @@
                                     <li><a data-id="{{cogFile.activeFiles[$index + 1].id}}" ng-click="cogFile.details($event)">Details</a></li>
                                     <li><a data-id="{{cogFile.activeFiles[$index + 1].id}}" ng-click="cogFile.duplicate($event)">Clone</a></li>
                                     <li><a data-id="{{cogFile.activeFiles[$index + 1].id}}" ng-click="cogFile.update($event)">Update</a></li>
-                                    <li><a data-id="{{cogFile.activeFiles[$index + 1].id}}" ng-click="cogFile.remove($event)">Remove</a></li>
+                                    <li ng-if="cogFile.activeFiles[$index + 1].status == '1'"><a data-id="{{cogFile.activeFiles[$index + 1].id}}" ng-click="cogFile.remove($event)">Remove</a></li>
+                                    <li ng-if="cogFile.activeFiles[$index + 1].status == '2'"><a data-id="{{cogFile.activeFiles[$index + 1].id}}" ng-click="cogFile.restore($event)">Restore</a></li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="ibox-content">
+                        <div class="ibox-content{{(cogFile.activeFiles[$index + 1].status == '2') ? ' item-deleted' : ''}}">
                             <div class="contact-box center-version">
                                 <a>
                                     <img alt="image" class="" ng-src="{{cogFile.activeFiles[$index + 1].image}}">
@@ -92,11 +94,12 @@
                                     <li><a data-id="{{cogFile.activeFiles[$index + 2].id}}" ng-click="cogFile.details($event)">Details</a></li>
                                     <li><a data-id="{{cogFile.activeFiles[$index + 2].id}}" ng-click="cogFile.duplicate($event)">Clone</a></li>
                                     <li><a data-id="{{cogFile.activeFiles[$index + 2].id}}" ng-click="cogFile.update($event)">Update</a></li>
-                                    <li><a data-id="{{cogFile.activeFiles[$index + 2].id}}" ng-click="cogFile.remove($event)">Remove</a></li>
+                                    <li ng-if="cogFile.activeFiles[$index + 2].status == '1'"><a data-id="{{cogFile.activeFiles[$index + 2].id}}" ng-click="cogFile.remove($event)">Remove</a></li>
+                                    <li ng-if="cogFile.activeFiles[$index + 2].status == '2'"><a data-id="{{cogFile.activeFiles[$index + 2].id}}" ng-click="cogFile.restore($event)">Restore</a></li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="ibox-content">
+                        <div class="ibox-content{{(cogFile.activeFiles[$index + 2].status == '2') ? ' item-deleted' : ''}}">
                             <div class="contact-box center-version">
                                 <a>
                                     <img alt="image" class="" ng-src="{{cogFile.activeFiles[$index + 2].image}}">
@@ -123,11 +126,12 @@
                                     <li><a data-id="{{cogFile.activeFiles[$index + 3].id}}" ng-click="cogFile.details($event)">Details</a></li>
                                     <li><a data-id="{{cogFile.activeFiles[$index + 3].id}}" ng-click="cogFile.duplicate($event)">Clone</a></li>
                                     <li><a data-id="{{cogFile.activeFiles[$index + 3].id}}" ng-click="cogFile.update($event)">Update</a></li>
-                                    <li><a data-id="{{cogFile.activeFiles[$index + 3].id}}" ng-click="cogFile.remove($event)">Remove</a></li>
+                                    <li ng-if="cogFile.activeFiles[$index + 3].status == '1'"><a data-id="{{cogFile.activeFiles[$index + 3].id}}" ng-click="cogFile.remove($event)">Remove</a></li>
+                                    <li ng-if="cogFile.activeFiles[$index + 3].status == '2'"><a data-id="{{cogFile.activeFiles[$index + 3].id}}" ng-click="cogFile.restore($event)">Restore</a></li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="ibox-content">
+                        <div class="ibox-content{{(cogFile.activeFiles[$index + 3].status == '2') ? ' item-deleted' : ''}}">
                             <div class="contact-box center-version">
                                 <a>
                                     <img alt="image" class="" ng-src="{{cogFile.activeFiles[$index + 3].image}}">
@@ -142,30 +146,6 @@
                 </div>
 
             </div>
-            
-            <!-- Disable for now -->
-            <!-- <div class="row section-list hide-default">
-                <div class="col-md-12">
-                    <table id="cogworks-files-table" class="footable table table-stripped" data-page-size="50" data-filter=#filter>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Project</th>
-                                <th>Updated</th>
-                                <th>Created</th>
-                            </tr>
-                        </thead>
-                        <tbody id="cogworks-files-table-body"></tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="5">
-                                    <ul class="pagination pull-right"></ul>
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div> -->
 
         </div>
     </div>

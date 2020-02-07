@@ -36,8 +36,16 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="control-label">Project Name</label>
+                                            <label class="control-label"><span class="text-danger">*</span> Project Name</label>
                                             <input data-orginal-value="{{cogProject.project.project}}" id="cog-project-update-name" name="cog-project-update-name" type="text" class="cog-input form-control" value="{{cogProject.project.project}}">
+                                        </div>
+                                    </div>
+                                    <div ng-if="(positionID != 3 || organizationID <= 2) && cogProject.page == 'manage'" class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label"><span class="text-danger">*</span> Organization</label>
+                                            <select id="cog-project-organization-option" ng-model="cogProject.positionsInitValue" ng-model="organization" class="form-control m-b" name="cog-project-origanization" required>
+                                                <option ng-if="item.id != undefined && (item.id != '1' && item.id != '2')" value="{{item.id}}" ng-repeat="item in cogProject.organizations">{{item.organization}}</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>

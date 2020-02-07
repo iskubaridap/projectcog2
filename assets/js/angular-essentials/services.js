@@ -27,6 +27,28 @@ var loginService = function($state, $http)
       });
   }
 };
+var organizationsService = function($http) {
+  var self = this;
+  this.getOrganizations = function(obj, config, callback){
+    return $http.post("./organizations/retrieve/all")
+    .then(function (response) {
+        obj.organizations = ((response.data).toString().length > 0) ? response.data : null;
+        try
+        {
+          callback(response.data);
+        }
+        catch(err)
+        {
+          // no callback function
+        }
+      }, function (response) {
+        obj.organizations = new Object();
+        obj.organizations.error = 'serverError';
+        obj.organizations.errorData = 'Organizations';
+        return null;
+      });
+  };
+};
 var cogUsers = function($state) {
   var self = this;
   this.getUser = function(obj, config, callback){
@@ -134,7 +156,7 @@ var cogPositions = function($http){
 var cogDevelopers = function($http){
     var self = this;
     this.getActiveDevelopers = function(obj, config, callback){
-        return $http.post("./cogworks/developers/retrieve/active")
+        return $http.post("./cogworks/developers/retrieve/active", config)
         .then(function (response) {
             obj.activeDevelopers = ((response.data).toString().length > 0) ? response.data : null;
             try
@@ -241,7 +263,7 @@ var cogProject = function($http){
 var cogProjects = function($http){
   var self = this;
   this.getActiveProjects = function(obj, config, callback){
-      return $http.post("./cogworks/projects/retrieve/active")
+      return $http.post("./cogworks/projects/retrieve/active", config)
       .then(function (response) {
           obj.activeProjects = ((response.data).toString().length > 0) ? response.data : null;
           try
@@ -307,6 +329,7 @@ var cogPodsWhatNots = function($http){
 angular
     .module('projectcog')
     .service('loginService', loginService)
+    .service('organizationsService', organizationsService)
     .service('tasks', tasks)
     .service('cogUsers', cogUsers)
     .service('cogPositions', cogPositions)

@@ -2,18 +2,19 @@ var cogProjectsModule = angular.module("cog-projects", []);
 function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, loginService, cogProjects, SweetAlert)
 {
     var self = this;
+    var cogProjPage = ($state.params.page == undefined) ? '' : $state.params.page;
     self.activeProjects = undefined;
-    cogProjects.getActiveProjects(self, {}, function(data){
+    cogProjects.getActiveProjects(self, {page: cogProjPage}, function(data){
         loginService.userLogged(data);
     });
 
     var openProject = function(id)
     {
-        $state.go('cog-projects.files', {'project': id});
+        $state.go('cog-projects.files', {project: id, page: cogProjPage});
     };
     var updateProject = function(id)
     {
-        $state.go('cog-projects.update', {'id': id});
+        $state.go('cog-projects.update', {id: id});
     }
     var viewFile = function(id)
     {
@@ -53,7 +54,7 @@ function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, 
                     .then(function (response) {
                         if(response.data == 'true')
                         {
-                            cogProjects.getActiveProjects(self);
+                            cogProjects.getActiveProjects(self, {page: cogProjPage});
                             SweetAlert.swal("Deleted!", "Project is successfully removed", "success");
                         }
                         else
@@ -70,6 +71,22 @@ function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, 
             });
         }
     };
+    var restoreFile = function(id) {
+        $http.post("./cogworks/projects/activate", {id: id})
+        .then(function (response) {
+            if(response.data == 'true')
+            {
+                cogProjects.getActiveProjects(self, {page: cogProjPage});
+                SweetAlert.swal("Success!", "Project is successfully restored.", "success");
+            }
+            else
+            {
+                SweetAlert.swal("Failed!", "File is not been removed. Try it again.", "error");
+            }
+        }, function (response) {
+            SweetAlert.swal("Error", "Something went wrong. Try it again.", "error");
+        });
+    }
     self.viewByThumnail = function(event)
     {
         viewThumnail();
@@ -131,6 +148,11 @@ function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, 
     {
         var elem = $(event.target);
         removeFile(elem.attr('data-id'), parseInt(elem.attr('data-files')));
+    };
+    self.restore = function(event)
+    {
+        var elem = $(event.target);
+        restoreFile(elem.attr('data-id'), parseInt(elem.attr('data-files')));
     };
 }
 

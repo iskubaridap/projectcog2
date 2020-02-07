@@ -3,16 +3,17 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, log
 {
     var self = this;
     var cogProjID = ($state.params.project == undefined) ? 0 : $state.params.project;
+    var cogProjPage = ($state.params.page == undefined) ? '' : $state.params.page;
     self.cogProj = cogProjID;
     self.activeFiles = undefined;
-    cogProject.getProject(self, {id: cogProjID}, function(data){
+    cogProject.getProject(self, {id: cogProjID, page: cogProjPage}, function(data){
         if(data != 'false')
         {
             self.cogProj = data.project;
         }
     });
     
-    cogFiles.getActiveFiles(self, {projID: cogProjID}, function(data){
+    cogFiles.getActiveFiles(self, {projID: cogProjID, page: cogProjPage}, function(data){
         loginService.userLogged(data);
     });
 
@@ -96,7 +97,7 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, log
                 .then(function (response) {
                     if(response.data == 'true')
                     {
-                        cogFiles.getActiveFiles(self);
+                        cogFiles.getActiveFiles(self, {projID: cogProjID, page: cogProjPage});
                         SweetAlert.swal("Deleted!", "File is successfully removed", "success");
                     }
                     else
@@ -112,6 +113,22 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, log
             }
         });
     };
+    var restoreFile = function(id) {
+        $http.post("./cogworks/cog-files/activate", {id: id})
+        .then(function (response) {
+            if(response.data == 'true')
+            {
+                cogFiles.getActiveFiles(self, {projID: cogProjID, page: cogProjPage});
+                SweetAlert.swal("Success!", "File is successfully restored.", "success");
+            }
+            else
+            {
+                SweetAlert.swal("Failed!", "File is not been removed. Try it again.", "error");
+            }
+        }, function (response) {
+            SweetAlert.swal("Error", "Something went wrong. Try it again.", "error");
+        });
+    }
 
     self.orderByName = function(event)
     {
@@ -186,6 +203,11 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, log
     {
         var elem = $(event.target);
         removeFile(elem.attr('data-id'));
+    };
+    self.restore = function(event)
+    {
+        var elem = $(event.target);
+        restoreFile(elem.attr('data-id'), parseInt(elem.attr('data-files')));
     };
 }
 

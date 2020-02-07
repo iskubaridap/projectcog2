@@ -2,8 +2,9 @@ var cogDevelopers = angular.module("cog-developers", []);
 function cogDevelopersCtrl($rootScope, $scope, $element, $state, $http, $timeout, loginService, cogDevelopers, SweetAlert)
 {
     var self = this;
+    var cogDevPage = ($state.params.page == undefined) ? '' : $state.params.page;
     self.activeDevelopers = undefined;
-    cogDevelopers.getActiveDevelopers(self, {}, function(data){
+    cogDevelopers.getActiveDevelopers(self, {page: cogDevPage}, function(data){
         loginService.userLogged(data);
     });
 
@@ -37,7 +38,7 @@ function cogDevelopersCtrl($rootScope, $scope, $element, $state, $http, $timeout
                 .then(function (response) {
                     if(response.data == 'true')
                     {
-                        developers.getActiveDevelopers(self);
+                        cogDevelopers.getActiveDevelopers(self, {page: cogDevPage});
                         SweetAlert.swal("Deleted!", "User is successfully removed", "success");
                     }
                     else
@@ -53,6 +54,22 @@ function cogDevelopersCtrl($rootScope, $scope, $element, $state, $http, $timeout
             }
         });
     };
+    var restoreFile = function(id) {
+        $http.post("./cogworks/developers/activate", {id: id})
+        .then(function (response) {
+            if(response.data == 'true')
+            {
+                cogDevelopers.getActiveDevelopers(self, {page: cogDevPage});
+                SweetAlert.swal("Success!", "User is successfully restored.", "success");
+            }
+            else
+            {
+                SweetAlert.swal("Failed!", "File is not been removed. Try it again.", "error");
+            }
+        }, function (response) {
+            SweetAlert.swal("Error", "Something went wrong. Try it again.", "error");
+        });
+    }
 
     self.orderByName = function(event)
     {
@@ -96,6 +113,11 @@ function cogDevelopersCtrl($rootScope, $scope, $element, $state, $http, $timeout
     {
         var elem = $(event.target);
         removeUser(elem.attr('data-id'));
+    };
+    self.restore = function(event)
+    {
+        var elem = $(event.target);
+        restoreFile(elem.attr('data-id'), parseInt(elem.attr('data-files')));
     };
 }
 

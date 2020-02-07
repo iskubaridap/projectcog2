@@ -12,6 +12,7 @@ return function (App $app) {
         $userID = $loggedUser['id'];
         $userPosition = $loggedUser['position_id'];
         $userOrg = $loggedUser['organization_id'];
+        $page = $request->getParam('page');
         $result = array();
 
         $user = $container->projectcog->query("
@@ -25,11 +26,10 @@ return function (App $app) {
         ")->fetchAll(PDO::FETCH_ASSOC);
 
         // This assumes that the user is the Admin
-        if($userPosition == 1)
+        if($page == 'manage')
         {
             $projects = $container->cogworks->query("
                 select * from projects
-                where status_id = '1'
                 order by project asc
             ")->fetchAll(PDO::FETCH_ASSOC);
         }
@@ -51,6 +51,7 @@ return function (App $app) {
             $project['orgID'] = $prj['organization_id'];
             $project['created'] = (explode(" ",$prj['created']))[0];
             $project['cogfiles'] = 0;
+            $project['status'] = $prj['status_id'];
             $projImgAry = array();
 
             $projImgAry = getCogProjectThumbnail($prj['organization_id'], $prj['id'], $prj['image'], $container);
@@ -92,11 +93,28 @@ return function (App $app) {
         $result = $prepare->execute();
         return json_encode($result);
     });
+    $app->post('/cogworks/projects/activate', function ($request, $response, $args) use ($container) {
+        $id = $request->getParam('id');
+        $result = null;
+        $date = new DateTime('NOW');
+        $dateDateTime = $date->format('Y-m-d H:i:s');
+        $prepare = $container->cogworks->prepare("
+            update projects
+            set
+            status_id = '1',
+            updated = '$dateDateTime'
+            where id = '$id'
+        ");
+
+        $result = $prepare->execute();
+        return json_encode($result);
+    });
     $app->post('/cogworks/projects/add', function ($request, $response, $args) use ($container) {
         $result = null;
         $user = identifyLoggedUser($container);
         $userID = $user['id'];
         $name = $request->getParam('cogProjName');
+        $orgID = $request->getParam('cogOrgID');
         $file = $request->getUploadedFiles();
         $date = new DateTime('NOW');
         $dateDateTime = $date->format('Y-m-d H:i:s');
@@ -104,7 +122,7 @@ return function (App $app) {
         $result = null;
         $imageName = null;
 
-        $cogOrgID = $user['organization_id'];
+        $cogOrgID = ($orgID == 0 ? $user['organization_id'] : $orgID);
         $cogUserID = $userID;
        
         if(!empty($file)) {
@@ -143,8 +161,9 @@ return function (App $app) {
                 $projID = $proj['id'];
             }
         }
-
-        $path = setCogworksDirectoryPath($cogOrgID) . '/' . $cogOrgID . '/projects/' . $projID;
+        // using $userID base on the logged user for now
+        $path = getCogProjectDirectory($projID, $cogOrgID, $userID);
+        
         generateDirectory($path);
         
         return json_encode($path);

@@ -31,12 +31,13 @@
                                 <ul uib-dropdown-menu="" class="dropdown-menu">
                                     <li><a data-id="{{cogProject.activeProjects[$index].id}}" ng-click="cogProject.open($event)">Open</a></li>
                                     <!-- <li><a data-id="{{cogProject.activeProjects[$index].id}}" ng-click="cogProject.details($event)">Details</a></li> -->
-                                    <li ng-if="positionID !== '3' || organizationID <= parseInt(2)"><a data-id="{{cogProject.activeProjects[$index].id}}" ng-click="cogProject.update($event)">Update</a></li>
-                                    <li ng-if="positionID !== '3' || organizationID <= parseInt(2)"><a data-id="{{cogProject.activeProjects[$index].id}}" data-files="{{cogProject.activeProjects[$index].cogfiles}}" ng-click="cogProject.remove($event)">Remove</a></li>
+                                    <li ng-if="positionID != 3 || organizationID <= 2"><a data-id="{{cogProject.activeProjects[$index].id}}" ng-click="cogProject.update($event)">Update</a></li>
+                                    <li ng-if="(positionID != 3 || organizationID <= 2) && cogProject.activeProjects[$index].status == '1'"><a data-id="{{cogProject.activeProjects[$index].id}}" data-files="{{cogProject.activeProjects[$index].cogfiles}}" ng-click="cogProject.remove($event)">Remove</a></li>
+                                    <li ng-if="(positionID != 3 || organizationID <= 2) && cogProject.activeProjects[$index].status == '2'"><a data-id="{{cogProject.activeProjects[$index].id}}" data-files="{{cogProject.activeProjects[$index].cogfiles}}" ng-click="cogProject.restore($event)">Restore</a></li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="ibox-content">
+                        <div class="ibox-content{{(cogProject.activeProjects[$index].status == '2') ? ' item-deleted' : ''}}">
                             <div class="contact-box center-version">
                                 <a>
                                     <img alt="image" class="" ng-src="{{cogProject.activeProjects[$index].image}}">
@@ -59,12 +60,13 @@
                                 <ul uib-dropdown-menu="" class="dropdown-menu">
                                     <li><a data-id="{{cogProject.activeProjects[$index + 1].id}}" ng-click="cogProject.open($event)">Open</a></li>
                                     <!-- <li><a data-id="{{cogProject.activeProjects[$index + 1].id}}" ng-click="cogProject.details($event)">Details</a></li> -->
-                                    <li ng-if="positionID !== '3' || organizationID <= parseInt(2)"><a data-id="{{cogProject.activeProjects[$index + 1].id}}" ng-click="cogProject.update($event)">Update</a></li>
-                                    <li ng-if="positionID !== '3' || organizationID <= parseInt(2)"><a data-id="{{cogProject.activeProjects[$index + 1].id}}" data-files="{{cogProject.activeProjects[$index + 1].cogfiles}}" ng-click="cogProject.remove($event)">Remove</a></li>
+                                    <li ng-if="positionID != 3 || organizationID <= 2"><a data-id="{{cogProject.activeProjects[$index + 1].id}}" ng-click="cogProject.update($event)">Update</a></li>
+                                    <li ng-if="(positionID != 3 || organizationID <= 2) && cogProject.activeProjects[$index + 1].status == '1'"><a data-id="{{cogProject.activeProjects[$index + 1].id}}" data-files="{{cogProject.activeProjects[$index + 1].cogfiles}}" ng-click="cogProject.remove($event)">Remove</a></li>
+                                    <li ng-if="(positionID != 3 || organizationID <= 2) && cogProject.activeProjects[$index + 1].status == '2'"><a data-id="{{cogProject.activeProjects[$index + 1].id}}" data-files="{{cogProject.activeProjects[$index + 1].cogfiles}}" ng-click="cogProject.restore($event)">Restore</a></li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="ibox-content">
+                        <div class="ibox-content{{(cogProject.activeProjects[$index + 1].status == '2') ? ' item-deleted' : ''}}">
                             <div class="contact-box center-version">
                                 <a>
                                     <img alt="image" class="" ng-src="{{cogProject.activeProjects[$index + 1].image}}">
@@ -87,12 +89,13 @@
                                 <ul uib-dropdown-menu="" class="dropdown-menu">
                                     <li><a data-id="{{cogProject.activeProjects[$index + 2].id}}" ng-click="cogProject.open($event)">Open</a></li>
                                     <!-- <li><a data-id="{{cogProject.activeProjects[$index + 2].id}}" ng-click="cogProject.details($event)">Details</a></li> -->
-                                    <li ng-if="positionID !== '3' || organizationID <= parseInt(2)"><a data-id="{{cogProject.activeProjects[$index + 2].id}}" ng-click="cogProject.update($event)">Update</a></li>
-                                    <li ng-if="positionID !== '3' || organizationID <= parseInt(2)"><a data-id="{{cogProject.activeProjects[$index + 2].id}}" data-files="{{cogProject.activeProjects[$index + 2].cogfiles}}" ng-click="cogProject.remove($event)">Remove</a></li>
+                                    <li ng-if="positionID != 3 || organizationID <= 2"><a data-id="{{cogProject.activeProjects[$index + 2].id}}" ng-click="cogProject.update($event)">Update</a></li>
+                                    <li ng-if="(positionID != 3 || organizationID <= 2) && cogProject.activeProjects[$index + 2].status == '1'"><a data-id="{{cogProject.activeProjects[$index + 2].id}}" data-files="{{cogProject.activeProjects[$index + 2].cogfiles}}" ng-click="cogProject.remove($event)">Remove</a></li>
+                                    <li ng-if="(positionID != 3 || organizationID <= 2) && cogProject.activeProjects[$index + 2].status == '2'"><a data-id="{{cogProject.activeProjects[$index + 2].id}}" data-files="{{cogProject.activeProjects[$index + 2].cogfiles}}" ng-click="cogProject.restore($event)">Restore</a></li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="ibox-content">
+                        <div class="ibox-content{{(cogProject.activeProjects[$index + 2].status == '2') ? ' item-deleted' : ''}}">
                             <div class="contact-box center-version">
                                 <a>
                                     <img alt="image" class="" ng-src="{{cogProject.activeProjects[$index + 2].image}}">
@@ -115,12 +118,13 @@
                                 <ul uib-dropdown-menu="" class="dropdown-menu">
                                     <li><a data-id="{{cogProject.activeProjects[$index + 3].id}}" ng-click="cogProject.open($event)">Open</a></li>
                                     <!-- <li><a data-id="{{cogProject.activeProjects[$index + 3].id}}" ng-click="cogProject.details($event)">Details</a></li> -->
-                                    <li ng-if="positionID !== '3' || organizationID <= parseInt(2)"><a data-id="{{cogProject.activeProjects[$index + 3].id}}" ng-click="cogProject.update($event)">Update</a></li >
-                                    <li ng-if="positionID !== '3' || organizationID <= parseInt(2)"><a data-id="{{cogProject.activeProjects[$index + 3].id}}" data-files="{{cogProject.activeProjects[$index + 3].cogfiles}}" ng-click="cogProject.remove($event)">Remove</a></li>
+                                    <li ng-if="positionID != 3 || organizationID <= 2"><a data-id="{{cogProject.activeProjects[$index + 3].id}}" ng-click="cogProject.update($event)">Update</a></li >
+                                    <li ng-if="(positionID != 3 || organizationID <= 2) && cogProject.activeProjects[$index + 3].status == '1'"><a data-id="{{cogProject.activeProjects[$index + 3].id}}" data-files="{{cogProject.activeProjects[$index + 3].cogfiles}}" ng-click="cogProject.remove($event)">Remove</a></li>
+                                    <li ng-if="(positionID != 3 || organizationID <= 2) && cogProject.activeProjects[$index + 3].status == '2'"><a data-id="{{cogProject.activeProjects[$index + 3].id}}" data-files="{{cogProject.activeProjects[$index + 3].cogfiles}}" ng-click="cogProject.restore($event)">Restore</a></li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="ibox-content">
+                        <div class="ibox-content{{(cogProject.activeProjects[$index + 3].status == '2') ? ' item-deleted' : ''}}">
                             <div class="contact-box center-version">
                                 <a>
                                     <img alt="image" class="" ng-src="{{cogProject.activeProjects[$index + 3].image}}">

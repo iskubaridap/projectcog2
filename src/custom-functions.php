@@ -194,16 +194,16 @@ function getCogImageDirectory($projID, $orgID, $userID, $folder)
 
     return $path;
 }
-function getCogProjectDirectory($projID, $orgID)
+function getCogProjectDirectory($projID, $orgID, $userID)
 {
     $path = '';
     // keeping the else if statement just in-case it might needed in the future
     if($orgID == 1) {
         $path = setCogworksDirectoryPath($orgID) . '/projects/' . $projID;
     } else if($orgID == 2) {
-        $path = setCogworksDirectoryPath($orgID) . '/projects/' . $projID;
+        $path = setCogworksDirectoryPath($orgID) . '/' . $userID . '/projects/' . $projID;
     } else {
-        $path = setCogworksDirectoryPath($orgID) . '/projects/' . $projID;
+        $path = setCogworksDirectoryPath($orgID) . '/' . $orgID  . '/projects/' . $projID;
     }
     generateDirectory($path);
     $path = $path . '/';

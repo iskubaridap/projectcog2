@@ -9,14 +9,17 @@ return function (App $app) {
 
     $app->post('/cogworks/developers/retrieve/active', function ($request, $response, $args) use ($container) {
         $loggedUser = identifyLoggedUser($container);
+        $userID = $loggedUser['id'];
         $userPosition = $loggedUser['position_id'];
         $userOrg = $loggedUser['organization_id'];
+        $page = $request->getParam('page');
 
-        if($userPosition == 1)
+        if($page == 'manage')
         {
+            // be aware that i used alias for status_id into status
             $developers = $container->projectcog->query("
-                select users.id, users.user, users.firstname, users.lastname, users.middlename, users.position_id, positions.position, users.image, users.organization_id from users, positions 
-                where users.status_id = '1' and users.position_id = positions.id and users.organization_id <> 1
+                select users.id, users.user, users.firstname, users.lastname, users.middlename, users.position_id, users.status_id as status, positions.position, users.image, users.organization_id from users, positions 
+                where users.position_id = positions.id and (users.id <> 1 and users.id <> 2) and users.organization_id <> 1
                 order by users.user asc
             ")->fetchAll(PDO::FETCH_ASSOC);
         }
@@ -24,7 +27,7 @@ return function (App $app) {
         {
             $developers = $container->projectcog->query("
                 select users.id, users.user, positions.position, users.image, users.organization_id from users, positions 
-                where users.status_id = '1' and users.position_id = positions.id and users.organization_id = '$userOrg' 
+                where users.status_id = '1' and users.position_id = positions.id  and (users.id <> 1 and users.id <> 2) and users.organization_id = '$userOrg' 
                 order by users.user asc
             ")->fetchAll(PDO::FETCH_ASSOC);
         }
@@ -122,6 +125,24 @@ return function (App $app) {
             update users
             set
             status_id = '2',
+            updated = '$dateDateTime'
+            where id = '$id'
+        ");
+
+        $result = $prepare->execute();
+
+        return json_encode($result);
+    });
+    $app->post('/cogworks/developers/activate', function ($request, $response, $args) use ($container) {
+        $id = $request->getParam('id');
+        $date = new DateTime('NOW');
+        $dateDateTime = $date->format('Y-m-d H:i:s');
+        $result = null;
+
+        $prepare = $container->projectcog->prepare("
+            update users
+            set
+            status_id = '1',
             updated = '$dateDateTime'
             where id = '$id'
         ");

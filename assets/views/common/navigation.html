@@ -10,7 +10,7 @@
                                     <strong class="font-bold">{{user}}</strong>
                                     <!-- <strong class="font-bold">{{main.user}}</strong> -->
                              </span>
-                                <span class="text-muted text-xs block">Example menu<b class="caret"></b></span>
+                                <span class="text-muted text-xs block">{{position}}<b class="caret"></b></span>
                             </span>
                     </a>
                     <ul uib-dropdown-menu="" class="animated fadeInRight m-t-xs">
@@ -26,24 +26,57 @@
             <li ng-class="{active: $state.includes('cog-home')}">
                 <a ui-sref="cog-home.main"><i class="fa fa-home"></i> <span class="nav-label">Home</span> </a>
             </li>
+            <li ng-if="positionID != 3 && organizationID == 1" ng-class="{active: $state.includes('cog-admin')}">
+                <a href=""><i class="fa fa-sitemap"></i> <span class="nav-label">Manage App</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level collapse">
+                    <li>
+                        <a href=""><i class="fa fa-globe"></i> Organization<span class="fa arrow"></span></a>
+                        <ul class="nav nav-third-level">
+                            <li ><a href=""><i class="fa fa-eye"></i> View</a></li>
+                            <li ><a href=""><i class="fa fa-plus-circle"></i> Add</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href=""><i class="fa fa-users"></i> Users / Developers<span class="fa arrow"></span></a>
+                        <ul class="nav nav-third-level">
+                            <li ui-sref-active="active"><a ui-sref="cog-admin.developers({page: 'manage'})"><i class="fa fa-eye"></i> View</a></li>
+                            <li><a href=""><i class="fa fa-plus-circle"></i> Add</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href=""><i class="fa fa-file"></i> Files<span class="fa arrow"></span></a>
+                        <ul class="nav nav-third-level">
+                            <li ui-sref-active="active"><a ui-sref="cog-admin.files({project: 'all',page: 'manage'})"><i class="fa fa-eye"></i> View</a></li>
+                            <li><a href=""><i class="fa fa-plus-circle"></i> Add</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href=""><i class="fa fa-folder"></i> Projects<span class="fa arrow"></span></a>
+                        <ul class="nav nav-third-level">
+                            <li ui-sref-active="active"><a ui-sref="cog-admin.projects({page: 'manage'})"><i class="fa fa-eye"></i> View</a></li>
+                            <li ui-sref-active="active"><a ui-sref="cog-admin.projects-add({page: 'manage'})"><i class="fa fa-plus-circle"></i> Add</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
             <li>
-                <a><i class="fa fa-file"></i> <span>Create New File</span></a>
+                <a><i class="fa fa-file"></i> <span>New File</span></a>
             </li>
             <li ng-class="{active: $state.includes('cog-files')}">
-                <a ui-sref="cog-files.active({project: 'all'})"><i class="fa fa-files-o"></i> <span>Personal Files</span></a>
+                <a ui-sref="cog-files.active({project: 'all',page: 'user'})"><i class="fa fa-files-o"></i> <span>Personal Files</span></a>
             </li>
             <li ng-class="{active: $state.includes('cog-projects')}">
                 <a href="#"><i class="fa fa-folder"></i> <span class="nav-label">Projects </span><span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level collapse" ng-class="{in: $state.includes('cog-projects')}">
-                    <li ui-sref-active="active"><a ui-sref="cog-projects.active"><i class="fa fa-folder-o"></i> View</a></li>
-                    <li ui-sref-active="active"><a ui-sref="cog-projects.add"><i class="fa fa-plus-circle"></i> Add</a ui-sref="cog-projects.active"></li>
+                    <li ui-sref-active="active"><a ui-sref="cog-projects.active({page: 'user'})"><i class="fa fa-eye"></i> View</a></li>
+                    <li ng-if="positionID != 3 || organizationID <= 2" ui-sref-active="active"><a ui-sref="cog-projects.add"><i class="fa fa-plus-circle"></i> Add</a ui-sref="cog-projects.active"></li>
                 </ul>
             </li>
             
-            <li ng-if="positionID !== '3' || organizationID <= parseInt(2)" ng-class="{active: $state.includes('cog-developers')}">
-                <a href="#"><i class="fa fa-users"></i> <span class="nav-label">Developers </span><span class="fa arrow"></span></a>
+            <li ng-if="positionID != 3 || organizationID <= 2" ng-class="{active: $state.includes('cog-developers')}">
+                <a href="#"><i class="fa fa-users"></i> <span class="nav-label">User / Developers </span><span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level collapse" ng-class="{in: $state.includes('cog-developers')}">
-                    <li ui-sref-active="active"><a ui-sref="cog-developers.active"><i class="fa fa-user-circle"></i> View</a></li>
+                    <li ui-sref-active="active"><a ui-sref="cog-developers.active({page: 'user'})"><i class="fa fa-eye"></i> View</a></li>
                     <li ui-sref-active="active"><a ui-sref="cog-developers.add"><i class="fa fa-plus-circle"></i> Add</a ui-sref="cog-developers.active"></li ui-sref-active="active">
                 </ul>
             </li>
@@ -53,22 +86,6 @@
             <li ng-class="{active: $state.include('pods-what-nots')}">
                 <a ui-sref="pods-what-nots.main"><i class="fa fa-code"></i> <span>Pods / What-Nots</span></a>
             </li>
-
-            <!-- <li ng-class="{active: $state.includes('home')}">
-                <a ui-sref="home.main"><i class="fa fa-laptop"></i> <span class="nav-label">Main page</span> </a>
-            </li>
-            <li ng-class="{active: $state.includes('minor')}">
-                <a ui-sref="minor.page"><i class="fa fa-desktop"></i> <span class="nav-label">Minor page</span></a>
-            </li>
-            <li ng-class="{active: $state.includes('mailbox')}">
-                <a href="#"><i class="fa fa-envelope"></i> <span class="nav-label">Mailbox </span><span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level collapse" ng-class="{in: $state.includes('mailbox')}">
-                    <li ui-sref-active="active"><a ui-sref="mailbox.inbox">Inbox</a></li>
-                    <li ui-sref-active="active"><a ui-sref="mailbox.email_view">Email view</a></li>
-                    <li ui-sref-active="active"><a ui-sref="mailbox.email_compose">Compose email</a></li>
-                    <li ui-sref-active="active"><a ui-sref="mailbox.email_template">Email template</a></li>
-                </ul>
-            </li> -->
         </ul>
 
     </div>

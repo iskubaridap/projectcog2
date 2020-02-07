@@ -15,11 +15,12 @@ function loginCtrl($rootScope, $scope, $state, $element, $http, loginService, Sw
             {
                 loginService.getLoggedUser(self, {}, function(data) {
                     $rootScope.user = data.user;
-                    $rootScope.userID = data.id;
+                    $rootScope.userID = parseInt(data.id);
                     $rootScope.position = data.position;
-                    $rootScope.positionID = data.position_id;
+                    $rootScope.positionID = parseInt(data.position_id);
                     $rootScope.organization = data.organization;
-                    $rootScope.organizationID = data.organization_id;
+                    $rootScope.organizationID = parseInt(data.organization_id);
+                    console.log($rootScope);
                     $state.go('cog-home.main');
                 });
                 

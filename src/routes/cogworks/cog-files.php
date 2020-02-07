@@ -15,6 +15,7 @@ return function (App $app) {
         $userOrg = $loggedUser['organization_id'];
         $result = array();
         $projectID = $request->getParam('projID');
+        $page = $request->getParam('page');
 
         $user = $container->projectcog->query("
             select * from users
@@ -27,18 +28,16 @@ return function (App $app) {
         ")->fetchAll(PDO::FETCH_ASSOC);
 
         // This assumes that the user is the Admin
-        if($userPosition == 1)
+        if($page == 'manage')
         {
             if($projectID == 'all')
             {
                 $cogFiles = $container->cogworks->query("
                     select * from cog_files
-                    where status_id = '1'
                     order by cog_file asc
                 ")->fetchAll(PDO::FETCH_ASSOC);
                 $projects = $container->cogworks->query("
                     select * from projects
-                    where status_id = '1'
                     order by project asc
                 ")->fetchAll(PDO::FETCH_ASSOC);
             }
@@ -103,6 +102,7 @@ return function (App $app) {
             $cogFile['updated'] = (explode(" ",$cog['updated']))[0];
             $cogFile['project'] = '(Personal File)';
             $cogFile['imageValue'] = '';
+            $cogFile['status'] = $cog['status_id'];
             $tmpAry = array();
 
             foreach($projects as $prj)
@@ -130,6 +130,24 @@ return function (App $app) {
             update cog_files
             set
             status_id = '2',
+            updated = '$dateDateTime'
+            where id = '$id'
+        ");
+
+        $result = $prepare->execute();
+
+        return json_encode($result);
+    });
+    $app->post('/cogworks/cog-files/activate', function ($request, $response, $args) use ($container) {
+        $id = $request->getParam('id');
+        $date = new DateTime('NOW');
+        $dateDateTime = $date->format('Y-m-d H:i:s');
+        $result = null;
+        
+        $prepare = $container->cogworks->prepare("
+            update cog_files
+            set
+            status_id = '1',
             updated = '$dateDateTime'
             where id = '$id'
         ");
