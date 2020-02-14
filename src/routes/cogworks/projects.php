@@ -80,8 +80,7 @@ return function (App $app) {
     $app->post('/cogworks/projects/deactivate', function ($request, $response, $args) use ($container) {
         $id = $request->getParam('id');
         $result = null;
-        $date = new DateTime('NOW');
-        $dateDateTime = $date->format('Y-m-d H:i:s');
+        $dateDateTime = getCurrentDate();
         $prepare = $container->cogworks->prepare("
             update projects
             set
@@ -96,8 +95,7 @@ return function (App $app) {
     $app->post('/cogworks/projects/activate', function ($request, $response, $args) use ($container) {
         $id = $request->getParam('id');
         $result = null;
-        $date = new DateTime('NOW');
-        $dateDateTime = $date->format('Y-m-d H:i:s');
+        $dateDateTime = getCurrentDate();
         $prepare = $container->cogworks->prepare("
             update projects
             set
@@ -116,8 +114,7 @@ return function (App $app) {
         $name = $request->getParam('cogProjName');
         $orgID = $request->getParam('cogOrgID');
         $file = $request->getUploadedFiles();
-        $date = new DateTime('NOW');
-        $dateDateTime = $date->format('Y-m-d H:i:s');
+        $dateDateTime = getCurrentDate();
         $path = '';
         $result = null;
         $imageName = null;
@@ -166,20 +163,23 @@ return function (App $app) {
         
         generateDirectory($path);
         
-        return json_encode($path);
+        return json_encode($result);
     });
     $app->post('/cogworks/projects/retrieve/single', function ($request, $response, $args) use ($container) {
         $id = $request->getParam('id');
         $result = null;
         $tmpAry = array();
-        $result = $container->cogworks->query("
+        $obj = $container->cogworks->query("
             select * from projects
             where id = '$id'
         ")->fetch(PDO::FETCH_ASSOC);
 
-        $tmpAry = getCogProjectThumbnail($result['organization_id'], $id, $result['image'], $container);
-        $result['imageValue'] = $tmpAry['imageValue'];
-        $result['image'] = $tmpAry['path'];
+        if(is_array($obj)) {
+            $tmpAry = getCogProjectThumbnail($obj['organization_id'], $id, $obj['image'], $container);
+            $obj['imageValue'] = $tmpAry['imageValue'];
+            $obj['image'] = $tmpAry['path'];
+            $result = $obj;
+        }
         return json_encode($result);
     });
     $app->post('/cogworks/projects/retrieve/projects-files/active', function ($request, $response, $args) use ($container) {
@@ -276,8 +276,7 @@ return function (App $app) {
        $projID = $request->getParam('id');
        $name = $request->getParam('cogProjName');
        $file = $request->getUploadedFiles();
-       $date = new DateTime('NOW');
-       $dateDateTime = $date->format('Y-m-d H:i:s');
+       $dateDateTime = getCurrentDate();
        $path = '';
        $result = null;
        $imageName = null;

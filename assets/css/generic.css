@@ -188,6 +188,21 @@
     background-size: 80%;
     background-position: center;
 }
+.org-info-img-wrap {
+    text-align: center;
+}
+.org-info-img-wrap img {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 200px;
+}
+.inline-element {
+    display: inline-block;
+}
+.min-padding-t-b {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
 /* .item-deleted .contact-box.center-version > a img {
     opacity: 0.5;
 } */

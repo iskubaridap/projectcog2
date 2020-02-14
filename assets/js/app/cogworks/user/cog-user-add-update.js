@@ -1,14 +1,23 @@
-var cogUser = angular.module("cog-user", []);
-function cogUserCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogPositions, cogUsers, SweetAlert)
+var cogUser = angular.module("cog-user-add-update", []);
+function cogUserCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogPositions, cogUsers, cogOrganizationsService, SweetAlert)
 {
     var self = this;
     var userID = $state.params.id;
-    var org = 0;
+    var org = ($state.params.orgID == undefined) ? 0 : $state.params.orgID;
+    var cogProjPage = ($state.params.page == undefined) ? '' : $state.params.page;
     var account = 0;
     var userCategory = 'new';
     cogPositions.getPositions(self, {}, function(data) {
         self.positionsInitValue = data[0].id;
     });
+
+    // this is to get the org's account id if the logged user is the super admin
+    if(org != 0 || cogProjPage == 'manage') {
+        cogOrganizationsService.getOrganization(self, {id: org}, function(data) {
+            account = data.account_id;
+        });
+    }
+    
     if(userID != undefined) {
         self.title = "Update Profile";
         userCategory = 'update';
@@ -109,7 +118,7 @@ function cogUserCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogP
                         data: formData,
                         headers: {'Content-Type': undefined}
                     }).success(function (response) {
-                        $state.go('cog-developers.active');
+                        $state.go($state.current, {}, {reload: true});
                     }).error(function(error){
                         SweetAlert.swal({
                             title: "Process Fail",
@@ -137,23 +146,6 @@ function cogUserCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogP
                     }); */
                     break;
             }
-
-            /* $http({
-                url: ( root + 'cogworks/projects/update'),
-                method: "POST",
-                data: formData,
-                headers: {'Content-Type': undefined}
-            }).success(function (response) {
-                $state.go('cog-projects.active');
-            }).error(function(error){
-                SweetAlert.swal({
-                    title: "Project Update Fail",
-                    text: "Something went wrong. Please try it again."
-                }, function(isConfirm){
-                    if(isConfirm)
-                    {}
-                });
-            }); */
         }
     };
 }

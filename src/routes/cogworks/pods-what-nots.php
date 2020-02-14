@@ -39,8 +39,7 @@ return function (App $app) {
         $userPosition = $loggedUser['position_id'];
         $userOrg = $loggedUser['organization_id'];
         $content = addslashes($request->getParam('content'));
-        $date = new DateTime('NOW');
-        $dateDateTime = $date->format('Y-m-d H:i:s');
+        $dateDateTime = getCurrentDate();
         $result = null;
         $result = null;
 
@@ -62,8 +61,7 @@ return function (App $app) {
         $userPosition = $loggedUser['position_id'];
         $userOrg = $loggedUser['organization_id'];
         $content = addslashes($request->getParam('content'));
-        $date = new DateTime('NOW');
-        $dateDateTime = $date->format('Y-m-d H:i:s');
+        $dateDateTime = getCurrentDate();
         $result = null;
         $result = null;
 

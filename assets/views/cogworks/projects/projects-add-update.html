@@ -1,15 +1,13 @@
 <div id="section-projects-update" ng-controller="cogProjectCtrl as cogProject">
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-12">
-            <h2>Project {{cogProject.title}} <a ui-sref="cog-projects.active" class="btn btn-primary btn-xs pull-right"><i class="fa fa-folder"></i> Projects</a></h2>
+            <h2>Project {{cogProject.title}} <a ng-if="cogProject.page != 'manage'" ui-sref="cog-projects.active" class="btn btn-primary btn-xs pull-right"><i class="fa fa-folder"></i> Projects</a></h2>
         </div>
     </div>
     <section-loader-indicator text="Preparing to show file Details" object="cogProject.project" ng-if="cogProject.project === undefined || cogProject.project.error !== undefined"></section-loader-indicator>
-    <section-data-empty text="No data retrieved." ng-if="cogProject.project !== undefined && cogProject.project === null"></section-data-empty>
-    
+    <section-data-empty text="Invalid Data." ng-if="cogProject.project !== undefined && cogProject.project === null"></section-data-empty>
     <div ng-if="cogProject.project !== undefined && cogProject.project.error === undefined">
-        <p ng-if="cogProject.project.id === null" class="large-font m-t">File does not exist.</p>
-        <div ng-if="cogProject.project.id !== null" class="m-t">
+        <div ng-if="cogProject.project !== null" class="m-t">
             <div class="row">
                 <div class="col-md-10 col-md-push-1">
                     <div class="ibox float-e-margins">
@@ -40,14 +38,14 @@
                                             <input data-orginal-value="{{cogProject.project.project}}" id="cog-project-update-name" name="cog-project-update-name" type="text" class="cog-input form-control" value="{{cogProject.project.project}}">
                                         </div>
                                     </div>
-                                    <div ng-if="(positionID != 3 || organizationID <= 2) && cogProject.page == 'manage'" class="col-md-6">
+                                    <!-- <div ng-if="(positionID != 3 || organizationID <= 2) && cogProject.page == 'manage'" class="col-md-6">
                                         <div class="form-group">
                                             <label class="control-label"><span class="text-danger">*</span> Organization</label>
                                             <select id="cog-project-organization-option" ng-model="cogProject.positionsInitValue" ng-model="organization" class="form-control m-b" name="cog-project-origanization" required>
                                                 <option ng-if="item.id != undefined && (item.id != '1' && item.id != '2')" value="{{item.id}}" ng-repeat="item in cogProject.organizations">{{item.organization}}</option>
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">

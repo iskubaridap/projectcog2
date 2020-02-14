@@ -117,8 +117,7 @@ return function (App $app) {
     });
     $app->post('/cogworks/developers/deactivate', function ($request, $response, $args) use ($container) {
         $id = $request->getParam('id');
-        $date = new DateTime('NOW');
-        $dateDateTime = $date->format('Y-m-d H:i:s');
+        $dateDateTime = getCurrentDate();
         $result = null;
 
         $prepare = $container->projectcog->prepare("
@@ -135,8 +134,7 @@ return function (App $app) {
     });
     $app->post('/cogworks/developers/activate', function ($request, $response, $args) use ($container) {
         $id = $request->getParam('id');
-        $date = new DateTime('NOW');
-        $dateDateTime = $date->format('Y-m-d H:i:s');
+        $dateDateTime = getCurrentDate();
         $result = null;
 
         $prepare = $container->projectcog->prepare("

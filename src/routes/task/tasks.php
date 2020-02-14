@@ -114,8 +114,7 @@ return function (App $app) {
         $id = $request->getParam('id');
         $priority = $request->getParam('priority');
         $result = null;
-        $date = new DateTime('NOW');
-        $dateDateTime = $date->format('Y-m-d H:i:s');
+        $dateDateTime = getCurrentDate();
 
         $prepare = $container->task->prepare("
             update tasks
@@ -133,8 +132,7 @@ return function (App $app) {
         $id = $request->getParam('id');
         $state = $request->getParam('state');
         $result = null;
-        $date = new DateTime('NOW');
-        $dateDateTime = $date->format('Y-m-d H:i:s');
+        $dateDateTime = getCurrentDate();
 
         $prepare = $container->task->prepare("
             update tasks
@@ -207,8 +205,7 @@ return function (App $app) {
         $state = $request->getParam('state');
         $program = $request->getParam('program');
         $result = null;
-        $date = new DateTime('NOW');
-        $dateDateTime = $date->format('Y-m-d H:i:s');
+        $dateDateTime = getCurrentDate();
 
         $todoObj = $container->task->query("
             select * from todo_lists
@@ -258,8 +255,7 @@ return function (App $app) {
     });
     $app->post('/tasks/deactivate', function ($request, $response, $args) use ($container) {
         $id = $request->getParam('id');
-        $date = new DateTime('NOW');
-        $dateDateTime = $date->format('Y-m-d H:i:s');
+        $dateDateTime = getCurrentDate();
         $result = null;
         
         $prepare = $container->task->prepare("

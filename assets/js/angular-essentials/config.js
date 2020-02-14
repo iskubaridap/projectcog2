@@ -113,6 +113,57 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 }
             }
         })
+        .state('cog-admin.organizations', {
+            url: "/organizations",
+            templateUrl: "assets/views/cogworks/organizations/organizations-cogworks-main.html",
+            data: { pageTitle: 'Organizations' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'cog-organizations',
+                            files: ['assets/js/app/cogworks/organizations/cog-organizations.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']
+                        },
+                        {
+                            name: 'oitozero.ngSweetAlert',
+                            files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        }
+                    ]);
+                }
+            }
+        })
+        .state('cog-admin.organizations-info', {
+            url: "/organizations/info/:id",
+            templateUrl: "assets/views/cogworks/organizations/organizations-cogworks-info.html",
+            data: { pageTitle: 'Organizations Info' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'cog-organizations-info',
+                            files: ['assets/js/app/cogworks/organizations/cog-organizations-info.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']
+                        },
+                        {
+                            name: 'oitozero.ngSweetAlert',
+                            files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/footable/footable.all.min.js', 'assets/css/plugins/footable/footable.core.css']
+                        },
+                        {
+                            name: 'ui.footable',
+                            files: ['assets/js/plugins/footable/angular-footable.js']
+                        }
+                    ]);
+                }
+            }
+        })
         .state('cog-admin.files', {
             url: "/:page/files/:project",
             templateUrl: "assets/views/cogworks/cog-files/cog-files-main.html",
@@ -171,8 +222,36 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 }
             }
         })
+        .state('cog-admin.developers-add', {
+            url: "/:page/user/add/:orgID",
+            templateUrl: "assets/views/cogworks/developers/developers-cogworks-add.html",
+            data: { pageTitle: 'Developers' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'cog-user-add-update',
+                            files: ['assets/js/app/cogworks/user/cog-user-add-update.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']
+                        },
+                        {
+                            name: 'oitozero.ngSweetAlert',
+                            files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        },
+                        {
+                            files: ['assets/css/plugins/dropzone/basic.css','assets/css/plugins/dropzone/dropzone.css','assets/js/plugins/dropzone/dropzone.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/jasny/jasny-bootstrap.min.js', 'assets/css/plugins/jasny/jasny-bootstrap.min.css' ]
+                        }
+                    ]);
+                }
+            }
+        })
         .state('cog-admin.projects-add', {
-            url: "/:page/projects/add",
+            url: "/:page/projects/add/:orgID",
             templateUrl: "assets/views/cogworks/projects/projects-add-update.html",
             data: { pageTitle: 'Project New Project' },
             resolve: {
@@ -234,8 +313,8 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 loadPlugin: function ($ocLazyLoad) {
                     return $ocLazyLoad.load([
                         {
-                            name: 'cog-user',
-                            files: ['assets/js/app/cogworks/user/cog-user.js']
+                            name: 'cog-user-add-update',
+                            files: ['assets/js/app/cogworks/user/cog-user-add-update.js']
                         },
                         {
                             files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']

@@ -4,6 +4,31 @@ function test()
 {
     echo 'hello world!';
 }
+function getCogOrganizationThumbnail($orgID, $img, $container)
+{
+    $ary = array();
+    $ary['imageValue'] = '';
+    $ary['path'] = '';
+    if($img == null || strlen($img) <= 0)
+    {
+        $ary['imageValue'] = '';
+        $ary['path'] = 'assets/img/thumbnail/cog-project.svg';
+    }
+    else
+    {
+        // excluding org image for admin and developers, because i think it not necessary
+        $ary['imageValue'] = $img;
+        if($orgID == 1 && $orgID == 2){
+            $ary['imageValue'] = '';
+            $ary['path'] = 'assets/img/thumbnail/cog-project.svg';
+        } else {
+            $ary['folder'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/organizations';
+            $ary['path'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/organizations/' . $img;
+        }
+    }
+    generateDirectory($ary['folder']);
+    return $ary;
+}
 function getCogDeveloperThumbnail($orgID, $userID, $img, $container)
 {
     $ary = array();
@@ -259,6 +284,11 @@ function setCogworksDirectoryPath($orgID)
             $path = $_SERVER['DOCUMENT_ROOT'] . '/cogworks/organizations/';
     }
     return $path;
+}
+function getCurrentDate() {
+    $date = new DateTime('NOW');
+    $dateDateTime = $date->format('Y-m-d H:i:s');
+    return $dateDateTime;
 }
 // reserve code
 /* function generateNewDirectory($rootPath, $folder)

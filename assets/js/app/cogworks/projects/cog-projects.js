@@ -81,7 +81,7 @@ function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, 
             }
             else
             {
-                SweetAlert.swal("Failed!", "File is not been removed. Try it again.", "error");
+                SweetAlert.swal("Failed!", "Project is not been removed. Try it again.", "error");
             }
         }, function (response) {
             SweetAlert.swal("Error", "Something went wrong. Try it again.", "error");

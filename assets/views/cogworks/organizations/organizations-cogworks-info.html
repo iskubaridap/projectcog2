@@ -1,0 +1,147 @@
+<div id="section-organizations-info" class="p-w-md m-t-sm" ng-controller="cogOrganizationsInfoCtrl as orgInfo">
+    <section-loader-indicator text="Preparing to show Organization Info" object="orgInfo.organization" ng-if="orgInfo.organization === undefined || orgInfo.organization.error !== undefined"></section-loader-indicator>
+    <section-data-empty text="Records for this Organization is Empty." ng-if="orgInfo.organization == 'false'"></section-data-empty>
+    <div ng-if="orgInfo.organization !== 'false' && orgInfo.organization.error === undefined">
+        <div class="row min-padding-t-b">
+            <div class="col-md-6">
+                <h1>{{orgInfo.organization.info.organization}}</h1>
+                <div class="inline-element">
+                    <small><b>Created</b></small>
+                    <p>{{orgInfo.organization.info.created}}</p>
+                </div>
+                <div class="inline-element pull-right">
+                    <small><b>Updated</b></small>
+                    <p>{{orgInfo.organization.info.updated}}</p>
+                </div>
+                <table class="table small m-t-sm">
+                    <tr>
+                        <td><b>Users</b></td>
+                        <td>{{orgInfo.organization.users.length}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Projects</b></td>
+                        <td>{{orgInfo.organization.projects.length}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Cog Files</b></td>
+                        <td>{{orgInfo.organization.cogfiles.length}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <div class="org-info-img-wrap">
+                    <img alt="image" class="img-responsive" ng-src="{{orgInfo.organization.info.image}}">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Users</h5>
+                        <div class="pull-right">
+                            <span class="m-r">Add new User</span>
+                            <span ng-click="orgInfo.addNewUser($event)" data-id="{{orgInfo.organization.info.id}}" class="btn btn-xs btn-primary fa fa-plus"></span>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <section-data-empty text="Records for Users are empty." ng-if="orgInfo.organization.users.length <= 0"></section-data-empty>
+                        <input type="text" class="form-control input-sm m-b-xs" id="users-filter" placeholder="Search in table">
+                        <table id="organizations-info-users-table" class="footable table table-stripped" data-page-size="10" data-filter=#users-filter>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Position</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="organizations-info-users-table-body"></tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4">
+                                        <ul class="pagination pull-right"></ul>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Projects</h5>
+                        <div class="pull-right">
+                            <span class="m-r">Add new Project</span>
+                            <span ng-click="orgInfo.addNewProject($event)" data-id="{{orgInfo.organization.info.id}}" class="btn btn-xs btn-primary fa fa-plus"></span>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <section-data-empty text="Records for Projects are empty." ng-if="orgInfo.organization.projects.length <= 0"></section-data-empty>
+                        <input type="text" class="form-control input-sm m-b-xs" id="projects-filter" placeholder="Search in table">
+                        <table id="organizations-info-projects-table" class="footable table table-stripped" data-page-size="10" data-filter=#projects-filter>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Files</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="organizations-info-projects-table-body"></tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4">
+                                        <ul class="pagination pull-right"></ul>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Cog Files</h5>
+                        <div class="pull-right">
+                            <span class="m-r">Add new Cog File</span>
+                            <span ng-click="orgInfo.addNewCogfile($event)" data-id="{{orgInfo.organization.info.id}}" class="btn btn-xs btn-primary fa fa-plus"></span>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <section-data-empty text="Records for Cog Files are empty." ng-if="orgInfo.organization.cogfiles.length <= 0"></section-data-empty>
+                        <input type="text" class="form-control input-sm m-b-xs" id="cogfiles-filter" placeholder="Search in table">
+                        <table id="organizations-info-cogfiles-table" class="footable table table-stripped" data-page-size="10" data-filter=#cogfiles-filter>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Project</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="organizations-info-cogfiles-table-body"></tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4">
+                                        <ul class="pagination pull-right"></ul>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

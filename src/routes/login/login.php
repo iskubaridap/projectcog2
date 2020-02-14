@@ -27,8 +27,7 @@ return function (App $app) {
     $app->post('/login/validate', function ($request, $response, $args) use ($container) {
         @session_start();
         $result = 'false';
-        $date = new DateTime('NOW');
-        $dateUpdated = $date->format('Y-m-d H:i:s');
+        $dateDateTime = getCurrentDate();
         
         // using email for now
         $email = $request->getParam('email');
@@ -44,7 +43,7 @@ return function (App $app) {
             $id = $user['id'];
             $prepare = $container->projectcog->prepare("
                 update users
-                set last_login = '$dateUpdated'
+                set last_login = '$dateDateTime'
                 where id = '$id'
             ");
 

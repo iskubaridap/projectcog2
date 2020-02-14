@@ -32,7 +32,7 @@
                     <li>
                         <a href=""><i class="fa fa-globe"></i> Organization<span class="fa arrow"></span></a>
                         <ul class="nav nav-third-level">
-                            <li ><a href=""><i class="fa fa-eye"></i> View</a></li>
+                            <li ui-sref-active="active"><a ui-sref="cog-admin.organizations"><i class="fa fa-eye"></i> View</a></li>
                             <li ><a href=""><i class="fa fa-plus-circle"></i> Add</a></li>
                         </ul>
                     </li>
@@ -40,21 +40,21 @@
                         <a href=""><i class="fa fa-users"></i> Users / Developers<span class="fa arrow"></span></a>
                         <ul class="nav nav-third-level">
                             <li ui-sref-active="active"><a ui-sref="cog-admin.developers({page: 'manage'})"><i class="fa fa-eye"></i> View</a></li>
-                            <li><a href=""><i class="fa fa-plus-circle"></i> Add</a></li>
+                            <!-- <li><a href=""><i class="fa fa-plus-circle"></i> Add</a></li> -->
                         </ul>
                     </li>
                     <li>
                         <a href=""><i class="fa fa-file"></i> Files<span class="fa arrow"></span></a>
                         <ul class="nav nav-third-level">
                             <li ui-sref-active="active"><a ui-sref="cog-admin.files({project: 'all',page: 'manage'})"><i class="fa fa-eye"></i> View</a></li>
-                            <li><a href=""><i class="fa fa-plus-circle"></i> Add</a></li>
+                            <!-- <li><a href=""><i class="fa fa-plus-circle"></i> Add</a></li> -->
                         </ul>
                     </li>
                     <li>
                         <a href=""><i class="fa fa-folder"></i> Projects<span class="fa arrow"></span></a>
                         <ul class="nav nav-third-level">
                             <li ui-sref-active="active"><a ui-sref="cog-admin.projects({page: 'manage'})"><i class="fa fa-eye"></i> View</a></li>
-                            <li ui-sref-active="active"><a ui-sref="cog-admin.projects-add({page: 'manage'})"><i class="fa fa-plus-circle"></i> Add</a></li>
+                            <!-- <li ui-sref-active="active"><a ui-sref="cog-admin.projects-add({page: 'manage'})"><i class="fa fa-plus-circle"></i> Add</a></li> -->
                         </ul>
                     </li>
                 </ul>

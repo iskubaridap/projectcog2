@@ -122,8 +122,7 @@ return function (App $app) {
     });
     $app->post('/cogworks/cog-files/deactivate', function ($request, $response, $args) use ($container) {
         $id = $request->getParam('id');
-        $date = new DateTime('NOW');
-        $dateDateTime = $date->format('Y-m-d H:i:s');
+        $dateDateTime = getCurrentDate();
         $result = null;
         
         $prepare = $container->cogworks->prepare("
@@ -140,8 +139,7 @@ return function (App $app) {
     });
     $app->post('/cogworks/cog-files/activate', function ($request, $response, $args) use ($container) {
         $id = $request->getParam('id');
-        $date = new DateTime('NOW');
-        $dateDateTime = $date->format('Y-m-d H:i:s');
+        $dateDateTime = getCurrentDate();
         $result = null;
         
         $prepare = $container->cogworks->prepare("
@@ -217,8 +215,7 @@ return function (App $app) {
         $name = $request->getParam('cogName');
         $projID = $request->getParam('cogProject');
         $file = $request->getUploadedFiles();
-        $date = new DateTime('NOW');
-        $dateDateTime = $date->format('Y-m-d H:i:s');
+        $dateDateTime = getCurrentDate();
         $path = '';
         $cogFileContent = null;
         $result = null;

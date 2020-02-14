@@ -27,10 +27,10 @@ var loginService = function($state, $http)
       });
   }
 };
-var organizationsService = function($http) {
+var cogOrganizationsService = function($http) {
   var self = this;
   this.getOrganizations = function(obj, config, callback){
-    return $http.post("./organizations/retrieve/all")
+    return $http.post("./organizations/retrieve/cogworks/all")
     .then(function (response) {
         obj.organizations = ((response.data).toString().length > 0) ? response.data : null;
         try
@@ -45,6 +45,45 @@ var organizationsService = function($http) {
         obj.organizations = new Object();
         obj.organizations.error = 'serverError';
         obj.organizations.errorData = 'Organizations';
+        return null;
+      });
+  };
+  this.getOrganization = function(obj, config, callback){
+    return $http.post("./organizations/retrieve/cogworks/single", config)
+    .then(function (response) {
+        obj.organization = ((response.data).toString().length > 0) ? response.data : null;
+        console.log(obj.organization);
+        try
+        {
+          callback(response.data);
+        }
+        catch(err)
+        {
+          // no callback function
+        }
+      }, function (response) {
+        obj.organization = new Object();
+        obj.organization.error = 'serverError';
+        obj.organization.errorData = 'Organizations';
+        return null;
+      });
+  };
+  this.getOrganizationInfo = function(obj, config, callback){
+    return $http.post("./organizations/info/cogworks", config)
+    .then(function (response) {
+        obj.organization = ((response.data).toString().length > 0) ? response.data : null;
+        try
+        {
+          callback(response.data);
+        }
+        catch(err)
+        {
+          // no callback function
+        }
+      }, function (response) {
+        obj.organization = new Object();
+        obj.organization.error = 'serverError';
+        obj.organization.errorData = 'Organizations';
         return null;
       });
   };
@@ -243,7 +282,7 @@ var cogProject = function($http){
   this.getProject = function(obj, config, callback){
       return $http.post("./cogworks/projects/retrieve/single", config)
       .then(function (response) {
-          obj.project = ((response.data).toString().length > 0) ? response.data : null;
+          obj.project = ((response.data).toString().length > 0 && response.data != 'null') ? response.data : null;
           try
           {
             callback(response.data);
@@ -329,7 +368,7 @@ var cogPodsWhatNots = function($http){
 angular
     .module('projectcog')
     .service('loginService', loginService)
-    .service('organizationsService', organizationsService)
+    .service('cogOrganizationsService', cogOrganizationsService)
     .service('tasks', tasks)
     .service('cogUsers', cogUsers)
     .service('cogPositions', cogPositions)
