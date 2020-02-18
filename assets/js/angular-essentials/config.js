@@ -113,6 +113,21 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 }
             }
         })
+        .state('cog-admin.developers-profile', {
+            url: "/:page/profile/:id",
+            templateUrl: "assets/views/cogworks/developers/developers-cogworks-profile.html",
+            data: { pageTitle: 'Developers Profile' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'cog-developers-profile',
+                            files: ['assets/js/app/cogworks/developers/cog-developers-profile.js']
+                        }
+                    ]);
+                }
+            }
+        })
         .state('cog-admin.developers-add', {
             url: "/:page/user/add/:orgID",
             templateUrl: "assets/views/cogworks/developers/developers-cogworks-add.html",

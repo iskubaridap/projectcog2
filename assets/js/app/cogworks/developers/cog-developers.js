@@ -8,15 +8,21 @@ function cogDevelopersCtrl($rootScope, $scope, $element, $state, $http, $timeout
         loginService.userLogged(data);
     });
 
-    var viewUser = function(id)
+    var viewUser = function(userID)
     {
-        $state.go('cog-developers.profile', {'id': id});
+        console.log(cogDevPage);
+        if(cogDevPage == 'manage') {
+            $state.go('cog-admin.developers-profile', {page: 'manage', id: userID});
+        } else if(cogDevPage == 'user') {
+            $state.go('cog-developers.profile', {id: userID});
+        }
     };
     var updateUser = function(userID, organizationID)
     {
+        console.log(cogDevPage);
         if(cogDevPage == 'manage') {
             $state.go('cog-admin.developers-update', {page: 'manage', orgID: organizationID, id: userID});
-        } else {
+        } else if(cogDevPage == 'user') {
             $state.go('cog-developers.update', {id: userID});
         }
     };
