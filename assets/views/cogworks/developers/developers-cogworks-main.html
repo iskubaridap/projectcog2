@@ -24,7 +24,7 @@
                                 </a>
                                 <ul uib-dropdown-menu="" class="dropdown-menu">
                                     <li><a data-id="{{developer.activeDevelopers[$index].id}}" ng-click="developer.view($event)">Profile</a></li>
-                                    <li><a data-id="{{developer.activeDevelopers[$index].id}}" ng-click="developer.update($event)">Update</a></li>
+                                    <li><a data-id="{{developer.activeDevelopers[$index].id}}" data-orgid="{{developer.activeDevelopers[$index].organization_id}}" ng-click="developer.update($event)">Update</a></li>
                                     <li ng-if="developer.activeDevelopers[$index].status == '1'"><a data-id="{{developer.activeDevelopers[$index].id}}" ng-click="developer.remove($event)">Remove</a></li>
                                     <li ng-if="developer.activeDevelopers[$index].status == '2'"><a data-id="{{developer.activeDevelopers[$index].id}}" ng-click="developer.restore($event)">Restore</a></li>
                                 </ul>
@@ -51,7 +51,7 @@
                                 </a>
                                 <ul uib-dropdown-menu="" class="dropdown-menu">
                                     <li><a data-id="{{developer.activeDevelopers[$index + 1].id}}" ng-click="developer.view($event)">Profile</a></li>
-                                    <li><a data-id="{{developer.activeDevelopers[$index + 1].id}}" ng-click="developer.update($event)">Update</a></li>
+                                    <li><a data-id="{{developer.activeDevelopers[$index + 1].id}}" data-orgid="{{developer.activeDevelopers[$index + 1].organization_id}}" ng-click="developer.update($event)">Update</a></li>
                                     <li ng-if="developer.activeDevelopers[$index + 1].status == '1'"><a data-id="{{developer.activeDevelopers[$index + 1].id}}" ng-click="developer.remove($event)">Remove</a></li>
                                     <li ng-if="developer.activeDevelopers[$index + 1].status == '2'"><a data-id="{{developer.activeDevelopers[$index + 1].id}}" ng-click="developer.restore($event)">Restore</a></li>
                                 </ul>
@@ -78,7 +78,7 @@
                                 </a>
                                 <ul uib-dropdown-menu="" class="dropdown-menu">
                                     <li><a data-id="{{developer.activeDevelopers[$index + 2].id}}" ng-click="developer.view($event)">Profile</a></li>
-                                    <li><a data-id="{{developer.activeDevelopers[$index + 2].id}}" ng-click="developer.update($event)">Update</a></li>
+                                    <li><a data-id="{{developer.activeDevelopers[$index + 2].id}}" data-orgid="{{developer.activeDevelopers[$index + 2].organization_id}}" ng-click="developer.update($event)">Update</a></li>
                                     <li ng-if="developer.activeDevelopers[$index + 2].status == '1'"><a data-id="{{developer.activeDevelopers[$index + 2].id}}" ng-click="developer.remove($event)">Remove</a></li>
                                     <li ng-if="developer.activeDevelopers[$index + 2].status == '2'"><a data-id="{{developer.activeDevelopers[$index + 2].id}}" ng-click="developer.restore($event)">Restore</a></li>
                                 </ul>
@@ -105,7 +105,7 @@
                                 </a>
                                 <ul uib-dropdown-menu="" class="dropdown-menu">
                                     <li><a data-id="{{developer.activeDevelopers[$index + 3].id}}" ng-click="developer.view($event)">Profile</a></li>
-                                    <li><a data-id="{{developer.activeDevelopers[$index + 3].id}}" ng-click="developer.update($event)">Update</a></li>
+                                    <li><a data-id="{{developer.activeDevelopers[$index + 3].id}}" data-orgid="{{developer.activeDevelopers[$index + 3].organization_id}}" ng-click="developer.update($event)">Update</a></li>
                                     <li ng-if="developer.activeDevelopers[$index + 3].status == '1'"><a data-id="{{developer.activeDevelopers[$index + 3].id}}" ng-click="developer.remove($event)">Remove</a></li>
                                     <li ng-if="developer.activeDevelopers[$index + 3].status == '2'"><a data-id="{{developer.activeDevelopers[$index + 3].id}}" ng-click="developer.restore($event)">Restore</a></li>
                                 </ul>

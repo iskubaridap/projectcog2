@@ -7,7 +7,7 @@
     <section-loader-indicator text="Preparing to show file Details" object="user.userObj" ng-if="user.userObj === undefined || user.userObj.error !== undefined"></section-loader-indicator>
     <section-data-empty text="No data retrieved." ng-if="user.userObj !== undefined && user.userObj === null"></section-data-empty>
     
-    <div ng-if="user.userObj !== undefined && user.userObj.error === undefined">
+    <div ng-if="user.userObj !== undefined && user.userObj.error === undefined && user.userObj !== null">
         <p ng-if="user.userObj.id === null" class="large-font m-t">User does not exist.</p>
         <div ng-if="user.userObj.id !== null" class="m-t">
             <div class="row">
@@ -63,7 +63,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="control-label"><span class="text-danger">*</span> Password</label>
-                                            <input data-orginal-value="{{user.userObj.password}}" id="cog-user-password" name="cog-user-password" type="password" class="cog-input form-control" value="{{user.userObj.password}}">
+                                            <input data-orginal-value="{{user.userObj.password}}" id="cog-user-password" name="cog-user-password" type="password" class="cog-input form-control" placeholder="Password" value="">
                                         </div>
                                     </div>
                                 </div>

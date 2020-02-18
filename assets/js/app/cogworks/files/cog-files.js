@@ -17,15 +17,16 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, log
         loginService.userLogged(data);
     });
 
-    var detailFile = function(id)
+    var detailFile = function(fileID)
     {
-        if(cogProjID == 'all')
-        {
-            $state.go('cog-files.details', {'id': id});
-        }
-        else
-        {
-            $state.go('cog-projects.files-details', {'id': id});
+        if(cogProjID == 'all' && cogProjPage == 'manage') {
+            $state.go('cog-admin.files-details', {page: 'manage', id: fileID});
+        } else if((parseInt(cogProjID) != NaN && parseInt(cogProjID) > 0) && cogProjPage == 'manage'){
+            $state.go('cog-admin.projects-files-details', {page: 'manage', id: fileID});
+        } else if(cogProjID == 'all' && cogProjPage == 'user') {
+            $state.go('cog-files.details', {id: fileID});
+        } else if((parseInt(cogProjID) != NaN && parseInt(cogProjID) > 0) && cogProjPage == 'user'){
+            $state.go('cog-projects.files-details', {id: fileID});
         }
         // $state.go('cog-files.details');
     };
@@ -37,15 +38,16 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, log
     {
         console.log(id);
     };
-    var updateFile = function(id)
+    var updateFile = function(fileID)
     {
-        if(cogProjID == 'all')
-        {
-            $state.go('cog-files.update', {'id': id});
-        }
-        else
-        {
-            $state.go('cog-projects.files-update', {'id': id});
+        if(cogProjID == 'all' && cogProjPage == 'manage') {
+            $state.go('cog-admin.files-update', {page: 'manage', id: fileID});
+        } else if((parseInt(cogProjID) != NaN && parseInt(cogProjID) > 0) && cogProjPage == 'manage'){
+            $state.go('cog-admin.projects-files-update', {page: 'manage', id: fileID});
+        } else if(cogProjID == 'all' && cogProjPage == 'user') {
+            $state.go('cog-files.update', {id: fileID});
+        } else if((parseInt(cogProjID) != NaN && parseInt(cogProjID) > 0) && cogProjPage == 'user'){
+            $state.go('cog-projects.files-update', {id: fileID});
         }
     };
     var viewThumnail = function()

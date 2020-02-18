@@ -45,6 +45,7 @@ return function (App $app) {
     });
     $app->post('/cogworks/developers/add', function ($request, $response, $args) use ($container) {
         $loggedUser = identifyLoggedUser($container);
+        $id = $request->getParam('id');
         $name = $request->getParam('name');
         $firstname = $request->getParam('firstname');
         $middlename = $request->getParam('middlename');
@@ -101,6 +102,138 @@ return function (App $app) {
             $newUserPath = setCogworksDirectoryPath($org) . $newUser['id'];
         } else {
             $newUserPath = setCogworksDirectoryPath($org) . $org . '/users/' . $newUser['id'];
+        }
+        generateDirectory($newUserPath);
+        generateCogworksUserDirectories($newUserPath);
+        return json_encode($result);
+    });
+    $app->post('/cogworks/developers/update', function ($request, $response, $args) use ($container) {
+        $loggedUser = identifyLoggedUser($container);
+        $id = $request->getParam('id');
+        $name = $request->getParam('name');
+        $firstname = $request->getParam('firstname');
+        $middlename = $request->getParam('middlename');
+        $lastname = $request->getParam('lastname');
+        $org = $request->getParam('org');
+        $acctID = $request->getParam('account');
+        $email = $request->getParam('email');
+        $password = $request->getParam('password');
+        $position = $request->getParam('position');
+        $address = addslashes($request->getParam('address'));
+        $country = addslashes($request->getParam('country'));
+        $file = $request->getUploadedFiles();
+        $dateDateTime = getCurrentDate();
+        $imageName = '';
+        $path = '';
+        $result = null;
+        $imageName = null;
+
+        if($loggedUser['organization_id'] != 1) {
+            $acctID = $loggedUser['account_id'];
+            $org = $loggedUser['organization_id'];
+        }
+
+        if(!empty($file) && strlen(trim($password)) > 0) {
+            $imageName = $file['file']->getClientFilename();
+            $password = md5($password);
+            $prepare = $container->projectcog->prepare("
+                update users
+                set
+                user = '$name',
+                firstname = '$firstname',
+                lastname = '$lastname',
+                middlename = '$middlename',
+                email = '$email',
+                username = '$email',
+                password = '$password',
+                image = '$imageName',
+                address = '$address',
+                country = '$country',
+                position_id = '$position',
+                account_id = '$acctID',
+                organization_id = '$org',
+                updated = '$dateDateTime'
+                where id = '$id'
+            ");
+            $uploadedFile = $file['file'];
+            $imageAry = getCogDeveloperThumbnail($org, $id, $imageName, $container);
+            $imagePath = $imageAry['path'];
+            $uploadedFile->moveTo($imagePath);
+            chmod($imagePath . $imageName,0777);
+        } else if(!empty($file) && strlen(trim($password)) <= 0) {
+            // this statement is for updating an image but it doesn't need to change password value
+            $imageName = $file['file']->getClientFilename();
+            $prepare = $container->projectcog->prepare("
+                update users
+                set
+                user = '$name',
+                firstname = '$firstname',
+                lastname = '$lastname',
+                middlename = '$middlename',
+                email = '$email',
+                username = '$email',
+                image = '$imageName',
+                address = '$address',
+                country = '$country',
+                position_id = '$position',
+                account_id = '$acctID',
+                organization_id = '$org',
+                updated = '$dateDateTime'
+                where id = '$id'
+            ");
+            $uploadedFile = $file['file'];
+            $imageAry = getCogDeveloperThumbnail($org, $id, $imageName, $container);
+            $imagePath = $imageAry['path'];
+            $uploadedFile->moveTo($imagePath);
+            chmod($imagePath . $imageName,0777);
+        } else if(strlen(trim($password)) <= 0) {
+            // this statement doesn't need to change image and password value
+            $prepare = $container->projectcog->prepare("
+                update users
+                set
+                user = '$name',
+                firstname = '$firstname',
+                lastname = '$lastname',
+                middlename = '$middlename',
+                email = '$email',
+                username = '$email',
+                address = '$address',
+                country = '$country',
+                position_id = '$position',
+                account_id = '$acctID',
+                organization_id = '$org',
+                updated = '$dateDateTime'
+                where id = '$id'
+            ");
+        } else {
+            // this statement doesn't need to change image value, but updating it's password
+            $password = md5($password);
+            $prepare = $container->projectcog->prepare("
+                update users
+                set
+                user = '$name',
+                firstname = '$firstname',
+                lastname = '$lastname',
+                middlename = '$middlename',
+                email = '$email',
+                username = '$email',
+                password = '$password',
+                address = '$address',
+                country = '$country',
+                position_id = '$position',
+                account_id = '$acctID',
+                organization_id = '$org',
+                updated = '$dateDateTime'
+                where id = '$id'
+            ");
+        }
+        $result = $prepare->execute();
+        if($org == 1) {
+            $newUserPath = setCogworksDirectoryPath($org) . 'users/' . $id;
+        } else if($org == 2) {
+            $newUserPath = setCogworksDirectoryPath($org) . $id;
+        } else {
+            $newUserPath = setCogworksDirectoryPath($org) . $org . '/users/' . $id;
         }
         generateDirectory($newUserPath);
         generateCogworksUserDirectories($newUserPath);

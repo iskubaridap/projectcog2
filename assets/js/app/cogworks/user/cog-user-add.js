@@ -1,41 +1,17 @@
-var cogUser = angular.module("cog-user-add-update", []);
-function cogUserCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogPositions, cogUsers, cogOrganizationsService, SweetAlert)
+var cogUserAdd = angular.module("cog-user-add", []);
+function cogUserAddCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogPositions, cogUsers, cogOrganizationsService, SweetAlert)
 {
     var self = this;
     var userID = ($state.params.id == undefined) ? 0 : $state.params.id;
     var org = ($state.params.orgID == undefined) ? 0 : $state.params.orgID;
+    var cogProjPage = ($state.params.page == undefined) ? '' : $state.params.page;
     var account = 0;
-    self.cogProjPage = ($state.params.page == undefined) ? '' : $state.params.page;
-    self.userCategory = 'new';
+    self.userCategory = 'new'; //  keeping this just in-case it might became handy in the future
     cogPositions.getPositions(self, {}, function(data) {
         self.positionsInitValue = data[0].id;
     });
-    
-    // this is to get the org's account id if the logged user is the super admin
-    if(org != 0 || self.cogProjPage == 'manage') {
-        cogOrganizationsService.getOrganization(self, {id: org}, function(data) {
-            if(data != 'null') {
-                account = data.account_id;
-            } else {
-                self.userObj = null;
-            }
-            
-        });
-    }
-    if( org == 0 && self.cogProjPage == 'manage' ||
-        userID.length <= 0 && self.cogProjPage == 'manage' ||
-        userID.length <= 0 && self.cogProjPage.length <= 0 && org == 0) {
-        self.userCategory = 'error';
-        self.title = "Cannot find records";
-        self.userObj = null;
-    }
-    else if(userID != 0) {
-        self.title = "Update Profile";
-        self.userCategory = 'update';
-        cogUsers.getUser(self,{id: userID}, function(data){
-            console.log(data);
-        });
-    } else {
+
+    var setUserObj = function(){
         self.userCategory = 'new';
         self.title = "Add a new User";
         self.userObj = new Object();
@@ -46,7 +22,23 @@ function cogUserCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogP
         self.userObj.country = '';
         self.userObj.image = 'assets/img/thumbnail/thumbnail-profile-pic.png';
         self.userObj.imageValue = 'thumbnail-profile-pic.png';
+    };
+    
+    // this is to get the org's account id if the logged user is the super admin
+    if(org != 0 && cogProjPage == 'manage') {
+        cogOrganizationsService.getOrganization(self, {id: org}, function(data) {
+            if(data != 'null') {
+                account = data.account_id;
+                setUserObj();
+            } else {
+                self.userObj = null;
+            }
+            
+        });
+    } else {
+        setUserObj();
     }
+
     var highlightInput = function(id) {
         if((($element.find(id).val()).trim()).length <= 0) {
             $element.find(id).parent().addClass('has-error');
@@ -60,16 +52,11 @@ function cogUserCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogP
         highlightInput('#cog-user-lastname');
         highlightInput('#cog-user-email');
         highlightInput('#cog-user-position-option');
-
-        // this makes passoword optional
-        if(self.userCategory == 'new') {
-            highlightInput('#cog-user-password');
-        }
+        highlightInput('#cog-user-password');
     };
     self.reset = function(event) {
         $state.go($state.current, {}, {reload: true});
     };
-    
     self.submit = function(event) {
         var formData = new FormData();
         var fileData = $element.find('#cog-user-image').prop('files')[0];
@@ -93,7 +80,7 @@ function cogUserCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogP
             (middlename.trim()).length <= 0 ||
             (lastname.trim()).length <= 0 ||
             (email.trim()).length <= 0 ||
-            ((password.trim()).length <= 0 && self.userCategory == 'new') ||
+            ((password.trim()).length <= 0) ||
             (position.trim()).length <= 0) {
             SweetAlert.swal({
                 title: "Process Fail",
@@ -128,59 +115,31 @@ function cogUserCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogP
             formData.append('position', position);
             formData.append('address', address);
             formData.append('country', country);
-
-            switch(self.userCategory) {
-                case 'new':
-                    $http({
-                        url: ( root + 'cogworks/developers/add'),
-                        method: "POST",
-                        data: formData,
-                        headers: {'Content-Type': undefined}
-                    }).success(function (response) {
-                        SweetAlert.swal({
-                            title: "Process Success",
-                            text: "New user has been added."
-                        }, function(isConfirm){
-                            if(isConfirm){
-                                $state.go($state.current, {}, {reload: true});
-                            }
-                        });
-                    }).error(function(error){
-                        SweetAlert.swal({
-                            title: "Process Fail",
-                            text: "Something went wrong. Please try it again."
-                        }, function(isConfirm){
-                            if(isConfirm){}
-                        });
-                    });
-                    break;
-                case 'update':
-                    $http({
-                        url: ( root + 'cogworks/developers/update'),
-                        method: "POST",
-                        data: formData,
-                        headers: {'Content-Type': undefined}
-                    }).success(function (response) {
-                        SweetAlert.swal({
-                            title: "Success",
-                            text: "Your update is processed."
-                        }, function(isConfirm){
-                            if(isConfirm){
-                                $state.go($state.current, {}, {reload: true});
-                            }
-                        });
-                    }).error(function(error){
-                        SweetAlert.swal({
-                            title: "Process Fail",
-                            text: "Something went wrong. Please try it again."
-                        }, function(isConfirm){
-                            if(isConfirm){}
-                        });
-                    });
-                    break;
-            }
+            
+            $http({
+                url: ( root + 'cogworks/developers/add'),
+                method: "POST",
+                data: formData,
+                headers: {'Content-Type': undefined}
+            }).success(function (response) {
+                SweetAlert.swal({
+                    title: "Process Success",
+                    text: "New user has been added."
+                }, function(isConfirm){
+                    if(isConfirm){
+                        $state.go($state.current, {}, {reload: true});
+                    }
+                });
+            }).error(function(error){
+                SweetAlert.swal({
+                    title: "Process Fail",
+                    text: "Something went wrong. Please try it again."
+                }, function(isConfirm){
+                    if(isConfirm){}
+                });
+            });
         }
     };
 }
 
-cogUser.controller('cogUserCtrl', cogUserCtrl);
+cogUserAdd.controller('cogUserAddCtrl', cogUserAddCtrl);

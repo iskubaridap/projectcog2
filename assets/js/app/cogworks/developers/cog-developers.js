@@ -12,9 +12,13 @@ function cogDevelopersCtrl($rootScope, $scope, $element, $state, $http, $timeout
     {
         $state.go('cog-developers.profile', {'id': id});
     };
-    var updateUser = function(id)
+    var updateUser = function(userID, organizationID)
     {
-        //console.log(id);
+        if(cogDevPage == 'manage') {
+            $state.go('cog-admin.developers-update', {page: 'manage', orgID: organizationID, id: userID});
+        } else {
+            $state.go('cog-developers.update', {id: userID});
+        }
     };
     var viewThumnail = function()
     {};
@@ -107,7 +111,7 @@ function cogDevelopersCtrl($rootScope, $scope, $element, $state, $http, $timeout
     self.update = function(event)
     {
         var elem = $(event.target);
-        updateUser(elem.attr('data-id'));
+        updateUser(elem.attr('data-id'), elem.attr('data-orgid'));
     };
     self.remove = function(event)
     {

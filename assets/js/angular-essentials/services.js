@@ -88,10 +88,10 @@ var cogOrganizationsService = function($http) {
       });
   };
 };
-var cogUsers = function($state) {
+var cogUsers = function($http) {
   var self = this;
   this.getUser = function(obj, config, callback){
-    return $http.post("./users/retrieve/single")
+    return $http.post("./users/retrieve/single", config)
     .then(function (response) {
         obj.userObj = ((response.data).toString().length > 0) ? response.data : null;
         try
@@ -198,6 +198,7 @@ var cogDevelopers = function($http){
         return $http.post("./cogworks/developers/retrieve/active", config)
         .then(function (response) {
             obj.activeDevelopers = ((response.data).toString().length > 0) ? response.data : null;
+            console.log(obj.activeDevelopers);
             try
             {
               callback(response.data);

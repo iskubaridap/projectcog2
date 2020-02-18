@@ -57,42 +57,43 @@ function cogOrganizationsInfoCtrl($rootScope, $scope, $element, $state, $http, $
     var updateUser = function() {
         $element.find('.update-user').off().on('click', function() {
             var elem = $(this);
-            var id = elem.attr('data-id');
-            console.log(id);
+            var userID = elem.attr('data-id');
+            var organizationID = elem.attr('data-org');
+            $state.go('cog-admin.developers-update', {page: 'manage', orgID: organizationID, id: userID});
         });
     };
     var restoreUser = function() {
         $element.find('.restore-user').off().on('click', function() {
             var elem = $(this);
-            var id = elem.attr('data-id');
-            restoreProcess(elem, './cogworks/developers/activate', {id: id}, 'User', 'restore-user', 'remove-user', function(){removeUser()});
+            var userID = elem.attr('data-id');
+            restoreProcess(elem, './cogworks/developers/activate', {id: userID}, 'User', 'restore-user', 'remove-user', function(){removeUser()});
         });
     };
     var removeUser = function() {
         $element.find('.remove-user').off().on('click', function() {
             var elem = $(this);
-            var id = elem.attr('data-id');
-            removeProcess(elem, './cogworks/developers/deactivate', {id: id}, 'User', 'remove-user', 'restore-user', function(){restoreUser()});
+            var userID = elem.attr('data-id');
+            removeProcess(elem, './cogworks/developers/deactivate', {id: userID}, 'User', 'remove-user', 'restore-user', function(){restoreUser()});
         });
     };
     var updateProject = function() {
         $element.find('.update-project').off().on('click', function() {
             var elem = $(this);
-            var id = elem.attr('data-id');
-            console.log(id);
+            var userID = elem.attr('data-id');
+            console.log(userID);
         });
     };
     var restoreProject = function() {
         $element.find('.restore-project').off().on('click', function() {
             var elem = $(this);
-            var id = elem.attr('data-id');
-            restoreProcess(elem, './cogworks/projects/activate', {id: id}, 'Project', 'restore-project', 'remove-project', function(){removeProject()});
+            var userID = elem.attr('data-id');
+            restoreProcess(elem, './cogworks/projects/activate', {id: userID}, 'Project', 'restore-project', 'remove-project', function(){removeProject()});
         });
     };
     var removeProject = function() {
         $element.find('.remove-project').off().on('click', function() {
             var elem = $(this);
-            var id = elem.attr('data-id');
+            var userID = elem.attr('data-id');
             var files = parseInt(elem.attr('data-files'));
             if(files > 0) {
                 SweetAlert.swal({
@@ -103,29 +104,29 @@ function cogOrganizationsInfoCtrl($rootScope, $scope, $element, $state, $http, $
                     {}
                 });
             } else {
-                removeProcess(elem, './cogworks/projects/deactivate', {id: id}, 'Project', 'remove-project', 'restore-project', function(){restoreProject()});
+                removeProcess(elem, './cogworks/projects/deactivate', {id: userID}, 'Project', 'remove-project', 'restore-project', function(){restoreProject()});
             }
         });
     };
     var updateCogfile = function() {
         $element.find('.update-cogfile').off().on('click', function() {
             var elem = $(this);
-            var id = elem.attr('data-id');
+            var userID = elem.attr('data-id');
             console.log(id);
         });
     };
     var restoreCogfile = function() {
         $element.find('.restore-cogfile').off().on('click', function() {
             var elem = $(this);
-            var id = elem.attr('data-id');
-            restoreProcess(elem, './cogworks/cog-files/activate', {id: id}, 'Cogfile', 'restore-cogfile', 'remove-cogfile', function(){removeCogfile()});
+            var userID = elem.attr('data-id');
+            restoreProcess(elem, './cogworks/cog-files/activate', {id: userID}, 'Cogfile', 'restore-cogfile', 'remove-cogfile', function(){removeCogfile()});
         });
     };
     var removeCogfile = function() {
         $element.find('.remove-cogfile').off().on('click', function() {
             var elem = $(this);
-            var id = elem.attr('data-id');
-            removeProcess(elem, './cogworks/cog-files/deactivate', {id: id}, 'Cogfile', 'remove-cogfile', 'restore-cogfile', function(){restoreCogfile()});
+            var userID = elem.attr('data-id');
+            removeProcess(elem, './cogworks/cog-files/deactivate', {id: userID}, 'Cogfile', 'remove-cogfile', 'restore-cogfile', function(){restoreCogfile()});
         });
     };
 
@@ -140,7 +141,7 @@ function cogOrganizationsInfoCtrl($rootScope, $scope, $element, $state, $http, $
                 str += '<td>' + value.position + '</td>';
                 str += '<td class="status">' + value.status + '</td>';
                 str += '<td>';
-                str += '<span class="btn btn-xs btn-success update-user" data-id="' + value.id + '">Update</span> ';
+                str += '<span class="btn btn-xs btn-success update-user" data-id="' + value.id + '" data-org="' + orgID + '">Update</span> ';
                 if(value.positionID != '1') {
                     str += (value.statusID == '1') ? '<span class="remove-restore-btn btn btn-xs btn-danger remove-user" data-id="' + value.id + '">Remove</span>' : '<span class="remove-restore-btn btn btn-xs btn-success restore-user" data-id="' + value.id + '">Restore</span>';
                 }
@@ -162,7 +163,7 @@ function cogOrganizationsInfoCtrl($rootScope, $scope, $element, $state, $http, $
                 str += '<td>' + value.cogfiles + '</td>';
                 str += '<td class="status">' + value.status + '</td>';
                 str += '<td>';
-                str += '<span class="btn btn-xs btn-success update-project" data-id="' + value.id + '">Update</span> ';
+                str += '<span class="btn btn-xs btn-success update-project" data-id="' + value.id + '" data-org="' + orgID + '">Update</span> ';
                 str += (value.statusID == '1') ? '<span class="remove-restore-btn btn btn-xs btn-danger remove-project" data-id="' + value.id + '" data-files="' + value.cogfiles + '">Remove</span>' : '<span class="remove-restore-btn btn btn-xs btn-success restore-project" data-id="' + value.id + '" data-files="' + value.cogfiles + '">Restore</span>';
                 str += '</td>';
                 str += '</tr>';
@@ -182,7 +183,7 @@ function cogOrganizationsInfoCtrl($rootScope, $scope, $element, $state, $http, $
                 str += '<td>' + value.project + '</td>';
                 str += '<td class="status">' + value.status + '</td>';
                 str += '<td>';
-                str += '<span class="btn btn-xs btn-success update-cogfile" data-id="' + value.id + '">Update</span> ';
+                str += '<span class="btn btn-xs btn-success update-cogfile" data-id="' + value.id + '" data-org="' + orgID + '">Update</span> ';
                 str += (value.statusID == '1') ? '<span class="remove-restore-btn btn btn-xs btn-danger remove-cogfile" data-id="' + value.id + '">Remove</span>' : '<span class="remove-restore-btn btn btn-xs btn-success restore-cogfile" data-id="' + value.id + '">Restore</span>';
                 str += '</td>';
                 str += '</tr>';
