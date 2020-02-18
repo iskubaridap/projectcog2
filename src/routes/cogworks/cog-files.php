@@ -30,8 +30,7 @@ return function (App $app) {
         // This assumes that the user is the Admin
         if($page == 'manage')
         {
-            if($projectID == 'all')
-            {
+            if($projectID == 'all') {
                 $cogFiles = $container->cogworks->query("
                     select * from cog_files
                     order by cog_file asc
@@ -40,9 +39,7 @@ return function (App $app) {
                     select * from projects
                     order by project asc
                 ")->fetchAll(PDO::FETCH_ASSOC);
-            }
-            else
-            {
+            } else {
                 $cogFiles = $container->cogworks->query("
                     select * from cog_files
                     where status_id = '1' and project_id = '$projectID'
@@ -57,8 +54,7 @@ return function (App $app) {
         }
         else
         {
-            if($projectID == 'all')
-            {
+            if($projectID == 'all') {
                 $cogFiles = $container->cogworks->query("
                     select * from cog_files
                     where user_id = '$userID' and status_id = '1'
@@ -69,9 +65,7 @@ return function (App $app) {
                     where organization_id = '$userOrg' and status_id = '1'
                     order by project asc
                 ")->fetchAll(PDO::FETCH_ASSOC);
-            }
-            else
-            {
+            } else {
                 $cogFiles = $container->cogworks->query("
                     select * from cog_files
                     where project_id = '$projectID' and status_id = '1'

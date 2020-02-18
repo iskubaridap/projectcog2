@@ -2,10 +2,9 @@
 
     <div class="wrapper wrapper-content animated fadeInRight">
         <section-loader-indicator text="Preparing to show Developer&apos;s Profile" object="devProfile.developer" ng-if="devProfile.developer === undefined || devProfile.developer.error !== undefined"></section-loader-indicator>
-        <section-data-empty text="Record for Active Developer is Empty." ng-if="devProfile.developer !== undefined && devProfile.developer === null"></section-data-empty>
-        <div ng-if="devProfile.developer !== undefined && devProfile.developer.error === undefined">
-            <p ng-if="devProfile.developer === 'false'" class="large-font m-t">User does not exist.</p>
-            <div class="row" ng-if="devProfile.developer !== 'false'">
+        <section-data-empty text="User does not exist." ng-if="devProfile.developer !== undefined && devProfile.developer === null"></section-data-empty>
+        <div ng-if="devProfile.developer !== undefined && devProfile.developer.error === undefined && devProfile.developer !== null">
+            <div class="row">
                 <div class="col-md-8 col-md-push-2">
                     <div class="ibox">
                         <div class="ibox-content">

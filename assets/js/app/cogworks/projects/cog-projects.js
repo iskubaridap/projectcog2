@@ -8,16 +8,16 @@ function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, 
         loginService.userLogged(data);
     });
 
-    var openProject = function(id) {
+    var openProject = function(projID) {
         if(cogProjPage == 'manage') {
-            $state.go('cog-admin.projects-files', {project: id, page: cogProjPage}); 
+            $state.go('cog-admin.projects-files', {project: projID, page: cogProjPage}); 
         } else if(cogProjPage == 'user') {
-            $state.go('cog-projects.files', {project: id, page: cogProjPage}); 
+            $state.go('cog-projects.files', {project: projID, page: cogProjPage}); 
         }
     };
     var updateProject = function(projID) {
         if(cogProjPage == 'manage') {
-            $state.go('cog-admin.projects-update', {project: id, page: cogProjPage}); 
+            $state.go('cog-admin.projects-update', {id: projID, page: cogProjPage}); 
         } else if(cogProjPage == 'user') {
             $state.go('cog-projects.update', {id: projID});
         }

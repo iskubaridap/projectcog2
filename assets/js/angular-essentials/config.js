@@ -344,7 +344,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             }
         })
         .state('cog-admin.projects-update', {
-            url: "/:page/update/:id",
+            url: "/:page/project/update/:id",
             templateUrl: "assets/views/cogworks/projects/projects-add-update.html",
             data: { pageTitle: 'Project Update' },
             resolve: {
@@ -400,7 +400,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             }
         })
         .state('cog-admin.projects-files', {
-            url: "/:page/cog-files/:project",
+            url: "/:page/project/cog-files/:project",
             templateUrl: "assets/views/cogworks/projects/projects-cog-files.html",
             data: { pageTitle: 'Cogworks Files' },
             resolve: {

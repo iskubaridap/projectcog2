@@ -2,20 +2,25 @@ var cogFiles = angular.module("cog-files", []);
 function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, loginService, cogProject, cogFiles, SweetAlert, $stateParams)
 {
     var self = this;
-    var cogProjID = ($state.params.project == undefined) ? 0 : $state.params.project;
+    var cogProjID = ($state.params.project == undefined || (($state.params.project).trim()).length <= 0) ? 0 : $state.params.project;
     var cogProjPage = ($state.params.page == undefined) ? '' : $state.params.page;
     self.cogProj = cogProjID;
     self.activeFiles = undefined;
-    cogProject.getProject(self, {id: cogProjID, page: cogProjPage}, function(data){
-        if(data != 'false')
-        {
-            self.cogProj = data.project;
-        }
-    });
     
-    cogFiles.getActiveFiles(self, {projID: cogProjID, page: cogProjPage}, function(data){
-        loginService.userLogged(data);
-    });
+    if(cogProjID != 0) {
+        cogProject.getProject(self, {id: cogProjID, page: cogProjPage}, function(data){
+            if(data != 'false') {
+                self.cogProj = data.project;
+            }
+        });
+        
+        cogFiles.getActiveFiles(self, {projID: cogProjID, page: cogProjPage}, function(data){
+            loginService.userLogged(data);
+        });
+    } else {
+        self.project = null;
+        self.activeFiles = null;
+    }
 
     var detailFile = function(fileID)
     {

@@ -10,7 +10,6 @@ function cogDevelopersCtrl($rootScope, $scope, $element, $state, $http, $timeout
 
     var viewUser = function(userID)
     {
-        console.log(cogDevPage);
         if(cogDevPage == 'manage') {
             $state.go('cog-admin.developers-profile', {page: 'manage', id: userID});
         } else if(cogDevPage == 'user') {

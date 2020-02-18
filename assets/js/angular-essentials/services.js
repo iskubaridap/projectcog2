@@ -217,7 +217,7 @@ var cogDevelopers = function($http){
     this.getDeveloper = function(obj, config, callback){
       return $http.post("./cogworks/developers/profile", config)
       .then(function (response) {
-          obj.developer = ((response.data).toString().length > 0) ? response.data : null;
+          obj.developer = ((response.data).toString().length > 0 && response.data != 'null') ? response.data : null;
           try
           {
             callback(response.data);
@@ -239,7 +239,7 @@ var cogFiles = function($http){
   this.getActiveFiles = function(obj, config, callback){
       return $http.post("./cogworks/cog-files/retrieve/active", config)
       .then(function (response) {
-          obj.activeFiles = ((response.data).toString().length > 0) ? response.data : null;
+          obj.activeFiles = ((response.data).toString().length > 0 && response.data != 'null') ? response.data : null;
           try
           {
             callback(response.data);
@@ -284,12 +284,9 @@ var cogProject = function($http){
       return $http.post("./cogworks/projects/retrieve/single", config)
       .then(function (response) {
           obj.project = ((response.data).toString().length > 0 && response.data != 'null') ? response.data : null;
-          try
-          {
+          try {
             callback(response.data);
-          }
-          catch(err)
-          {
+          } catch(err) {
             // no callback function
           }
         }, function (response) {

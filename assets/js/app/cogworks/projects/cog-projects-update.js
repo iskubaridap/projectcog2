@@ -5,6 +5,7 @@ function cogProjectCtrl($rootScope, $scope, $element, $state, $http, cogProject,
     var cogProjID = $state.params.id;
     self.title = 'Update';
     cogProject.getProject(self, {id: cogProjID});
+    
     self.reset = function(event)
     {
         $state.go($state.current, {}, {reload: true});
