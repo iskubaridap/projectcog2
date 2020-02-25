@@ -24,7 +24,7 @@
                                     <i class="fa fa-bars"></i>
                                 </a>
                                 <ul uib-dropdown-menu="" class="dropdown-menu">
-                                    <li><a ui-sref="cog-admin.organizations-info({id: org.organizations[$index].id})" data-id="{{org.organizations[$index].id}}" ng-click="org.view($event)">Info</a></li>
+                                    <li><a data-id="{{org.organizations[$index].id}}" ng-click="org.view($event)">Info</a></li>
                                     <!-- <li><a data-id="{{org.organizations[$index].id}}" ng-click="org.addUser($event)">Add New User</a></li> -->
                                     <li ng-if="org.organizations[$index].id != '1' && org.organizations[$index].id != '2'"><a data-id="{{org.organizations[$index].id}}" ng-click="org.update($event)">Update</a></li>
                                     <li ng-if="org.organizations[$index].status_id == '1' && (org.organizations[$index].id != '1' && org.organizations[$index].id != '2')"><a data-id="{{org.organizations[$index].id}}" ng-click="org.remove($event)">Remove</a></li>
@@ -32,7 +32,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="ibox-content{{(org.organizations[$index].status_id == '2') ? ' item-deleted' : ''}}">
+                        <div class="ibox-content{{(org.organizations[$index].status_id == '2') ? ' inactive' : ''}}">
                             <div class="contact-box center-version">
                                 <a>
                                     <img alt="image" class="" ng-src="{{org.organizations[$index].image}}">
@@ -51,7 +51,7 @@
                                     <i class="fa fa-bars"></i>
                                 </a>
                                 <ul uib-dropdown-menu="" class="dropdown-menu">
-                                    <li><a ui-sref="cog-admin.organizations-info({id: org.organizations[$index + 1].id})" data-id="{{org.organizations[$index + 1].id}}" ng-click="org.view($event)">Info</a></li>
+                                    <li><a data-id="{{org.organizations[$index + 1].id}}" ng-click="org.view($event)">Info</a></li>
                                     <!-- <li><a data-id="{{org.organizations[$index + 1].id}}" ng-click="org.addUser($event)">Add New User</a></li> -->
                                     <li ng-if="org.organizations[$index + 1].id != '1' && org.organizations[$index + 1].id != '2'"><a data-id="{{org.organizations[$index + 1].id}}" ng-click="org.update($event)">Update</a></li>
                                     <li ng-if="org.organizations[$index + 1].status_id == '1' && (org.organizations[$index + 1].id != '1' && org.organizations[$index + 1].id != '2')"><a data-id="{{org.organizations[$index + 1].id}}" ng-click="org.remove($event)">Remove</a></li>
@@ -59,7 +59,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="ibox-content{{(org.organizations[$index + 1].status_id == '2') ? ' item-deleted' : ''}}">
+                        <div class="ibox-content{{(org.organizations[$index + 1].status_id == '2') ? ' inactive' : ''}}">
                             <div class="contact-box center-version">
                                 <a>
                                     <img alt="image" class="" ng-src="{{org.organizations[$index + 1].image}}">
@@ -78,7 +78,7 @@
                                     <i class="fa fa-bars"></i>
                                 </a>
                                 <ul uib-dropdown-menu="" class="dropdown-menu">
-                                    <li><a ui-sref="cog-admin.organizations-info({id: org.organizations[$index + 2].id})" data-id="{{org.organizations[$index + 2].id}}" ng-click="org.view($event)">Info</a></li>
+                                    <li><a data-id="{{org.organizations[$index + 2].id}}" ng-click="org.view($event)">Info</a></li>
                                     <!-- <li><a data-id="{{org.organizations[$index + 2].id}}" ng-click="org.addUser($event)">Add New User</a></li> -->
                                     <li ng-if="org.organizations[$index + 2].id != '1' && org.organizations[$index + 2].id != '2'"><a data-id="{{org.organizations[$index + 2].id}}" ng-click="org.update($event)">Update</a></li>
                                     <li ng-if="org.organizations[$index + 2].status_id == '1' && (org.organizations[$index + 2].id != '1' && org.organizations[$index + 2].id != '2')"><a data-id="{{org.organizations[$index + 2].id}}" ng-click="org.remove($event)">Remove</a></li>
@@ -86,7 +86,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="ibox-content{{(org.organizations[$index + 2].status_id == '2') ? ' item-deleted' : ''}}">
+                        <div class="ibox-content{{(org.organizations[$index + 2].status_id == '2') ? ' inactive' : ''}}">
                             <div class="contact-box center-version">
                                 <a>
                                     <img alt="image" class="" ng-src="{{org.organizations[$index + 2].image}}">
@@ -105,7 +105,7 @@
                                     <i class="fa fa-bars"></i>
                                 </a>
                                 <ul uib-dropdown-menu="" class="dropdown-menu">
-                                    <li><a ui-sref="cog-admin.organizations-info({id: org.organizations[$index + 3].id})" data-id="{{org.organizations[$index + 3].id}}" ng-click="org.view($event)">Info</a></li>
+                                    <li><a data-id="{{org.organizations[$index + 3].id}}" ng-click="org.view($event)">Info</a></li>
                                     <!-- <li><a data-id="{{org.organizations[$index + 3].id}}" ng-click="org.addUser($event)">Add New User</a></li> -->
                                     <li ng-if="org.organizations[$index + 3].id != '1' && org.organizations[$index + 3].id != '2'"><a data-id="{{org.organizations[$index + 3].id}}" ng-click="org.update($event)">Update</a></li>
                                     <li ng-if="org.organizations[$index + 3].status_id == '1' && (org.organizations[$index + 3].id != '1' && org.organizations[$index + 3].id != '2')"><a data-id="{{org.organizations[$index + 3].id}}" ng-click="org.remove($event)">Remove</a></li>
@@ -113,7 +113,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="ibox-content{{(org.organizations[$index + 3].status_id == '2') ? ' item-deleted' : ''}}">
+                        <div class="ibox-content{{(org.organizations[$index + 3].status_id == '2') ? ' inactive' : ''}}">
                             <div class="contact-box center-version">
                                 <a>
                                     <img alt="image" class="" ng-src="{{org.organizations[$index + 3].image}}">

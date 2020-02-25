@@ -1,0 +1,75 @@
+<div id="section-organization-update" ng-controller="cogOrganizationUpdateCtrl as cogOrg">
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-12">
+            <h2>Organization {{cogOrg.title}}</h2>
+        </div>
+    </div>
+    <section-loader-indicator text="Preparing to show Organization Details" object="cogOrg.organization" ng-if="cogOrg.organization === undefined || cogOrg.organization.error !== undefined"></section-loader-indicator>
+    <section-data-empty text="Invalid Data." ng-if="cogOrg.organization !== undefined && cogOrg.organization === null"></section-data-empty>
+    <div ng-if="cogOrg.organization !== undefined && cogOrg.organization.error === undefined">
+        <div ng-if="cogOrg.organization !== null" class="m-t">
+            <div class="row">
+                <div class="col-md-10 col-md-push-1">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="col-md-6 col-md-push-3">
+                                    <div class="cog-image-preview-thumbnail m-md">
+                                        <img alt="image" class="" ng-src="{{cogOrg.organization.image}}">
+                                    </div>
+                                    <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                                        <div class="form-control" data-trigger="fileinput"><i class="glyphicon glyphicon-file fileinput-exists"></i> <span class="fileinput-filename"></span></div>
+                                        <span class="input-group-addon btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists">Change</span><input data-orginal-value="{{cogOrg.organization.imageValue}}" id="cog-organization-update-image" class="cog-input" type="file" name="cog-organization-update-image"></span>
+                                        <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="hr-line-dashed"></div>
+                                </div>
+                            </div>
+
+                            <form method="post" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label"><span class="text-danger">*</span> Organization Name</label>
+                                            <input data-orginal-value="{{cogOrg.organization.organization}}" id="cog-organization-update-name" name="cog-organization-update-name" type="text" class="cog-input form-control" value="{{cogOrg.organization.organization}}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6" ng-if="cogOrg.typesAllowedUsers.accountType !== null && cogOrg.typesAllowedUsers.accountType !== undefined">
+                                        <div class="form-group">
+                                            <label class="control-label"><span class="text-danger">*</span> Type</label>
+                                            <select id="cog-organization-type-option" ng-model="cogOrg.typeInitValue" ng-model="position" class="form-control m-b" name="cog-organization-type" required>
+                                                <option ng-if="item.id != undefined" value="{{item.id}}" ng-repeat="item in cogOrg.typesAllowedUsers.accountType">{{item.account_type}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" ng-if="cogOrg.typesAllowedUsers.allowedUsers !== null && cogOrg.typesAllowedUsers.allowedUsers !== undefined">
+                                        <div class="form-group">
+                                            <label class="control-label"><span class="text-danger">*</span> Allowed Users</label>
+                                            <select id="cog-organization-allowed-users-option" ng-model="cogOrg.allowedUsersInitValue" ng-model="position" class="form-control m-b" name="cog-organization-allowed-users" required>
+                                                <option ng-if="item.id != undefined" value="{{item.id}}" ng-repeat="item in cogOrg.typesAllowedUsers.allowedUsers">{{item.allowed_user}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="pull-right">
+                                            <button ng-click="cogOrg.reset($event)" class="btn btn-primary" type="button">Reset</button>
+                                            <button ng-click="cogOrg.submit($event)" class="btn btn-primary" type="button">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

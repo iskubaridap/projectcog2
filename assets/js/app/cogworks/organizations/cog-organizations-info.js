@@ -79,8 +79,8 @@ function cogOrganizationsInfoCtrl($rootScope, $scope, $element, $state, $http, $
     var updateProject = function() {
         $element.find('.update-project').off().on('click', function() {
             var elem = $(this);
-            var userID = elem.attr('data-id');
-            console.log(userID);
+            var projID = elem.attr('data-id');
+            $state.go('cog-admin.projects-update', {id: projID, page: 'manage'});
         });
     };
     var restoreProject = function() {
@@ -111,8 +111,8 @@ function cogOrganizationsInfoCtrl($rootScope, $scope, $element, $state, $http, $
     var updateCogfile = function() {
         $element.find('.update-cogfile').off().on('click', function() {
             var elem = $(this);
-            var userID = elem.attr('data-id');
-            console.log(id);
+            var fileID = elem.attr('data-id');
+            $state.go('cog-admin.files-update', {page: 'manage', id: fileID});
         });
     };
     var restoreCogfile = function() {

@@ -8,23 +8,23 @@ function cogOrganizationsCtrl($rootScope, $scope, $element, $state, $http, $time
         loginService.userLogged(data);
     });
 
-    var viewOrg = function(id)
+    var viewOrg = function(orgID)
     {
-        // $state.go('cog-developers.profile', {'id': id});
+        $state.go('cog-admin.organizations-info', {id: orgID});
     };
-    var updateOrg = function(id)
+    var updateOrg = function(orgID)
     {
-        //console.log(id);
+        $state.go('cog-admin.organizations-update', {page: 'manage', id: orgID});
     };
     var viewThumnail = function()
     {};
     var viewList = function()
     {};
-    var removeOrg = function(id)
+    var removeOrg = function(orgID)
     {
-        /* SweetAlert.swal({
+        SweetAlert.swal({
             title: "Are you sure?",
-            text: "This user will no longer be active.",
+            text: "This Organization will no longer be active together with it's Users.",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -34,16 +34,13 @@ function cogOrganizationsCtrl($rootScope, $scope, $element, $state, $http, $time
             closeOnCancel: false },
         function (isConfirm) {
             if (isConfirm) {
-                $http.post("./cogworks/developers/deactivate", {id: id})
+                $http.post("./organizations/info/cogworks/deactivate", {id: orgID})
                 .then(function (response) {
-                    if(response.data == 'true')
-                    {
-                        cogDevelopers.getActiveDevelopers(self, {page: cogDevPage});
-                        SweetAlert.swal("Deleted!", "User is successfully removed", "success");
-                    }
-                    else
-                    {
-                        SweetAlert.swal("Failed!", "User is not been removed. Try it again.", "error");
+                    if(response.data == 'true') {
+                        cogOrganizationsService.getOrganizations(self, {}, function(data){});
+                        SweetAlert.swal("Deleted!", "Organization is successfully removed", "success");
+                    } else {
+                        SweetAlert.swal("Failed!", "Organization is not been removed. Try it again.", "error");
                     }
                 }, function (response) {
                     SweetAlert.swal("Error", "Something went wrong. Try it again.", "error");
@@ -52,23 +49,20 @@ function cogOrganizationsCtrl($rootScope, $scope, $element, $state, $http, $time
             } else {
                 SweetAlert.swal("Cancelled", "You cancelled your action", "error");
             }
-        }); */
+        });
     };
-    var restoreOrg = function(id) {
-        /* $http.post("./cogworks/developers/activate", {id: id})
+    var restoreOrg = function(orgID) {
+        $http.post("./organizations/info/cogworks/activate", {id: orgID})
         .then(function (response) {
-            if(response.data == 'true')
-            {
-                cogDevelopers.getActiveDevelopers(self, {page: cogDevPage});
-                SweetAlert.swal("Success!", "User is successfully restored.", "success");
-            }
-            else
-            {
-                SweetAlert.swal("Failed!", "File is not been removed. Try it again.", "error");
+            if(response.data == 'true') {
+                cogOrganizationsService.getOrganizations(self, {}, function(data){});
+                SweetAlert.swal("Success!", "Organization is successfully restored.", "success");
+            } else {
+                SweetAlert.swal("Failed!", "Organization is still not Inactive. Try it again.", "error");
             }
         }, function (response) {
             SweetAlert.swal("Error", "Something went wrong. Try it again.", "error");
-        }); */
+        });
     }
 
     /* self.orderByName = function(event)

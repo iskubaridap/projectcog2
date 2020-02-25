@@ -48,7 +48,7 @@ function cogProjectCtrl($rootScope, $scope, $element, $state, $http, cogProject,
                 data: formData,
                 headers: {'Content-Type': undefined}
             }).success(function (response) {
-                $state.go('cog-projects.active');
+                $state.go($state.current, {}, {reload: true});
             }).error(function(error){
                 SweetAlert.swal({
                     title: "Project Update Fail",

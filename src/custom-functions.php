@@ -162,7 +162,7 @@ function getCogFileThumbnail($orgID, $userID, $cogID, $img, $container)
     generateDirectory($ary['folder']);
     return $ary;
 }
-function getCogImageThumbnailDirectory($projID, $orgID, $userID, $type)
+function getCogImageThumbnailDirectory($projID, $orgID, $userID, $type, $useTypePath)
 {
     $path = '';
     $typePath = '';
@@ -188,7 +188,11 @@ function getCogImageThumbnailDirectory($projID, $orgID, $userID, $type)
     generateDirectory($typePath);
     generateDirectory($projPath);
     // return json_encode($foobar) . '/' . $typePath . ' - ' . json_encode($foobar2) . '/'. $projPath . ' - ' . $path;
-    return $path;
+    if($useTypePath) {
+        return $typePath;
+    } else {
+        return $path;
+    }
 }
 // reserve code just in-case it needed
 function getCogImageDirectory($projID, $orgID, $userID, $folder)

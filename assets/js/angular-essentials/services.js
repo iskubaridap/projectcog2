@@ -27,6 +27,47 @@ var loginService = function($state, $http)
       });
   }
 };
+var accountsService = function($http) {
+  var self = this;
+  this.getAccountOrg = function(obj, config, callback){
+    return $http.post("./accounts/retrieve/org", config)
+    .then(function (response) {
+        obj.typesAllowedUsers = ((response.data).toString().length > 0 && response.data != 'null') ? response.data : null;
+        try
+        {
+          callback(response.data);
+        }
+        catch(err)
+        {
+          // no callback function
+        }
+      }, function (response) {
+        obj.typesAllowedUsers = new Object();
+        obj.typesAllowedUsers.error = 'serverError';
+        obj.typesAllowedUsers.errorData = 'Organizations';
+        return null;
+      });
+  };
+  this.getTypesAllowedUsers = function(obj, config, callback){
+    return $http.post("./accounts/retrieve/types-allowed-users")
+    .then(function (response) {
+        obj.typesAllowedUsers = ((response.data).toString().length > 0 && response.data != 'null') ? response.data : null;
+        try
+        {
+          callback(response.data);
+        }
+        catch(err)
+        {
+          // no callback function
+        }
+      }, function (response) {
+        obj.typesAllowedUsers = new Object();
+        obj.typesAllowedUsers.error = 'serverError';
+        obj.typesAllowedUsers.errorData = 'Organizations';
+        return null;
+      });
+  };
+};
 var cogOrganizationsService = function($http) {
   var self = this;
   this.getOrganizations = function(obj, config, callback){
@@ -366,6 +407,7 @@ var cogPodsWhatNots = function($http){
 angular
     .module('projectcog')
     .service('loginService', loginService)
+    .service('accountsService', accountsService)
     .service('cogOrganizationsService', cogOrganizationsService)
     .service('tasks', tasks)
     .service('cogUsers', cogUsers)

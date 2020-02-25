@@ -235,6 +235,62 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 }
             }
         })
+        .state('cog-admin.organizations-add', {
+            url: "/:page/organization/add",
+            templateUrl: "assets/views/cogworks/organizations/organizations-cogworks-add.html",
+            data: { pageTitle: 'Add Organization' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'cog-organizations-add',
+                            files: ['assets/js/app/cogworks/organizations/cog-organizations-add.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']
+                        },
+                        {
+                            name: 'oitozero.ngSweetAlert',
+                            files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        },
+                        {
+                            files: ['assets/css/plugins/dropzone/basic.css','assets/css/plugins/dropzone/dropzone.css','assets/js/plugins/dropzone/dropzone.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/jasny/jasny-bootstrap.min.js', 'assets/css/plugins/jasny/jasny-bootstrap.min.css' ]
+                        }
+                    ]);
+                }
+            }
+        })
+        .state('cog-admin.organizations-update', {
+            url: "/:page/organization/update/:id",
+            templateUrl: "assets/views/cogworks/organizations/organizations-cogworks-update.html",
+            data: { pageTitle: 'Organizations Update' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'cog-organizations-update',
+                            files: ['assets/js/app/cogworks/organizations/cog-organizations-update.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']
+                        },
+                        {
+                            name: 'oitozero.ngSweetAlert',
+                            files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        },
+                        {
+                            files: ['assets/css/plugins/dropzone/basic.css','assets/css/plugins/dropzone/dropzone.css','assets/js/plugins/dropzone/dropzone.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/jasny/jasny-bootstrap.min.js', 'assets/css/plugins/jasny/jasny-bootstrap.min.css' ]
+                        }
+                    ]);
+                }
+            }
+        })
         .state('cog-admin.files', {
             url: "/:page/files/:project",
             templateUrl: "assets/views/cogworks/cog-files/cog-files-main.html",

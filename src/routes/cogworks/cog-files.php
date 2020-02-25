@@ -231,7 +231,7 @@ return function (App $app) {
         $cogProjectID = $cog['project_id'];
         $cogOrgID = $cogUser['organization_id'];
 
-        $imagePath = getCogImageThumbnailDirectory($projID, $cogOrgID, $cogUserID, 'cog-files');
+        $imagePath = getCogImageThumbnailDirectory($projID, $cogOrgID, $cogUserID, 'cog-files', false);
         $sourcePath = getCogFileDirectory($cogProjectID, $cogOrgID, $cogUserID) . $cogID . '.cog';
         $targetPath = getCogFileDirectory($projID, $cogOrgID, $cogUserID) . $cogID . '.cog';
         $cogFileContent = json_decode(file_get_contents($sourcePath, true));        

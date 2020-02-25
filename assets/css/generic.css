@@ -182,8 +182,14 @@
 .cog-dev-profile-wrap:last-child {
     margin-bottom: 0;
 }
-.item-deleted .contact-box.center-version > a {
+.inactive .contact-box.center-version > a {
     background-image: url(../img/background/bg-deleted.svg);
+    background-repeat: no-repeat;
+    background-size: 80%;
+    background-position: center;
+}
+.inactive-org .contact-box.center-version > a {
+    background-image: url(../img/background/bg-caution.svg);
     background-repeat: no-repeat;
     background-size: 80%;
     background-position: center;

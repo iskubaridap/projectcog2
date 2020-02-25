@@ -31,6 +31,131 @@ return function (App $app) {
 
         return json_encode($result);
     });
+    $app->post('/organizations/cogworks/add', function ($request, $response, $args) use ($container) {
+        $orgID = $request->getParam('id');
+        $name = $request->getParam('cogOrgName');
+        $acctType = $request->getParam('acctType');
+        $allowedUsers = $request->getParam('allowedUsers');
+        $file = $request->getUploadedFiles();
+        $dateDateTime = getCurrentDate();
+        $cogworksFolder = $_SERVER['DOCUMENT_ROOT'] . '/cogworks/';
+        $path = '';
+        $result = null;
+        $imageName = null;
+        $acctID = 0;
+ 
+        $newAccount = $container->projectcog->exec("
+            insert into accounts
+            (account_type_id, allowed_users_id, started)
+            values('$acctType', '$allowedUsers', '$dateDateTime');
+        ");
+
+        if($newAccount){
+            $newAccountObj = $container->projectcog->query("
+                select * from accounts
+                order by id desc limit 1
+            ")->fetch(PDO::FETCH_ASSOC);
+
+            $newAccountID = $newAccountObj['id'];
+
+            if(!empty($file)) {
+                $uploadedFile = $file['file'];
+                $imageName = $file['file']->getClientFilename();
+                
+                $result = $container->projectcog->exec("
+                    insert into organizations
+                    (organization, image, account_id)
+                    values('$name', '$imageName', '$newAccountID');
+                ");
+
+                $newOrgObj = $container->projectcog->query("
+                    select * from organizations
+                    order by id desc limit 1
+                ")->fetch(PDO::FETCH_ASSOC);
+
+                generateDirectory($cogworksFolder . 'organizations/' . $newOrgObj['id']);
+                generateDirectory($cogworksFolder . 'organizations/' . $newOrgObj['id'] . '/users');
+                generateCogworksDefaultDirectories($cogworksFolder . 'organizations/' . $newOrgObj['id']);
+
+                $imagePath = getCogImageThumbnailDirectory('', $newOrgObj['id'], '', 'organizations', true);
+                $uploadedFile->moveTo($imagePath . '/' . $imageName);
+                chmod($imagePath . '/' . $imageName,0777); 
+            } else {
+                $result = $container->projectcog->exec("
+                    insert into organizations
+                    (organization, account_id)
+                    values('$name', '$newAccountID');
+                ");
+
+                $newOrgObj = $container->projectcog->query("
+                    select * from organizations
+                    order by id desc limit 1
+                ")->fetch(PDO::FETCH_ASSOC);
+
+                generateDirectory($cogworksFolder . 'organizations/' . $newOrgObj['id']);
+                generateDirectory($cogworksFolder . 'organizations/' . $newOrgObj['id'] . '/users');
+                generateCogworksDefaultDirectories($cogworksFolder . 'organizations/' . $newOrgObj['id']);
+            }
+        }
+        
+        return json_encode($result);
+    });
+    $app->post('/organizations/cogworks/update', function ($request, $response, $args) use ($container) {
+       $orgID = $request->getParam('id');
+       $name = $request->getParam('cogOrgName');
+       $acctType = $request->getParam('acctType');
+       $allowedUsers = $request->getParam('allowedUsers');
+       $file = $request->getUploadedFiles();
+       $dateDateTime = getCurrentDate();
+       $path = '';
+       $result = null;
+       $imageName = null;
+       $acctID = 0;
+
+        $orgInfo = $container->projectcog->query("
+            select * from organizations
+            where id = '$orgID'
+        ")->fetch(PDO::FETCH_ASSOC);
+
+        $acctID = $orgInfo['account_id'];
+
+        $prepareAcct = $container->projectcog->prepare("
+            update accounts
+            set
+            account_type_id = '$acctType',
+            allowed_users_id = '$allowedUsers',
+            updated = '$dateDateTime'
+            where id = '$acctID'
+        ");
+        $resultAcct = $prepareAcct->execute();
+       if(!empty($file)) {
+            $uploadedFile = $file['file'];
+            $imageName = $file['file']->getClientFilename();
+            $imagePath = getCogImageThumbnailDirectory('', $orgID, '', 'organizations', true);
+            $uploadedFile->moveTo($imagePath . '/' . $imageName);
+            chmod($imagePath . '/' . $imageName,0777); 
+
+            $prepare = $container->projectcog->prepare("
+                update organizations
+                set
+                organization = '$name',
+                image = '$imageName',
+                updated = '$dateDateTime'
+                where id = '$orgID'
+            ");
+       } else {
+            $prepare = $container->projectcog->prepare("
+                update organizations
+                set
+                organization = '$name',
+                updated = '$dateDateTime'
+                where id = '$orgID'
+            ");
+       }
+
+       $result = $prepare->execute();
+       return json_encode($result);
+   });
     $app->post('/organizations/retrieve/cogworks/single', function ($request, $response, $args) use ($container) {
         $id = $request->getParam('id');
         $result = null;
@@ -60,6 +185,19 @@ return function (App $app) {
         $status = $container->projectcog->query("
             select status from statues;
         ")->fetchAll(PDO::FETCH_ASSOC);
+        $acct = $container->projectcog->query("
+            select accounts.id, accounts.account_type_id, account_types.account_type, accounts.allowed_users_id, allowed_users.allowed_user, accounts.program_id 
+            from accounts, account_types, allowed_users 
+            where accounts.account_type_id = account_types.id and accounts.allowed_users_id = allowed_users.id and accounts.id = '$orgID';
+        ")->fetch(PDO::FETCH_ASSOC);
+        $programs = $container->projectcog->query("
+            select program from programs;
+        ")->fetchAll(PDO::FETCH_ASSOC);
+        $acct['programs'] = array();
+
+        foreach((json_decode($acct['program_id'], false)) as $progID) {
+            array_push($acct['programs'], $programs[($progID - 1)]['program']);
+        }
 
         $projectNames = $container->cogworks->query("
             select project from projects
@@ -75,6 +213,7 @@ return function (App $app) {
         $result['info']['imageValue'] = $imgAry['imageValue'];
         $result['info']['accountID'] = $info['account_id'];
         $result['info']['statusID'] = $info['status_id'];
+        $result['info']['status'] = $status[($info['status_id'] - 1)]['status'];
         $result['info']['updated'] = ($info['updated'] != null) ? (explode(" ", $info['updated']))[0] : '0000-00-00';
         $result['info']['created'] = (explode(" ", $info['created']))[0];
 
@@ -131,11 +270,65 @@ return function (App $app) {
             $tmpObj['cogfiles'] = $projCogCount['count(id)'];
             array_push($result['projects'], $tmpObj);
         }
-
+        $result['account'] = $acct;
+        $info['account'] = $acct;
         if(is_array($info)) {
             return json_encode($result);
         } else {
             return json_encode($info);
         }
     });
+    $app->post('/organizations/info/cogworks/activate', function ($request, $response, $args) use ($container) {
+        $id = $request->getParam('id');
+        $resultOrg = null;
+        $resultUsers = null;
+        $dateDateTime = getCurrentDate();
+        $prepareOrg = $container->projectcog->prepare("
+            update organizations
+            set
+            status_id = '1',
+            updated = '$dateDateTime'
+            where id = '$id'
+        ");
+        $resultOrg = $prepareOrg->execute();
+        if($resultOrg) {
+            $prepareUsers = $container->projectcog->prepare("
+                update users
+                set
+                status_id = '1',
+                updated = '$dateDateTime'
+                where organization_id = '$id'
+            ");
+            $resultUsers = $prepareUsers->execute();
+        }
+
+        return json_encode(($resultOrg));
+    });
+    $app->post('/organizations/info/cogworks/deactivate', function ($request, $response, $args) use ($container) {
+        $id = $request->getParam('id');
+        $resultOrg = null;
+        $resultUsers = null;
+        $dateDateTime = getCurrentDate();
+        $prepareOrg = $container->projectcog->prepare("
+            update organizations
+            set
+            status_id = '2',
+            updated = '$dateDateTime'
+            where id = '$id'
+        ");
+        $resultOrg = $prepareOrg->execute();
+        if($resultOrg) {
+            $prepareUsers = $container->projectcog->prepare("
+                update users
+                set
+                status_id = '5',
+                updated = '$dateDateTime'
+                where organization_id = '$id'
+            ");
+            $resultUsers = $prepareUsers->execute();
+        }
+
+        return json_encode(($resultOrg));
+    });
+    
 };

@@ -139,7 +139,7 @@ return function (App $app) {
                 ")->fetch(PDO::FETCH_ASSOC);
                 $projID = $proj['id'];
 
-                $imagePath = getCogImageThumbnailDirectory($projID, $cogOrgID, $cogUserID, 'projects');
+                $imagePath = getCogImageThumbnailDirectory($projID, $cogOrgID, $cogUserID, 'projects', false);
                 $uploadedFile->moveTo($imagePath . $imageName);
                 chmod($imagePath . $imageName,0777);
             }
@@ -294,7 +294,7 @@ return function (App $app) {
        
        if(!empty($file))
        {
-            $imagePath = getCogImageThumbnailDirectory($projID, $cogOrgID, $cogUserID, 'projects');
+            $imagePath = getCogImageThumbnailDirectory($projID, $cogOrgID, $cogUserID, 'projects', false);
             $uploadedFile = $file['file'];
             $imageName = $file['file']->getClientFilename();
             $uploadedFile->moveTo($imagePath . $imageName);

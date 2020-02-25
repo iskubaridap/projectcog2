@@ -14,17 +14,14 @@ return function (App $app) {
         $userOrg = $loggedUser['organization_id'];
         $page = $request->getParam('page');
 
-        if($page == 'manage')
-        {
+        if($page == 'manage') {
             // be aware that i used alias for status_id into status
             $developers = $container->projectcog->query("
-                select users.id, users.user, users.firstname, users.lastname, users.middlename, users.position_id, users.status_id as status, positions.position, users.image, users.organization_id from users, positions 
+                select users.id, users.user, users.firstname, users.lastname, users.middlename, users.position_id, users.status_id, positions.position, users.image, users.organization_id from users, positions 
                 where users.position_id = positions.id and (users.id <> 1 and users.id <> 2) and users.organization_id <> 1
                 order by users.user asc
             ")->fetchAll(PDO::FETCH_ASSOC);
-        }
-        else
-        {
+        } else {
             $developers = $container->projectcog->query("
                 select users.id, users.user, positions.position, users.image, users.organization_id from users, positions 
                 where users.status_id = '1' and users.position_id = positions.id  and (users.id <> 1 and users.id <> 2) and users.organization_id = '$userOrg' 
@@ -39,6 +36,14 @@ return function (App $app) {
                 $imgAry = getCogDeveloperThumbnail($developer['organization_id'], $developer['id'], $developer['image'], $container);
                 $developer['imageValue'] = $imgAry['imageValue'];
                 $developer['image'] = $imgAry['path'];
+                if($developer['status_id'] == 2) {
+                    $developer['status'] = 'inactive';
+                } else if($developer['status_id'] == 5) {
+                    $developer['status'] = 'inactive-org';
+                } else {
+                    $developer['status'] = 'active';
+                }
+                
             }
         // }
         return json_encode($developers);
