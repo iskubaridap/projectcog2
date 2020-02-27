@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var op1=require("../operations/createCanBeCopiedFlag");var op2=require("../operations/deletePackageIDProperty");var op3=require("../operations/deletePackageIDOriginFromCSS");module.exports=function convert(json){op1(json["package"].components);op2(json["package"].components);op3(json["package"].css);json.version=5;return json}},{"../operations/createCanBeCopiedFlag":429,"../operations/deletePackageIDOriginFromCSS":431,"../operations/deletePackageIDProperty":432}]
+});

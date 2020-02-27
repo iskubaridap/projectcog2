@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var elliptic=exports;elliptic.version=require("../package.json").version;elliptic.utils=require("./elliptic/utils");elliptic.rand=require("brorand");elliptic.curve=require("./elliptic/curve");elliptic.curves=require("./elliptic/curves");elliptic.ec=require("./elliptic/ec");elliptic.eddsa=require("./elliptic/eddsa")},{"../package.json":1012,"./elliptic/curve":1000,"./elliptic/curves":1003,"./elliptic/ec":1004,"./elliptic/eddsa":1007,"./elliptic/utils":1011,"brorand":646}]
+});

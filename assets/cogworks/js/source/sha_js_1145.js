@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){var exports=module.exports=function SHA(algorithm){algorithm=algorithm.toLowerCase();var Algorithm=exports[algorithm];if(!Algorithm)throw new Error(algorithm+" is not supported (we accept pull requests)");return new Algorithm};exports.sha=require("./sha");exports.sha1=require("./sha1");exports.sha224=require("./sha224");exports.sha256=require("./sha256");exports.sha384=require("./sha384");exports.sha512=require("./sha512")},{"./sha":1146,"./sha1":1147,"./sha224":1148,"./sha256":1149,"./sha384":1150,"./sha512":1151}]
+});

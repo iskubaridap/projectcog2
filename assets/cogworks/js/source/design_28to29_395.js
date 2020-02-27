@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var walkDesignComponents=require("../helpers/walkDesignComponents");module.exports=function convert(json){if(json.design.framework==="4"){walkDesignComponents(json.design.pages,function(component){if(component["class"]==="Table"){component.properties.bordered=component.properties.bordered?"bordered":""}})}json.version=29;return json}},{"../helpers/walkDesignComponents":420}]
+});

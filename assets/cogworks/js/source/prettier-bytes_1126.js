@@ -1,0 +1,4 @@
+define([],function(){
+	return [function(require,module,exports){module.exports=prettierBytes;function prettierBytes(num){if(typeof num!=="number"||isNaN(num)){throw new TypeError("Expected a number, got "+typeof num)}var neg=num<0;var units=["B","KB","MB","GB","TB","PB","EB","ZB","YB"];if(neg){num=-num}
+if(num<1){return(neg?"-":"")+num+" B"}var exponent=Math.min(Math.floor(Math.log(num)/Math.log(1e3)),units.length-1);num=Number(num/Math.pow(1e3,exponent));var unit=units[exponent];if(num>=10||num%1===0){return(neg?"-":"")+num.toFixed(0)+" "+unit}else{return(neg?"-":"")+num.toFixed(1)+" "+unit}}},{}]
+});

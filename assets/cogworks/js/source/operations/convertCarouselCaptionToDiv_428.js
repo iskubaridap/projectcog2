@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var walk=require("../helpers/walk");var convertInlineEditingToBlock=require("../helpers/convertInlineEditingToBlock");module.exports=function convertCarouselCaptionToDiv(tree){walk(tree,function(component){if(component["class"]=="CarouselCaption"){convertInlineEditingToBlock(component);component.properties={}}})}},{"../helpers/convertInlineEditingToBlock":415,"../helpers/walk":418}]
+});

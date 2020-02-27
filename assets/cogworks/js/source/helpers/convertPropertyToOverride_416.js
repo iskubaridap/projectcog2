@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";module.exports=function convertPropertyToOverride(component,componentClass,path,property){if(component["class"]===componentClass&&component.properties&&component.properties[property]){if(!component.overrides[path]){component.overrides[path]={}}if(component.overrides[path].hasOwnProperty(property)){return}component.overrides[path][property]=component.properties[property];delete component.properties[property]}}},{}]
+});

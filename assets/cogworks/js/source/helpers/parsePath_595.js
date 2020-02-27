@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";module.exports=function parsePath(str,platform){platform=platform||electron&&electron.os||"linux";var separator="/";if(platform=="windows"){separator="\\"}var tmp=String(str).split(separator);var extname="",dirname="",basename="",name="";if(tmp.length==1){basename=name=tmp[0]}else{basename=tmp.slice(-1)[0];dirname=tmp.slice(0,-1).join(separator)}var ext=basename.split(".");if(ext.length==1){name=ext[0]}else{extname="."+ext.slice(-1)[0];name=ext.slice(0,-1).join(".")}return{extname:extname,dirname:dirname,basename:basename,name:name}}},{}]
+});

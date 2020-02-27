@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var normalizeCSSSelector=require("../helpers/normalizeCSSSelector");var escapeHTML=require("escape-html");module.exports=function formatCSSSelector(selector,matches){selector=selector.replace(/([^,]+),? ?/g,function(full,select){select=normalizeCSSSelector(select);for(var i=0;i<matches.length;i++){if(matches[i].selector==select){return"_b_"+full+"_/b_"}}return full});return escapeHTML(selector).replace(/_b_/g,"<b>").replace(/_\/b_/g,"</b>")}},{"../helpers/normalizeCSSSelector":590,"escape-html":1021}]
+});

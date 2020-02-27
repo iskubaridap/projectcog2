@@ -33,6 +33,32 @@ return function (App $app) {
 
         return json_encode($whatNots);
     });
+    $app->post('/cogworks/what-nots/retrieve/main-tool', function ($request, $response, $args) use ($container) {
+        $id = $request->getParam('id');
+
+        $whatNots = $container->cogworks->query("
+            select what_not from what_nots
+            where user_id = '$id' and status_id = '1'
+        ")->fetch(PDO::FETCH_ASSOC);
+
+        return json_encode($whatNots['what_not']);
+    });
+    $app->post('/cogworks/pods/retrieve/main-tool', function ($request, $response, $args) use ($container) {
+        $id = $request->getParam('id');
+
+        $user = $container->projectcog->query("
+            select * from users
+            where id = '$id';
+        ")->fetch(PDO::FETCH_ASSOC);
+        $userOrg = $user['organization_id'];
+
+        $pods = $container->cogworks->query("
+            select pod from pods
+            where organization_id = '$userOrg' and status_id = '1'
+        ")->fetch(PDO::FETCH_ASSOC);
+
+        return json_encode($pods['pod']);
+    });
     $app->post('/cogworks/pods/update', function ($request, $response, $args) use ($container) {
         $loggedUser = identifyLoggedUser($container);
         $userID = $loggedUser['id'];

@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";module.exports={save:function save(node){if(supportsSelection(node)){return{start:node.selectionStart,end:node.selectionEnd,direction:node.selectionDirection,value:node.value}}return null},restore:function restore(node,selection){if(!node||!selection)return;if(supportsSelection(node)){node.value=selection.value;node.setSelectionRange(selection.start,selection.end,selection.direction)}}};function supportsSelection(node){var supportedTypes=["text","search","url","tel","password"];return node.nodeName==="INPUT"&&supportedTypes.indexOf(node.type)!==-1}},{}]
+});

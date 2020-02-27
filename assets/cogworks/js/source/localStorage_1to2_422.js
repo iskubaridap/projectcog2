@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";module.exports=function convert(storage){if(storage.packages){var json=JSON.parse(storage.packages);for(var i=0;i<json.length;i++){if(!json[i]["package"]){json[i]={package:json[i],timestamp:Date.now(),version:1}}json[i]["package"].name=json[i]["package"].name.replace(/[<>:"\/\\|?*]/g,"")}electron.writeDataFile("userPackages",JSON.stringify({name:"User",children:json,expanded:true}))}delete storage.packages;storage.version=2;return storage}},{}]
+});

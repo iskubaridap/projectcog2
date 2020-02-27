@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var fixKeyframesEnabledState=require("../operations/fixKeyframesEnabledState");var removeParentClassesInButtons=require("../operations/removeParentClassesInButtons");module.exports=function convert(json){removeParentClassesInButtons(json["package"].component);fixKeyframesEnabledState(json["package"].css);json.version=33;return json}},{"../operations/fixKeyframesEnabledState":438,"../operations/removeParentClassesInButtons":447}]
+});

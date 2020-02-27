@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var op1=require("../operations/convertCarouselCaptionToDiv");var op2=require("../operations/fixParagraphAndChildrenClasses");module.exports=function convert(json){op1(json["package"].components);op2(json["package"].components);json.version=4;return json}},{"../operations/convertCarouselCaptionToDiv":428,"../operations/fixParagraphAndChildrenClasses":440}]
+});

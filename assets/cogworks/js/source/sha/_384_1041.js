@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var utils=require("../utils");var SHA512=require("./512");function SHA384(){if(!(this instanceof SHA384))return new SHA384;SHA512.call(this);this.h=[3418070365,3238371032,1654270250,914150663,2438529370,812702999,355462360,4144912697,1731405415,4290775857,2394180231,1750603025,3675008525,1694076839,1203062813,3204075428]}utils.inherits(SHA384,SHA512);module.exports=SHA384;SHA384.blockSize=1024;SHA384.outSize=384;SHA384.hmacStrength=192;SHA384.padLength=128;SHA384.prototype._digest=function digest(enc){if(enc==="hex")return utils.toHex32(this.h.slice(0,12),"big");else return utils.split32(this.h.slice(0,12),"big")}},{"../utils":1044,"./512":1042}]
+});

@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){(function(process){exports=module.exports=require("./lib/_stream_readable.js");exports.Stream=require("stream");exports.Readable=exports;exports.Writable=require("./lib/_stream_writable.js");exports.Duplex=require("./lib/_stream_duplex.js");exports.Transform=require("./lib/_stream_transform.js");exports.PassThrough=require("./lib/_stream_passthrough.js");if(!process.browser&&process.env.READABLE_STREAM==="disable"){module.exports=require("stream")}}).call(this,require("_process"))},{"./lib/_stream_duplex.js":1171,"./lib/_stream_passthrough.js":1172,"./lib/_stream_readable.js":1173,"./lib/_stream_transform.js":1174,"./lib/_stream_writable.js":1175,"_process":1127,"stream":1168}]
+});

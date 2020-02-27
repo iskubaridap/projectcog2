@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var loopTree=require("../helpers/loopTree");var op1=require("../operations/fixAnchorCSS");var op2=require("../operations/createNavBarCollapse");module.exports=function convert(json){if(json.design.framework=="4"){loopTree(json.design.pages,function(page){op1(page.html);op2(page.html)})}json.version=24;return json}},{"../helpers/loopTree":417,"../operations/createNavBarCollapse":430,"../operations/fixAnchorCSS":434}]
+});

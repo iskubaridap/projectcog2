@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";module.exports={save:function save(){return window.getSelection().baseOffset},restore:function restore(element,offset){var change=arguments.length<=2||arguments[2]===undefined?0:arguments[2];if(!element)return;var selection=window.getSelection();var range=selection.getRangeAt(0);offset=Math.min(offset+change,element.textContent.length);if(offset<0)offset=0;range.setStart(element,offset);range.collapse(true);selection.removeAllRanges();selection.addRange(range)}}},{}]
+});

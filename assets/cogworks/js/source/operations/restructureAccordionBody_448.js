@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";function _toConsumableArray(arr){if(Array.isArray(arr)){for(var i=0,arr2=Array(arr.length);i<arr.length;i++)arr2[i]=arr[i];return arr2}else{return Array.from(arr)}}module.exports=function restructureAccordionBody(component){var children=[];for(var i=0;i<component.children.length;i++){var child=component.children[i];if(child["class"]==="CardBody"){children.push.apply(children,_toConsumableArray(child.children))}else{children.push(child)}}component.children=children}},{}]
+});

@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";module.exports=function getImageCrop(img,originalSize,offset,newSize){var canvas=document.createElement("canvas");canvas.width=newSize.width;canvas.height=newSize.height;canvas.getContext("2d").drawImage(img,offset.left,offset.top,originalSize.width,originalSize.height,0,0,newSize.width,newSize.height);return canvas.toDataURL("image/jpeg")}},{}]
+});

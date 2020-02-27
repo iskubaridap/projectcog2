@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";module.exports=function readFileAsBase64(path){var headers=arguments.length<=1||arguments[1]===undefined?null:arguments[1];return new Promise(function(resolve,reject){var request=new XMLHttpRequest;request.open("GET",path,true);request.responseType="arraybuffer";request.onload=function(oEvent){if(request.status!=200)return reject();var arrayBuffer=request.response;if(arrayBuffer){var binary="";var bytes=new Uint8Array(arrayBuffer);for(var i=0,len=bytes.byteLength;i<len;i++){binary+=String.fromCharCode(bytes[i])}return resolve({content:window.btoa(binary),decode:"base64",contentType:request.getResponseHeader("content-type"),headers:headers})}else reject()};request.send(null)})}},{}]
+});

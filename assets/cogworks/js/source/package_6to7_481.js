@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var op=require("../operations/stripLinkIDs");module.exports=function convert(json){json["package"].component=json["package"].components;delete json["package"].components;op(json["package"].component);if(json["package"].css.length){var blocks=json["package"].css;json["package"].css=[{name:"",properties:{},blocks:blocks}]}json["package"].js=[];json.version=7;return json}},{"../operations/stripLinkIDs":450}]
+});

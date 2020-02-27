@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){var DomUtils=module.exports;[require("./lib/stringify"),require("./lib/traversal"),require("./lib/manipulation"),require("./lib/querying"),require("./lib/legacy"),require("./lib/helpers")].forEach(function(ext){Object.keys(ext).forEach(function(key){DomUtils[key]=ext[key].bind(DomUtils)})})},{"./lib/helpers":991,"./lib/legacy":992,"./lib/manipulation":993,"./lib/querying":994,"./lib/stringify":995,"./lib/traversal":996}]
+});

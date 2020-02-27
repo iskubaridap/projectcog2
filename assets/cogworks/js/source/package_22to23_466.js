@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var walk=require("../helpers/walk");var op=require("../operations/fixSpanCSSClasses");module.exports=function convert(json){json["package"].images={children:json["package"].images,expanded:true,name:"Images"};walk(json["package"].component,op);json.version=23;return json}},{"../helpers/walk":418,"../operations/fixSpanCSSClasses":441}]
+});

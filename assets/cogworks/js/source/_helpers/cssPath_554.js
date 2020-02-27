@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";module.exports=function cssPath(node,scope){var parts=[];while(node.parentNode){if(node==scope){break}if(node==node.ownerDocument.documentElement){return null}for(var c=1,e=node;e.previousElementSibling;e=e.previousElementSibling,c++);parts.unshift(node.tagName+":nth-child("+c+")");node=node.parentNode}if(!parts.length){return null}return parts.join(" > ")}},{}]
+});

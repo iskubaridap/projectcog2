@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){var decodeMap=require("../maps/decode.json");module.exports=decodeCodePoint;function decodeCodePoint(codePoint){if(codePoint>=55296&&codePoint<=57343||codePoint>1114111){return"ï¿½"}if(codePoint in decodeMap){codePoint=decodeMap[codePoint]}var output="";if(codePoint>65535){codePoint-=65536;output+=String.fromCharCode(codePoint>>>10&1023|55296);codePoint=56320|codePoint&1023}output+=String.fromCharCode(codePoint);return output}},{"../maps/decode.json":1017}]
+});

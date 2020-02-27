@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){require("./es6.array.iterator");var global=require("./$.global"),hide=require("./$.hide"),Iterators=require("./$.iterators"),ITERATOR=require("./$.wks")("iterator"),NL=global.NodeList,HTC=global.HTMLCollection,NLProto=NL&&NL.prototype,HTCProto=HTC&&HTC.prototype,ArrayValues=Iterators.NodeList=Iterators.HTMLCollection=Iterators.Array;if(NLProto&&!NLProto[ITERATOR])hide(NLProto,ITERATOR,ArrayValues);if(HTCProto&&!HTCProto[ITERATOR])hide(HTCProto,ITERATOR,ArrayValues)},{"./$.global":786,"./$.hide":788,"./$.iterators":802,"./$.wks":840,"./es6.array.iterator":848}]
+});

@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var walkAssets=require("../helpers/walkAssets");var createHash=require("../../helpers/createHash");module.exports=function convert(json){walkAssets(json["package"].images,function(item){item.timestamp=Date.now()+Math.round(Math.random()*1e5)});json.version=27;return json}},{"../../helpers/createHash":553,"../helpers/walkAssets":419}]
+});

@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var $=require("./$"),descriptor=require("./$.property-desc"),setToStringTag=require("./$.set-to-string-tag"),IteratorPrototype={};require("./$.hide")(IteratorPrototype,require("./$.wks")("iterator"),function(){return this});module.exports=function(Constructor,NAME,next){Constructor.prototype=$.create(IteratorPrototype,{next:descriptor(1,next)});setToStringTag(Constructor,NAME+" Iterator")}},{"./$":803,"./$.hide":788,"./$.property-desc":816,"./$.set-to-string-tag":823,"./$.wks":840}]
+});

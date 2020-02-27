@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var walk=require("../helpers/walk");module.exports=function fixParagraphAndChildrenClasses(tree){walk(tree,function(component){if((component["class"]=="Alert"||component["class"]=="Anchor"||component["class"]=="Heading"||component["class"]=="Paragraph"||component["class"]=="Small"||component["class"]=="Span")&&typeof component.cssClasses.system=="string"){component.cssClasses.system={}}})}},{"../helpers/walk":418}]
+});

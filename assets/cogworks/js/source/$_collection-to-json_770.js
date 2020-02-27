@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){var forOf=require("./$.for-of"),classof=require("./$.classof");module.exports=function(NAME){return function toJSON(){if(classof(this)!=NAME)throw TypeError(NAME+"#toJSON isn't generic");var arr=[];forOf(this,false,arr.push,arr);return arr}}},{"./$.classof":767,"./$.for-of":784}]
+});

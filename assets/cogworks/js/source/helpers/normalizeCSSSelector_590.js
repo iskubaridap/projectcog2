@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var multiSpaceRegex=/\s+/g;var cssSelectorOperator=/([>+~])/g;var commaRegex=/\s*,/g;var invalidSymbols=/[\{\}]+/g;var noClosingBrace=/\([^\)]+$/;module.exports=function normalizeCSSSelector(selector){var selector=selector.replace(cssSelectorOperator," $1 ").replace(commaRegex,", ").replace(multiSpaceRegex," ").replace(invalidSymbols,"").trim();if(noClosingBrace.test(selector)){selector+=")"}return selector}},{}]
+});

@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var specificityToNumber=require("../helpers/specificityToNumber");var specificity=require("specificity");module.exports=function compareSelectorSpecificity(a,b){if(!a)return 1;if(!b)return-1;var specA=specificity.calculate(a);var specB=specificity.calculate(b);var maxA=0,maxB=0;for(var i=0;i<specA.length;i++){var tmp=specificityToNumber(specA[i].specificity);if(maxA<tmp){maxA=tmp}}for(var i=0;i<specB.length;i++){var tmp=specificityToNumber(specB[i].specificity);if(maxB<tmp){maxB=tmp}}if(maxA>maxB){return-1}if(maxB>maxA){return 1}return 0}},{"../helpers/specificityToNumber":615,"specificity":1165}]
+});

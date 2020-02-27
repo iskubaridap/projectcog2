@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var _extends=Object.assign||function(target){for(var i=1;i<arguments.length;i++){var source=arguments[i];for(var key in source){if(Object.prototype.hasOwnProperty.call(source,key)){target[key]=source[key]}}}return target};var parse=require("url").parse;var format=require("url").format;var querystring=require("querystring");module.exports=function addQueryParamsToURL(url,customQueryParams){var urlObject=parse(url,true);var query=_extends({},urlObject.query,customQueryParams);urlObject.search=querystring.stringify(query);return format(urlObject)}},{"querystring":1137,"url":1194}]
+});

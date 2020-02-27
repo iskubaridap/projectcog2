@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){var $export=require("./$.export"),getDesc=require("./$").getDesc,anObject=require("./$.an-object");$export($export.S,"Reflect",{deleteProperty:function deleteProperty(target,propertyKey){var desc=getDesc(anObject(target),propertyKey);return desc&&!desc.configurable?false:delete target[propertyKey]}})},{"./$":803,"./$.an-object":761,"./$.export":779}]
+});

@@ -11,6 +11,7 @@ if (PHP_SAPI == 'cli-server') {
 
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../src/custom-functions.php';
+require __DIR__ . '/../src/routes/cogworks/main-tool-backend-custom-functions.php';
 
 session_start();
 
@@ -34,6 +35,7 @@ $login = require __DIR__ . '/../src/routes/login/login.php';
 $projectcogUsers = require __DIR__ . '/../src/routes/projectcog/users.php';
 $projectcogOrganizations = require __DIR__ . '/../src/routes/projectcog/organizations.php';
 $projectcogAccounts = require __DIR__ . '/../src/routes/projectcog/accounts.php';
+$cogMainToolBackend = require __DIR__ . '/../src/routes/cogworks/main-tool-backend.php';
 $cogDevelopers = require __DIR__ . '/../src/routes/cogworks/developers.php';
 $cogProjects = require __DIR__ . '/../src/routes/cogworks/projects.php';
 $cogFiles = require __DIR__ . '/../src/routes/cogworks/cog-files.php';
@@ -48,6 +50,7 @@ $login($app);
 $projectcogUsers($app);
 $projectcogOrganizations($app);
 $projectcogAccounts($app);
+$cogMainToolBackend($app);
 $cogDevelopers($app);
 $cogProjects($app);
 $cogFiles($app);

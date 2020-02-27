@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";module.exports=function wrapInAutomaticElement(generatedElement,insertSubElement){if(!insertSubElement){insertSubElement=generatedElement}var dropCall=app.dropCall;var args=dropCall.arguments,obj=dropCall.object,method=dropCall.method;args[0]=generatedElement;obj[method].apply(obj,args);app.context.history.add({name:"Create Automatic "+generatedElement.getName(),undo:function undo(){generatedElement.remove();obj.update()},redo:function redo(){obj[method].apply(obj,args);obj.update()}});app.dropCall.object=insertSubElement;app.dropCall.method="insertFirst";app.dropCall.arguments=[app.draggedComponents]}},{}]
+});

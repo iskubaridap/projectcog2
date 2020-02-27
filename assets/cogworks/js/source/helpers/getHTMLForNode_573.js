@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var parseDOMTree=require("../helpers/parseDOMTree");var stringifyParsedTree=require("../helpers/stringifyParsedTree");module.exports=function getHTMLForNode(node,page){var parsed=parseDOMTree(node,page,{removeSystemElements:true});return stringifyParsedTree(parsed)}},{"../helpers/parseDOMTree":594,"../helpers/stringifyParsedTree":617}]
+});

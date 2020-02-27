@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var walk=require("../helpers/walk");module.exports=function fixObjectProperties(tree){walk(tree,function(component){if(component["class"]!=="InlineCharacter"){for(var property in component.properties){if(typeof component.properties[property]==="object"){component.properties[property]=component.properties[property].value||""}}}})}},{"../helpers/walk":418}]
+});

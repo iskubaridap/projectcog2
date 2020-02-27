@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){exports.SourceMapGenerator=require("./source-map/source-map-generator").SourceMapGenerator;exports.SourceMapConsumer=require("./source-map/source-map-consumer").SourceMapConsumer;exports.SourceNode=require("./source-map/source-node").SourceNode},{"./source-map/source-map-consumer":967,"./source-map/source-map-generator":968,"./source-map/source-node":969}]
+});

@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";module.exports=function selectWordAtCursor(){var sel=window.getSelection();if(!sel.rangeCount){return false}var selectedRange=sel.getRangeAt(0);var start=selectedRange.startOffset;var end=selectedRange.startOffset;var node=selectedRange.startContainer;var content=selectedRange.startContainer.textContent;var before=content.slice(0,start).split(/\s+/);var after=content.slice(start).split(/\s+/);if(before.length){start-=before.pop().length}if(after.length){end+=after.shift().length}var newRange=document.createRange();newRange.setStart(node,start);newRange.setEnd(node,end);sel.removeAllRanges();sel.addRange(newRange);return true}},{}]
+});

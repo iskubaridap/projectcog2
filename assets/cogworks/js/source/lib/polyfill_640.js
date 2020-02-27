@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){(function(global){"use strict";require("core-js/shim");require("regenerator/runtime");if(global._babelPolyfill){throw new Error("only one instance of babel/polyfill is allowed")}global._babelPolyfill=true}).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{})},{"core-js/shim":945,"regenerator/runtime":1139}]
+});

@@ -1,0 +1,4 @@
+define([],function(){
+	return [function(require,module,exports){var $export=require("./$.export"),defined=require("./$.defined"),fails=require("./$.fails"),spaces="\t\n\v\f\r Â áš€á Žâ€€â€â€‚â€ƒ"+"â€„â€…â€†â€‡â€ˆâ€‰â€Šâ€¯âŸã€€\u2028\u2029\ufeff",space="["+spaces+"]",non="â€‹Â…",ltrim=RegExp("^"+space+space+"*"),rtrim=RegExp(space+space+"*$")
+;var exporter=function(KEY,exec){var exp={};exp[KEY]=exec(trim);$export($export.P+$export.F*fails(function(){return!!spaces[KEY]()||non[KEY]()!=non}),"String",exp)};var trim=exporter.trim=function(string,TYPE){string=String(defined(string));if(TYPE&1)string=string.replace(ltrim,"");if(TYPE&2)string=string.replace(rtrim,"");return string};module.exports=exporter},{"./$.defined":775,"./$.export":779,"./$.fails":781}]
+});

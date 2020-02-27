@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var InlineCharacter=require("../components/base/InlineCharacter");module.exports=function inlineCompare(left,right){if(left.length!=right.length){return false}for(var i=0;i<left.length;i++){if(left[i]instanceof InlineCharacter&&right[i]instanceof InlineCharacter){if(!left[i].sameAs(right[i])){return false}}else if(left[i]!==right[i]){return false}}return true}},{"../components/base/InlineCharacter":57}]
+});

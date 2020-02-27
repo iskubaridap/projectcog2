@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var walk=require("../helpers/walk");module.exports=function convert(json){if(json["package"].framework==="4"){walk(json["package"].component,function(component){if(component["class"]==="Table"){component.properties.bordered=component.properties.bordered?"bordered":""}})}json.version=24;return json}},{"../helpers/walk":418}]
+});

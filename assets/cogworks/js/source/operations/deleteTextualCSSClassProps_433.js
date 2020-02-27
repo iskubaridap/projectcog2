@@ -1,0 +1,4 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var walk=require("../helpers/walk");module.exports=function deleteTextualCSSClassProps(tree){
+walk(tree,function(component){if(!component.cssClasses)return;delete component.cssClasses.system.monospace;delete component.cssClasses.system.nowrap;delete component.cssClasses.system.truncate;delete component.cssClasses.system.textTransformation;delete component.cssClasses.system.textAlignment;delete component.cssClasses.system.contextualColor;delete component.cssClasses.system.contextualBackground;delete component.cssClasses.system.contextualBorderColor})}},{"../helpers/walk":418}]
+});

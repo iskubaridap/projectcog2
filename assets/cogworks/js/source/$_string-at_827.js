@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){var toInteger=require("./$.to-integer"),defined=require("./$.defined");module.exports=function(TO_STRING){return function(that,pos){var s=String(defined(that)),i=toInteger(pos),l=s.length,a,b;if(i<0||i>=l)return TO_STRING?"":undefined;a=s.charCodeAt(i);return a<55296||a>56319||i+1===l||(b=s.charCodeAt(i+1))<56320||b>57343?TO_STRING?s.charAt(i):a:TO_STRING?s.slice(i,i+2):(a-55296<<10)+(b-56320)+65536}}},{"./$.defined":775,"./$.to-integer":834}]
+});

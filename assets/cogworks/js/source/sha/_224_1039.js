@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var utils=require("../utils");var SHA256=require("./256");function SHA224(){if(!(this instanceof SHA224))return new SHA224;SHA256.call(this);this.h=[3238371032,914150663,812702999,4144912697,4290775857,1750603025,1694076839,3204075428]}utils.inherits(SHA224,SHA256);module.exports=SHA224;SHA224.blockSize=512;SHA224.outSize=224;SHA224.hmacStrength=192;SHA224.padLength=64;SHA224.prototype._digest=function digest(enc){if(enc==="hex")return utils.toHex32(this.h.slice(0,7),"big");else return utils.split32(this.h.slice(0,7),"big")}},{"../utils":1044,"./256":1040}]
+});

@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){var asn1=exports;asn1.bignum=require("bn.js");asn1.define=require("./asn1/api").define;asn1.base=require("./asn1/base");asn1.constants=require("./asn1/constants");asn1.decoders=require("./asn1/decoders");asn1.encoders=require("./asn1/encoders")},{"./asn1/api":627,"./asn1/base":629,"./asn1/constants":633,"./asn1/decoders":635,"./asn1/encoders":638,"bn.js":645}]
+});

@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var walkDesignComponents=require("../helpers/walkDesignComponents");var op1=require("../operations/fixCog4Beta2InputGroups");var op2=require("../operations/updateInlineContent");var op3=require("../operations/setAnimationToFadeIn");module.exports=function convert(json){if(json.design.framework=="4"){walkDesignComponents(json.design.pages,op1)}walkDesignComponents(json.design.pages,op2);walkDesignComponents(json.design.pages,op3);json.version=25;return json}},{"../helpers/walkDesignComponents":420,"../operations/fixCog4Beta2InputGroups":435,"../operations/setAnimationToFadeIn":449,"../operations/updateInlineContent":451}]
+});

@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){if(typeof define!=="function"){var define=require("amdefine")(module,require)}define(function(require,exports,module){function recursiveSearch(aLow,aHigh,aNeedle,aHaystack,aCompare){var mid=Math.floor((aHigh-aLow)/2)+aLow;var cmp=aCompare(aNeedle,aHaystack[mid],true);if(cmp===0){return mid}else if(cmp>0){if(aHigh-mid>1){return recursiveSearch(mid,aHigh,aNeedle,aHaystack,aCompare)}return mid}else{if(mid-aLow>1){return recursiveSearch(aLow,mid,aNeedle,aHaystack,aCompare)}return aLow<0?-1:aLow}}exports.search=function search(aNeedle,aHaystack,aCompare){if(aHaystack.length===0){return-1}return recursiveSearch(-1,aHaystack.length,aNeedle,aHaystack,aCompare)}})},{"amdefine":624}]
+});

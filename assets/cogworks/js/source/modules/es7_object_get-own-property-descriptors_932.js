@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){var $=require("./$"),$export=require("./$.export"),ownKeys=require("./$.own-keys"),toIObject=require("./$.to-iobject"),createDesc=require("./$.property-desc");$export($export.S,"Object",{getOwnPropertyDescriptors:function getOwnPropertyDescriptors(object){var O=toIObject(object),setDesc=$.setDesc,getDesc=$.getDesc,keys=ownKeys(O),result={},i=0,key,D;while(keys.length>i){D=getDesc(O,key=keys[i++]);if(key in result)setDesc(result,key,createDesc(0,D));else result[key]=D}return result}})},{"./$":803,"./$.export":779,"./$.own-keys":813,"./$.property-desc":816,"./$.to-iobject":835}]
+});

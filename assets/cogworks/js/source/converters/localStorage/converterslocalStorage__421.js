@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var convert=require("../helpers/convert");var conversions={1:require("./localStorage_1to2"),2:require("./localStorage_2to3"),3:require("./localStorage_3to4"),4:require("./localStorage_4to5")};module.exports=function(json){return convert(json,conversions)}},{"../helpers/convert":414,"./localStorage_1to2":422,"./localStorage_2to3":423,"./localStorage_3to4":424,"./localStorage_4to5":425}]
+});

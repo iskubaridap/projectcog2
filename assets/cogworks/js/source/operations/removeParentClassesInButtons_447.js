@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var walk=require("../helpers/walk");module.exports=function removeParentClassesInButtons(tree){walk(tree,function(component){if(component["class"]==="Dropdown"&&component.children.length){component.children[0].cssClasses.parent=""}if(component["class"]==="SplitButton"&&component.children.length>1){component.children[1].cssClasses.parent=""}})}},{"../helpers/walk":418}]
+});

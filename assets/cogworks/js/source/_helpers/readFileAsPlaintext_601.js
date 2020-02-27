@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";module.exports=function readFileAsPlaintext(path){var headers=arguments.length<=1||arguments[1]===undefined?null:arguments[1];return new Promise(function(resolve,reject){var request=new XMLHttpRequest;request.open("GET",path,true);request.onload=function(oEvent){if(request.status!=200)return reject();var result=request.response;if(result){return resolve({content:result,contentType:request.getResponseHeader("content-type"),headers:headers})}else reject()};request.send(null)})}},{}]
+});

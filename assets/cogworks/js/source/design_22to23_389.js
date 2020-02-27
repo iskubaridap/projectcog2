@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var walkDesignComponents=require("../helpers/walkDesignComponents");var restructureAccordionBody=require("../operations/restructureAccordionBody");module.exports=function convert(json){if(json.design.framework=="4"){walkDesignComponents(json.design.pages,function(component){if(component["class"]==="AccordionItemBody"){restructureAccordionBody(component)}})}json.version=23;return json}},{"../helpers/walkDesignComponents":420,"../operations/restructureAccordionBody":448}]
+});

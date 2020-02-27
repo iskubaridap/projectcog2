@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var componentTreeToArray=require("../helpers/componentTreeToArray");module.exports=function findInTree(what,where){if(!Array.isArray(what)){what=[what]}var list=componentTreeToArray(where);var found=[];for(var i=0;i<list.length;i++){for(var j=0;j<what.length;j++){if(list[i]instanceof what[j]){found.push(list[i])}}}return found}},{"../helpers/componentTreeToArray":551}]
+});

@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){var $export=require("./$.export");$export($export.S,"Math",{clz32:function clz32(x){return(x>>>=0)?31-Math.floor(Math.log(x+.5)*Math.LOG2E):32}})},{"./$.export":779}]
+});

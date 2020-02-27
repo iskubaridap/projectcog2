@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){var $export=require("./$.export"),anObject=require("./$.an-object"),$preventExtensions=Object.preventExtensions;$export($export.S,"Reflect",{preventExtensions:function preventExtensions(target){anObject(target);try{if($preventExtensions)$preventExtensions(target);return true}catch(e){return false}}})},{"./$.an-object":761,"./$.export":779}]
+});

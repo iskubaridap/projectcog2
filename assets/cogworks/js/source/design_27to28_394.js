@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var CSSResource=require("../../resources/CSSResource");var SCSSResource=require("../../resources/SCSSResource");module.exports=function convert(json){json.design.assets.css.children=json.design.assets.css.children.filter(deleteInvalidCSS);json.version=28;return json};function deleteInvalidCSS(css){if(css.children){css.children=css.children.filter(deleteInvalidCSS);return true}return isValid(css)}function isValid(css){if(css.url)return true;return CSSResource.isNameValid(css.name)||SCSSResource.isNameValid(css.name)}},{"../../resources/CSSResource":1249,"../../resources/SCSSResource":1257}]
+});

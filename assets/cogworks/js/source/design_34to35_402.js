@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var walkDesignComponents=require("../helpers/walkDesignComponents");var convertPropertyToOverride=require("../helpers/convertPropertyToOverride");module.exports=function convert(json){walkDesignComponents(json.design.pages,function(component){convertPropertyToOverride(component,"FieldLabel","/","for")});json.version=35;return json}},{"../helpers/convertPropertyToOverride":416,"../helpers/walkDesignComponents":420}]
+});

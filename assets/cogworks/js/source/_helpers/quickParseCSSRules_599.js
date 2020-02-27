@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";var CSSRule=require("../base/CSSRule");module.exports=function quickParseCSSRules(value){if(!/[^:]+:[^;]+;?/.test(value))return[];var rules=value.match(/[^:]+:[^;]+;?(\*\/)?/g).map(function(rule){var tmp=rule.match(/(\/\*)?([^:]+):([^;]+);?(\*\/)?/);var enabled=true;if(tmp[1]&&tmp[4]){enabled=false}return new CSSRule(tmp[2].trim(),tmp[3].trim(),enabled)}).filter(function(rule){return!CSSRule.isPropertyForbidden(rule.property)});return rules}},{"../base/CSSRule":15}]
+});

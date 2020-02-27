@@ -1,0 +1,156 @@
+/* CSS Document */
+#sample
+{
+    margin: 15px 5px 3px;
+    padding: 15px;
+    display: table;
+    width: 200px;
+    height: 200px;
+    background-color: #c1c1c1;
+}
+#innerElem
+{
+    display: table;
+    width: 200px;
+    height: 200px;
+    background-color: #00ff00;
+}
+
+#advanceProperties
+{
+    /*overflow: auto;
+    height: 400px;*/
+}
+.property
+{
+    margin: 20px auto;
+    padding: 5px;
+    display: table;
+    /*border: 1px solid #fff;*/
+}
+.standardWidth
+{
+	margin: 0 auto;
+	width: 250px;
+}
+.standardWidth .aTable
+{
+	margin: 0 auto;
+}
+.property label
+{
+    font-size: 10px;
+    color: #b7b7b7;
+    text-transform: uppercase;
+}
+.division
+{
+    margin: 0 auto;
+    background-color: #959595;
+    height: 1px;
+    /*width: 50%;*/
+}
+.propertyTitle
+{
+    margin-bottom: 5px;
+    font-size: 12px;
+    color: #d7d7d7;
+    text-transform: uppercase;
+}
+.standardInput
+{
+    text-align: center;
+    width: 20px;
+}
+.inputWrapper
+{
+    padding: 3px;
+    background-color: #464646;
+    border: 1px solid #363636;
+    color: #b7b7b7;
+    text-transform: lowercase;
+    border-radius: 3px;
+}
+.inputWrapper input
+{
+    color: #b7b7b7;
+    background-color: transparent;
+    border: none;
+}
+.slider
+{
+    margin-left: 5px;
+    display: inline-block;
+    width: 100px;
+}
+.colorpickerBtn
+{
+    margin-left: 5px;
+    position: relative;
+    top: 6px;
+    width: 20px;
+    height: 20px;
+}
+/* ===== Margins, Paddings and Radius ===== */
+#marginTopLabel,
+#marginBottomLabel,
+#paddingTopLabel,
+#paddingBottomLabel
+{
+    margin: 10px 0;
+    display: table;
+    position: relative;
+}
+#marginTopLabel,
+#paddingTopLabel
+{
+    left: 47px;
+}
+#marginBottomLabel,
+#paddingBottomLabel
+{
+    left: 26px;
+}
+#marginLeftLabel,
+#marginRightLabel,
+#paddingLeftLabel,
+#paddingRightLabel
+{
+    margin: 10px;
+}
+#marginEqual input,
+#paddingEqual input,
+#radiusEqual input
+{
+    float: right;
+}
+#radiusTop label,
+#radiusBottom label
+{
+    position: relative;
+}
+#radiusTop
+{
+    margin-bottom: 25px;
+}
+#radiusBottom
+{
+    margin-bottom: 10px;
+}
+#radiusTopLeftLabel
+{
+    left: 22px;
+}
+#radiusTopRightLabel
+{
+    left: 40px;
+}
+#radiusBottomLeftLabel
+{
+    left: 17px;
+}
+
+.pane.tree-holder .content span.inputWrapper
+{
+	display: inline;
+}

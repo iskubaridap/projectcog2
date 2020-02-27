@@ -1,0 +1,3 @@
+define([],function(){
+	return [function(require,module,exports){"use strict";module.exports=function getDimensions(element){var _element$getBoundingClientRect=element.getBoundingClientRect();var top=_element$getBoundingClientRect.top;var right=_element$getBoundingClientRect.right;var bottom=_element$getBoundingClientRect.bottom;var left=_element$getBoundingClientRect.left;var width=_element$getBoundingClientRect.width;var height=_element$getBoundingClientRect.height;var x=_element$getBoundingClientRect.x;var y=_element$getBoundingClientRect.y;return{top:top,right:right,bottom:bottom,left:left,width:width,height:height,x:x,y:y}}},{}]
+});

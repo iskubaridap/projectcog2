@@ -472,7 +472,7 @@ return function (App $app) {
         $fileExist = false;
         $userFilesPath = $_SERVER['DOCUMENT_ROOT'] . '/user_files/';
         $cogworksPath = $_SERVER['DOCUMENT_ROOT'] . '/cogworks/';
-        $blankFilePath = $_SERVER['DOCUMENT_ROOT'] . '/assets/cogworks/js/templates/blank.json';
+        $blankFilePath = $_SERVER['DOCUMENT_ROOT'] . '/assets/cogworks/templates/json/blank.json';
         $result = array();
         
         $orgs = $container->projectcog->query("
