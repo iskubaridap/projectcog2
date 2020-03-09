@@ -98,6 +98,9 @@ define([], function() {
                 _classCallCheck(this, OpenFileDialog);
                 _get(Object.getPrototypeOf(OpenFileDialog.prototype), "constructor", this).call(this, elem);
                 
+                elem.find(".button.refresh").on("click", function(){
+					obj.refresh();
+				});
                 elem.find(".button.cancel").on("click", function(){
 					obj.close();
 				});
@@ -106,66 +109,13 @@ define([], function() {
                 key: "open",
                 value: function open(options) {
                     _get(Object.getPrototypeOf(OpenFileDialog.prototype), "open", this).call(this, options);
-                    $("#orgCogFiles").empty();
-					$("#cogFiles").empty();
-                    
-                    $.post(ROOT + "cog_files/retrieve/projects", {}, function(e) {
-						if(e == false)
-						{
-							$("#orgCogFiles").html("No Projects...");
-						}
-						else
-						{
-							var prj = "";
-							e.sort(function(a,b) {return (a.projectName > b.projectName) ? 1 : ((b.projectName > a.projectName) ? -1 : 0);} );
-							$.each(e, function(key, value){
-								var id = value.id;
-								var file = value.name;
-								var name = (value.name).replace(".cog","");
-								var user = (USERNAME).replace(".com","");
-								var project = value.projectName ? (value.projectName).replace(" ","_") : "";
-								var org = (value.org).replace(" ","_");
-								var cogFile = "";
-								
-								if(prj != project)
-								{
-									cogFile = '<div class="projectName">' + value.projectName + '</div>'+'<div data-cogfileid="' + id + '" data-filename="' + file + '" data-user="' + user + '" data-project="' + project + '" data-org="' + org + '" class="cogfile openCogFile">' + name + '</div>';
-									prj = project;
-								}
-								else
-								{
-									cogFile = '<div data-cogfileid="' + id + '" data-filename="' + file + '" data-user="' + user + '" data-project="' + project + '" data-org="' + org + '" class="cogfile openCogFile">' + name + '</div>';
-								}
-								
-								$("#orgCogFiles").append(cogFile);
-							});
-							openFile();
-						}
-					}, 'json');
-					
-					$.post(ROOT + "cog_files/retrieve/cog_files", {}, function(e) {
-						if(e == false)
-						{
-							$("#cogFiles").html("No Cog Files...");
-						}
-						else
-						{
-							$.each(e, function(key, value){
-								var id = value.id;
-								var file = value.name;
-								var name = (value.name).replace(".cog","");
-								var user = (USERNAME).replace(".com","");
-								var project = value.projectName ? (value.projectName).replace(" ","_") : "";
-								var org = (value.org).replace(" ","_");
-								var cogFile = '<div data-cogfileid="' + id + '" data-filename="' + file + '" data-user="' + user + '" data-project="' + project + '" data-org="' + org + '" class="cogfile openCogFile">' + name + '</div>';
-								
-								$("#cogFiles").append(cogFile);
-							});
-							openFile();
-						}
-					}, 'json');
                 }
             },{
+				key: "refresh",
+				value: function refresh() {
+                    app.setOpenFileTable();
+				}
+			},{
 				key: "close",
 				value: function close() {
 					_get(Object.getPrototypeOf(OpenFileDialog.prototype), "close", this).call(this)

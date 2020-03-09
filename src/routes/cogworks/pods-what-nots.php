@@ -41,6 +41,7 @@ return function (App $app) {
             where user_id = '$id' and status_id = '1'
         ")->fetch(PDO::FETCH_ASSOC);
 
+        // return $id;
         return json_encode($whatNots['what_not']);
     });
     $app->post('/cogworks/pods/retrieve/main-tool', function ($request, $response, $args) use ($container) {

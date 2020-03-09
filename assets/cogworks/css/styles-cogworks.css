@@ -1230,8 +1230,7 @@ body
 
 /* ===== File Tree Style ===== */
 #dialogs #open-file-dialog{
-	width: 660px;
-	max-height: 600px;
+	min-width: 600px;
 	overflow: auto;
 }
 #dialogs #open-file-dialog .content
@@ -1925,4 +1924,41 @@ input[type="button"].btn-block {
     color: #fff;
     border-radius: 20px;
     cursor: pointer;
+}
+.element-center {
+	margin-left: auto;
+	margin-right: auto;
+	display: table;
+}
+.loading-icon-sm {
+	position: relative;
+	width: 20px;
+	height: auto;
+}
+#open-file-table-wrap,
+#open-file-reset-btn-wrap {
+	display: none;
+}
+#open-file-message {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	text-align: center;
+}
+#open-file-loading-indicator {
+	width: 100%;
+	height: 200px;
+	display:flex;
+	align-items:center;
+}
+#open-file-loading-indicator .loading-icon-sm {
+	top: 5px;
+	left: 5px;
+}
+#open-file-reset-btn-wrap{
+	padding-right: 20px;
+	text-align: right;
+	display: none;
+}
+td.open-file-cog:hover {	
+	color: #28a745;
 }

@@ -438,5 +438,4 @@ function check_session() {
         custom_redirect('login');
     }
 }
-
 ?>

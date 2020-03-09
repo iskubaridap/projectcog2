@@ -1,9 +1,92 @@
 // JavaScript Document
 var cogworks = new Object;
+(function($, F){
+
+	// Extend the Row.$create method to add an id attribute to each <tr>.
+	F.Row.extend("$create", function(){
+		// call the original method
+		this._super();
+		// get the current row values
+		var values = this.val();
+		// then add whatever attributes are required
+		this.$el.attr("data-id", values["id"]);
+	});
+
+})(jQuery, FooTable);
 
 (function($){
 	cogworks.testing = function(){
 		console.log("it works");
+	};
+	cogworks.setFootableTable = function(userID, callback){
+		var reset = function() {
+			$("#open-file-reset-btn-wrap").hide();
+			$("#open-file-table-wrap").hide();
+			$("#open-file-table-body").empty();
+			$('#open-file-message p').text('');
+			$('#open-file-message').hide();
+			$('#open-file-loading-indicator-wrap').show();
+		};
+		var setOpenFileEvent = function() {
+			// adding half a second delay to allow the table to render before adding the event
+			setTimeout(function(){
+				$('td.open-file-cog').each(function(index, value){
+					var _this = $(this);
+					if(_this.parent().attr('data-id') != undefined) {
+						$(_this).off().on('click', function(){
+							callback((_this.text()).trim(),_this.parent().attr('data-id'));
+						});
+					}
+				});
+			}, 500);
+			
+		};
+		reset();
+		$.ajax({
+			url: '../cogworks/main-tool-backend/retrieve/cogfiles',
+			type: "POST",
+			cache: true,                  
+			data: {id: userID},
+			success: function(data){
+				var cogfiles = JSON.parse(data);
+				var str = '';
+				if(cogfiles.length > 0) {
+					$('#open-file-table').footable({
+						"paging": {
+							"enabled": true
+						},
+						"filtering": {
+							"enabled": true
+						},
+						"on": {
+							"postdraw.ft.table": function(e, ft){
+								setOpenFileEvent();
+							}
+						},
+						"sorting": {
+							"enabled": true
+						},
+						"columns":[
+							{ "name": "id", "visible": false, "filterable": false },
+							{ "name": "cogfile", "title": "Name", "classes": "open-file-cog" },
+							{ "name": "project", "title": "Project" },
+							{ "name": "created", "title": "Created" }
+						],
+						"rows": cogfiles
+					});
+					$('#open-file-reset-btn-wrap').show();
+					$('#open-file-loading-indicator-wrap').hide();
+					$("#open-file-table-wrap").show();
+				} else {
+					$('#open-file-message').show();
+					$('#open-file-message').text('No file available');
+					$('#open-file-loading-indicator-wrap').hide();
+				}
+			},
+			error: function(data){
+				cogworks.loadingScreen("alert","<p>Something went wrong, server cannot retrieve all available files.</p><p>Report error ID: 019 to the admin if issue persist.</p>","show");
+			}
+		});
 	};
 	
 	// This is used for any loading or waiting screen needed
@@ -29,7 +112,7 @@ var cogworks = new Object;
 			case "dashboard_reload":
                 str = '';
                 str += (text).length > 0 ? (text) : '';
-                str += '<a class="loader-btn" href="' + (ROOT + '/dashboard') + '" id="loding-dashboard">Return to Dashboard</a><a class="loader-btn" href="#" id="loding-reload">Reload Page</a>';
+                str += '<a class="loader-btn" href="../dashboard" id="loding-dashboard">Return to Dashboard</a><a class="loader-btn" href="#" id="loding-reload">Reload Page</a>';
 				$("#loadingElem").empty().html("<img src='../assets/img/logo/projectcog/logo.gif'><br><br>" + str);
                 $('#loding-reload').off().on('click', function(){
                     location.reload(true);

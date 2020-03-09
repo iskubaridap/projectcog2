@@ -6,7 +6,7 @@ define([], function() {
             }, {
                 id: "blog-post-page", name: "Blog Post Page", description: "", type: "regular", pages: []
             }, {
-                id: "production_template", name: "Production Template", description: "", type: "regular", pages: []
+                id: "production_template_bs3", name: "Production Template", description: "", type: "regular", pages: []
             }, {
                 id: "video_no_quiz_template", name: "Video No Quiz Template", description: "", type: "regular", pages: []
             }, {
@@ -16,17 +16,17 @@ define([], function() {
                 id: "blank", name: "Blank", description: "", type: "regular"
             }
             , {
-                id: "production_template", name: "Production Template", description: "", type: "advanced", placeholders:[ {
+                id: "production_template_bs4", name: "Production Template", description: "", type: "advanced", placeholders:[ {
                         name: "Brand", placeholder: "brand", default: "Brand", tooltip: "The Brand is displayed in your Navbar, and is included in page titles.", type: "input"
                     }
                     , {
                         name: "Description", placeholder: "description", default: "", tooltip: "The Description is included as a meta tag in your site. You can edit it later in Settings.", type: "textarea"
                     }
                 ], pages: [{
-                  "id": "last-page",
-                  "name": "Last Page",
+                  "id": "index",
+                  "name": "Home",
                   "description": "",
-                  "path": "lastPage.html",
+                  "path": "index.html",
                   "navbar": true,
                   "weight": 0
                 }, {
@@ -61,7 +61,7 @@ define([], function() {
                   "id": "page-magnifiying-img",
                   "name": "Page Magnifying Image",
                   "description": "",
-                  "path": "page-magnifiying-img.html",
+                  "path": "page-magnifying-img.html",
                   "navbar": false,
                   "weight": 5
                 }, {
@@ -128,40 +128,54 @@ define([], function() {
                   "navbar": false,
                   "weight": 14
                 }, {
+                  "id": "quiz-true-false-timer",
+                  "name": "Quiz True or False with Timer",
+                  "description": "",
+                  "path": "quiz-true-false-timer.html",
+                  "navbar": false,
+                  "weight": 15
+                }, {
                   "id": "style-guide-banner",
                   "name": "Style Guide Banner",
                   "description": "",
                   "path": "style-guide-banner.html",
                   "navbar": false,
-                  "weight": 15
+                  "weight": 16
                 }, {
                   "id": "style-guide-blks-imgs-statistics-partner-rotating-cta",
                   "name": "Style CTA",
                   "description": "",
                   "path": "style-guide-blks-imgs-statistics-partner-rotating-cta.html",
                   "navbar": false,
-                  "weight": 16
+                  "weight": 17
                 }, {
                   "id": "style-guide-resources",
                   "name": "Style Guide Resources",
                   "description": "",
                   "path": "style-guide-resources.html",
                   "navbar": false,
-                  "weight": 17
+                  "weight": 18
                 }, {
                   "id": "style-guide-share-options-footer",
                   "name": "Style Footer",
                   "description": "",
                   "path": "style-guide-share-options-footer.html",
                   "navbar": false,
-                  "weight": 18
+                  "weight": 19
                 }, {
                   "id": "style-guide-text-colors-buttons",
                   "name": "Style Text Colors and Buttons",
                   "description": "",
                   "path": "style-guide-text-colors-buttons.html",
                   "navbar": false,
-                  "weight": 19
+                  "weight": 20
+                }, {
+                  "id": "last-page",
+                  "name": "Last Page",
+                  "description": "",
+                  "path": "last-page.html",
+                  "navbar": false,
+                  "weight": 21
                 }]
             },{
                 id:"clean-sky", name:"Clean Sky", description:"", type:"advanced", premium:true, placeholders:[ {

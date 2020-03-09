@@ -18,6 +18,7 @@
 		<link rel="stylesheet" href="../assets/cogworks/fonts/simple-line-icons.min.css">
 		<link rel="stylesheet" href="../assets/cogworks/fonts/line-awesome.min.css">
         
+        <link rel="stylesheet" href="../assets/css/plugins/footable/footable.standalone.min.css">
         <link rel="stylesheet" href="../assets/cogworks/css/codemirror.css">
 		<link rel="stylesheet" href="../assets/cogworks/css/codemirror-cogworks.css">
 		<link rel="stylesheet" href="../assets/cogworks/css/styles.css">
@@ -244,9 +245,38 @@
                 <h5>Open File</h5>
 
                 <div class="content">
-                    <div id="orgCogFiles"></div>
-                    <hr>
-                    <div id="cogFiles"></div>
+                    <div id="open-file-message"><p></p></div>
+                    <div id="open-file-reset-btn-wrap">
+                        <div class="button refresh primary">Refresh</div>
+                    </div>
+                    <div id="open-file-loading-indicator-wrap">
+                        <div id="open-file-loading-indicator">
+                            <div class="element-center">
+                                <p>Loading files <img class="loading-icon-sm" src="../assets/img/icon/loading.gif"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="open-file-table-wrap">
+                    <table id="open-file-table" class="table"></table>
+                        <!-- <input type="text" class="form-control input-sm m-b-xs" id="open-file-filter" placeholder="Search in table">
+                        <table id="open-file-table" class="footable table table-stripped" data-page-size="10" data-filter=#open-file-filter>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Project</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody id="open-file-table-body"></tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3">
+                                        <ul class="pagination pull-right"></ul>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table> -->
+                    </div>
                 </div>
 
                 <div class="buttons">
@@ -1796,6 +1826,7 @@
         
         <script src="../assets/cogworks/js/jquery/jquery.min.js"></script>
         <script src="../assets/cogworks/js/jquery/jquery-ui.min.js"></script>
+        <script src="../assets/cogworks/plugins/footable/footable.min.js"></script>
         <script src="../assets/cogworks/plugins/google-code-prettify/prettify.js"></script>
         <script src="../assets/cogworks/js/raphael.js"></script>
         <script src="../assets/cogworks/js/UIicons.js"></script>

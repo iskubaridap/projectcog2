@@ -1113,20 +1113,17 @@ define([], function() {
 				
                 key: "saveWhatNotsComp",
                 value: function saveWhatNotsComp() {
-					app.whatNots.children.push((app.newEpod).toEpod());
+                    app.whatNots.children.push((app.newEpod).toEpod());
 					this.whatNotsPackages = new PackageTreeGroup;
 					this.whatNotsPackages.unserialize(app.whatNots);
-					var content = JSON.stringify(app.whatNots);
-					$.post(ROOT + "what-nots/update", {"content":content}, function(e) {
-						if(e <= 0)
-						{
-							cogworks.loadingScreen("dynamic","Fail to add " + obj.name + " to your What-Nots pane","fadeIn");
+					var whatNotsContent = JSON.stringify(app.whatNots);
+					$.post('../cogworks/main-tool-backend/what-nots/update', {id: app.user, content: whatNotsContent}, function(e) {
+						if(e != 'true') {
+							cogworks.loadingScreen("dynamic","Fail to add " + app.newEpod.name + " to your What-Nots pane","fadeIn");
 							setTimeout(function(){
 								cogworks.loadingScreen("","","fadeOut");
 							},1000);
-						}
-						else
-						{
+						} else {
 							app.notifications.create({
 								title: "A component was added to your What-Nots.",
 								description: 'You can see it in the "What-Nots" panel.',
@@ -2598,7 +2595,7 @@ define([], function() {
 						url: "./public/php/write_context_to_disk.php",
 						type: "POST",
 						cache: true,
-						data: {tmpPath:tmpPath,destinationPath:parsed.dirname,fName:parsed.basename,content:content},
+						data: {tmpPath:tmpPath, destinationPath:parsed.dirname, fName:parsed.basename, content:content},
 						success: function (data) {
 							context.markAsSaved(path);
                         	app.trigger("context-saved", context);
@@ -4035,7 +4032,6 @@ define([], function() {
                         return Promise.resolve()
                     }
                     parsed = parsePath(path);
-                    // cogworks/main-tool-backend/read-cog-file
                     $.ajax({
                         url: "../cogworks/main-tool-backend/read-cog-file",
                         type: "POST",
@@ -4045,49 +4041,36 @@ define([], function() {
                             var json = JSON.parse(data);
                             var context = null;
                             
-                            try
-                            {
-                                console.log(json.design);
-                                if(typeof json.design.assets.audio === "undefined")
-                                {
+                            try {
+                                if(typeof json.design.assets.audio === "undefined") {
                                     var obj = new Object();
                                     obj.name = "";
                                     obj.expanded = false;
                                     obj.children = new Array();
                                     json.design.assets.audio = obj;
                                     app.assetAudioObj = obj;
-                                }
-                                else   
-                                {
+                                } else {
                                     app.assetAudioObj = json.design.assets.audio;
                                 }
 
-                                if(typeof json.design.assets.pdf === "undefined")
-                                {
+                                if(typeof json.design.assets.pdf === "undefined") {
                                     var obj = new Object();
                                     obj.name = "";
                                     obj.expanded = false;
                                     obj.children = new Array();
                                     json.design.assets.pdf = obj;
                                     app.assetPDFObj = obj;
-                                }
-                                else   
-                                {
+                                } else {
                                     app.assetPDFObj = json.design.assets.pdf;
                                 }
                                 context = parseCogDesignFormat(json, path);
                                 console.log(context);
-                                context.name = parsePath(path).name;
+                                context.name = json.design.name;
                                 return app.openContext(context, focusOnOpen);
-                            }
-                            catch(err)
-                            {
-                                if(app.openedContexts.length > 0)
-                                {
+                            } catch(err) {
+                                if(app.openedContexts.length > 0) {
                                     cogworks.loadingScreen("alert","<p>Something went wrong, your file '" + (((path).split("/")[(((path).split("/")).length - 1)]).replace(".cog","")) + "' cannot open.</p><p>Report error ID: 006 to the admin if issue persist.</p>","show");
-                                }
-                                else
-                                {
+                                } else {
                                     cogworks.loadingScreen("dashboard_reload","<p>Something went wrong, your file '" + (((path).split("/")[(((path).split("/")).length - 1)]).replace(".cog","")) + "' cannot open.</p><p>Reload the page by clicking the \'Reload\' button<br>or go back to the Dashboard page by clicking the \'Return to Dashboard\' button.</p><p>Report error ID: 005 to the admin if issue persist.</p>","show");
                                 }
                             }
@@ -4186,6 +4169,8 @@ define([], function() {
                             return ctx.framework.loadTemplate(ctx.settings.theme.id)
                         }
                     }).then(function() {
+                        ctx.canvasDimensions.zoom = 0.75;
+                        ctx.canvasDimensions.width = 1200;
                         app.trigger("context-opened", ctx);
                         if (switchTo) {
                             app.activateContext(ctx)
@@ -4402,6 +4387,25 @@ define([], function() {
                     electron.writeDataFile("downloadedPackages", JSON.stringify(this.downloadedPackages.serialize()))
                 }
             }, {
+                key: "setOpenFileTable",
+                value: function setOpenFileTable() {
+                    cogworks.setFootableTable(app.user, function(file, fileID){
+                        app.openFileDialog.close();
+                        $.ajax({
+                            url: "../cogworks/main-tool-backend/path/cog-file",
+                            type: "POST",
+                            cache: true,
+                            data: {id: fileID},
+                            success: function (path) {
+                                app.openCogPath(path);
+                            },
+                            error: function(data){
+                                cogworks.loadingScreen("alert","<p>Something went wrong, your file '" + file + "' failed to open.</p><p>Report error ID: 020 to the admin if issue persist.</p>","show");
+                            }
+                        });
+                    });
+                }
+            }, {
                 key: "showStartScreen",
                 value: function showStartScreen() {
                     var recent = this.startScreen.find(".recent");
@@ -4436,6 +4440,7 @@ define([], function() {
                         }
                     }
                     recent.html(arr);
+
                     $.ajax({
                         url: '../cogworks/main-tool-backend/set-init-value',
                         type: "POST",
@@ -4448,9 +4453,11 @@ define([], function() {
                                 app.fileID = obj.fileID;
                                 app.openFile = obj.file;
                                 app.openFilePath = obj.filePath;
+                                app.setOpenFileTable();
                                 console.log(obj);
                                 setTimeout(function(){
                                     app.initWhatNots(null); // initial value
+                                    console.log(app.openFilePath);
                                     app.openCogPath(app.openFilePath);
                                 },1000);
                             } else {
@@ -4465,38 +4472,34 @@ define([], function() {
                     setTimeout(function(){
                         $.getJSON('../assets/cogworks/templates/json/standard-pods.json', function(data){
                             app.standardPods = data;
-                            
+
                             $.ajax({
-								url: '../cogworks/pods/retrieve/main-tool',
-								dataType: 'text',
-								cache: false,
-								contentType: false,
-								processData: false,                      
-								type: 'post',
-								success: function(data){
-                                    app.pods = (data != 'null') ? JSON.parse(data) : new Array();
-									app.initPods(app.standardPods); // organization's component
-									
-									$.ajax({
-										url: '../cogworks/what-nots/retrieve/main-tool',
-										dataType: 'text',
-										cache: false,
-										contentType: false,
-										processData: false,                      
-										type: 'post',
-										success: function(data){
-											app.whatNots = (data != 'null') ? JSON.parse(data) : null;
+                                url: "../cogworks/pods/retrieve/main-tool",
+                                type: "POST",
+                                cache: true,
+                                data: {id:app.user},
+                                success: function (data) {
+                                    app.pods = (data != 'null') ? JSON.parse(JSON.parse(data)) : new Array();
+                                    app.initPods(app.standardPods); // organization's component
+                                    
+                                    $.ajax({
+                                        url: "../cogworks/what-nots/retrieve/main-tool",
+                                        type: "POST",
+                                        cache: true,
+                                        data: {id:app.user},
+                                        success: function (data) {
+                                            app.whatNots = (data != 'null') ? JSON.parse(JSON.parse(data)) : null;
 											app.initWhatNots(app.whatNots); // user's personal component
-										},
+                                        },
                                         error: function(data){
                                             cogworks.loadingScreen("dashboard_reload","<p>Something went wrong.</p><p>Reload the page by clicking the \'Reload\' button<br>or go back to the Dashboard page by clicking the \'Return to Dashboard\' button.</p><p>Report error ID: 003 to the admin if issue persist.</p>","show");
                                         }
-									});
-								},
+                                    });
+                                },
                                 error: function(data){
                                     cogworks.loadingScreen("dashboard_reload","<p>Something went wrong.</p><p>Reload the page by clicking the \'Reload\' button<br>or go back to the Dashboard page by clicking the \'Return to Dashboard\' button.</p><p>Report error ID: 002 to the admin if issue persist.</p>","show");
                                 }
-							});
+                            });
                         });
                     },3000);
                 }

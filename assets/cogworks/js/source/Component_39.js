@@ -160,7 +160,7 @@ define([], function() {
                     showInContextMenu: true,
                     weight: 93
                 }, {
-                    label: "Add to Library",
+                    label: "Add to What Nots",
                     action: this.addToLibraryAction.bind(this),
                     visible: [this.flags, "canBePackaged"],
                     showInContextMenu: true,

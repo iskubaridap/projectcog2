@@ -137,6 +137,7 @@ define([], function() {
                 });
                 app.on("context-activated component-selected component-unselected", function() {
                     self.suggestedComponents = [];
+                    console.log(app.context.page);
                     if (app.context.page.hasFocusedComponent()) {
                         self.suggestedComponents = app.context.page.getFocusedComponent().constructor.suggestedComponents || []
                     }
@@ -779,7 +780,7 @@ define([], function() {
                             })
                         }
                     }
-                    app.contextMenu.show(pos.x, pos.y, options)
+                    // app.contextMenu.show(pos.x, pos.y, options)
                 }
             }, {
                 key: "mousedown",
