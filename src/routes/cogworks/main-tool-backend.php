@@ -20,10 +20,53 @@ return function (App $app) {
         ));
         return $response->write($content);
     });
+    // reserve code. this might be useful in the future
+    
+    /* $app->get('/cogworks/preview/[{userID}]', function ($request, $response, $args) use ($container) {
+        check_session();
+        $id = base64_decode($args['userID']);
+        $cogworksFolder = '';
+        $previewFolder = '';
+
+        $obj = $container->projectcog->query("
+            select * from users
+            where id = '$id';
+        ")->fetch(PDO::FETCH_ASSOC);
+        $orgID = $obj['organization_id'];
+        switch($orgID)
+        {
+            case '1':
+                $cogworksFolder = 'cogworks/admin/';
+                break;
+            case '2':
+                $cogworksFolder = 'cogworks/developers/';
+                break;
+            default:
+                $cogworksFolder = 'cogworks/organizations/';
+        }
+
+        if($orgID == 1) {
+            $previewFolder = $cogworksFolder . 'users/' . $id . '/preview/index.html';
+        } else if($orgID == 2) {
+            $previewFolder = $cogworksFolder . $id . '/preview/index.html';
+        } else {
+            $previewFolder = $cogworksFolder . $orgID . '/users/' . $id . '/preview/index.html';
+        }
+
+        $path = '../' . $previewFolder;
+        
+        $content .= $container->renderer->fetch($path);
+        return $response->write($content);
+    }); */
 
 
     $app->post('/cogworks/main-tool-backend/test', function ($request, $response, $args) use ($container) {
-        echo mtbGetCogfilePath(14, $container);
+        // echo getCogfilePath(14, $container);
+        $result = array();
+        $result['status'] = false;
+        $result['txt'] = 'foobar';
+        $result['id'] = 0;
+        return json_encode($result);
     });
     $app->post('/cogworks/main-tool-backend/retrieve/cogfiles', function ($request, $response, $args) use ($container) {
         $user = getUserInfo($request->getParam('id'), $container);
@@ -180,9 +223,10 @@ return function (App $app) {
         header('Content-type: text/html; charset=utf-8');
         $obj = json_decode(base64_decode($request->getParam('value')), true);
         $cogID = $obj['c'];
-        $path = mtbGetCogfilePath($cogID, $container);
+        $path = getCogfilePath($cogID, $container);
         $result = array();
         $result['user'] = $obj['u'];
+        $result['userPath'] = getCogUserFolderPath($obj['u'], $container);
         $result['fileID'] = $cogID;
 
         $myfile = fopen($path, "r") or die("fail"); //die("Unable to open file!");
@@ -198,19 +242,19 @@ return function (App $app) {
         $result['file']['design']['name'] = str_replace('.cog', '', $cogObj['cog_file']);
         $result['file']['content']['design']['name'] = str_replace('.cog', '', $cogObj['cog_file']);
         $result['file']['id'] = $cogID;
-        $result['filePath'] = mtbGetCogfilePath($cogID, $container);
+        $result['filePath'] = getCogfilePath($cogID, $container);
         
         return json_encode($result);
     });
     $app->post('/cogworks/main-tool-backend/path/cog-file', function ($request, $response, $args) use ($container) {
         $id = $request->getParam('id');
-        $path = mtbGetCogfilePath($id, $container);
+        $path = getCogfilePath($id, $container);
         return $path;
     });
     $app->post('/cogworks/main-tool-backend/read-cog-file', function ($request, $response, $args) use ($container) {
         // reserve code
         /* $id = $request->getParam('id');
-        $path = mtbGetCogfilePath($id, $container); */
+        $path = getCogfilePath($id, $container); */
         $path = urldecode($request->getParam('path'));
         $fName = $request->getParam('fName');
         $id = str_replace('.cog', '', $fName);
@@ -233,6 +277,7 @@ return function (App $app) {
         $result['design']['name'] = str_replace('.cog', '', $cogObj['cog_file']);
         $result['content']['design']['name'] = str_replace('.cog', '', $cogObj['cog_file']);
         $result['id'] = $id;
+        $result['fileID'] = $id;
 
         return json_encode($result);
     });
@@ -292,6 +337,230 @@ return function (App $app) {
 
         $result = $prepare->execute();
 
+        return json_encode($result);
+    });
+    $app->post('/cogworks/main-tool-backend/copy-folder', function ($request, $response, $args) use ($container) {
+        $sourceVal = $request->getParam('source');
+        $destinationVal = $request->getParam('destination');
+        
+        copydir($sourceVal, $destinationVal);
+        
+        echo 'success';
+    });
+    $app->post('/cogworks/main-tool-backend/write-image', function ($request, $response, $args) use ($container) {
+        $path = urldecode($request->getParam('path'));
+        $fName = $request->getParam('fName');
+        $content = $request->getParam('content');
+
+        $folder = $path;
+        if (!file_exists($folder)) {
+            mkdir($folder, 0777, true);
+        }
+
+        $fileLocation = $path . "/" . $fName;
+
+        $ifp = fopen($fileLocation, "wb") or die("fail"); //die("Unable to open file!"); 
+
+        $data = explode(',', $content);
+
+        fwrite($ifp, base64_decode($data[1])); 
+        fclose($ifp);
+
+        echo 'success';
+    });
+    $app->post('/cogworks/main-tool-backend/write-file', function ($request, $response, $args) use ($container) {
+        header('Content-type: text/html; charset=utf-8');
+        $path = urldecode($request->getParam('path'));
+        $fName = $request->getParam('fName');
+        $content = $request->getParam('content');
+
+        $folder =  $path;
+        if (!file_exists($folder)) {
+            mkdir($folder, 0777, true);
+        }
+        
+        $fileLocation =  $path . "/" . $fName;
+
+        $myfile = fopen($fileLocation, "w") or die("fail"); //die("Unable to open file!");
+        fwrite($myfile, $content);
+        fclose($myfile);
+        
+        echo 'success';
+    });
+    $app->post('/cogworks/main-tool-backend/mkdir', function ($request, $response, $args) use ($container) {
+        $path = $request->getParam('path');
+        $result = true;
+        if (!is_dir($path)) {
+            $result = mkdir($path, 0777, true);
+        }
+        return json_encode($result);
+    });
+    $app->post('/cogworks/main-tool-backend/copy-file', function ($request, $response, $args) use ($container) {
+        $from = $request->getParam('from');
+        $to = $request->getParam('to');
+        $path = substr($to, 0, (strrpos($to, '/') + 1));
+        $result = false;
+
+        $folder = $path;
+        if (!file_exists($folder)) {
+            mkdir($folder, 0777, true);
+        }
+        $result = copy($from, $to);
+        return json_encode($result);
+    });
+    $app->post('/cogworks/main-tool-backend/remove-files', function ($request, $response, $args) use ($container) {
+        $sourceVal = $request->getParam('path');
+        rrmdir($sourceVal);
+        echo $sourceVal;
+    });
+    $app->post('/cogworks/main-tool-backend/resources-path', function ($request, $response, $args) use ($container) {
+        $id = $request->getParam('id');
+        return json_encode(getCogResourcesPath($id, $container));
+    });
+    $app->post('/cogworks/main-tool-backend/general-info/cog-file', function ($request, $response, $args) use ($container) {
+        $result = null;
+        $id = $request->getParam('id');
+        $basePath = '';
+        $tmpAry = array();
+
+        $cog = $container->cogworks->query("
+            select * from cog_files
+            where id = '$id';
+        ")->fetch(PDO::FETCH_ASSOC);
+        $userID = $cog['user_id'];
+        $projID = $cog['project_id'];
+        $project = $container->cogworks->query("
+            select * from projects
+            where id = '$projID';
+        ")->fetch(PDO::FETCH_ASSOC);
+        $statID = $cog['status_id'];
+        $status = $container->projectcog->query("
+            select * from statues
+            where id = '$statID';
+        ")->fetch(PDO::FETCH_ASSOC);
+        $user = $container->projectcog->query("
+            select * from users
+            where id = '$userID';
+        ")->fetch(PDO::FETCH_ASSOC);
+        $orgID = $user['organization_id'];
+        $org = $container->projectcog->query("
+            select * from organizations
+            where id = '$orgID';
+        ")->fetch(PDO::FETCH_ASSOC);
+
+        $tmpAry = getCogFileThumbnail($orgID, $userID, $id, $cog['image'], $container);
+
+        $cogFileImageValue = $tmpAry['imageValue'];
+        $cogFileImage = $tmpAry['path'];
+
+        $result = array();
+        $result['id'] = $cog['id'];
+        $result['cogfile'] = $cog['cog_file'];
+        // $result['content'] = $cog['cog_file_content']; // reserve code
+        $result['image'] = $cogFileImage;
+        $result['imageValue'] = $cogFileImageValue;
+        $result['userID'] = $cog['user_id'];
+        $result['projectID'] = $cog['project_id'];
+        $result['project'] = ($projID != 0) ? $project['project'] : '(Personal File)';
+        $result['userOrgID'] = $orgID;
+        $result['userOrg'] = $org['organization'];
+        $result['status'] = $status['status'];
+        $result['updated'] = (explode(" ",$cog['updated']))[0];
+        $result['created'] = (explode(" ",$cog['created']))[0];
+        $result['filename'] = $cog['id'] . '.cog';
+        $result['basePath'] = $basePath = getCogFileDirectory($projID, $orgID, $userID);
+        $result['resources'] = getCogResourcesPath($id, $container);
+
+        return json_encode($result);
+    });
+    $app->post('/cogworks/main-tool-backend/convert-to-zip', function ($request, $response, $args) use ($container) {
+        return convertToZip($request->getParam('path'), $request->getParam('filename'));
+    });
+    $app->post('/cogworks/main-tool-backend/cog-file/add', function ($request, $response, $args) use ($container) {
+        $userID = $request->getParam('id');
+        $content = json_decode($request->getParam('content'), true);
+        $contentRaw = addslashes($request->getParam('content'));
+        $filename = $content['design']['name'] . '.cog';
+        $user = getUserInfo($userID, $container);
+        $result = array();
+        $result['path'] = '';
+        $result['fileID'] = 0;
+        $result['status'] = $container->cogworks->exec("
+            insert into cog_files
+            (cog_file, user_id)
+            values('$filename', '$userID')
+        ");
+        if($result['status']) {
+            // just in-case there's more than 1 similar filename
+            $cog = $container->cogworks->query("
+                select * from cog_files
+                where cog_file = '$filename' and user_id = '$userID'
+                order by id desc limit 1
+            ")->fetch(PDO::FETCH_ASSOC);
+            $cogID = $cog['id'];
+            $result['fileID'] = $cogID;
+            $result['path'] = getCogfilePath($cogID, $container);
+        }
+        return json_encode($result);
+    });
+    $app->post('/cogworks/main-tool-backend/write-context-to-disk', function ($request, $response, $args) use ($container) {
+        header('Content-type: text/html; charset=utf-8');
+        $userID = $request->getParam('userID');
+        $fileID = $request->getParam('fileID');
+        $destinationPath = urldecode($request->getParam('destinationPath'));
+        $fName = $request->getParam('fName');
+        $content = $request->getParam('content');
+        $tmpPath = getCogUserFolderPath($userID, $container) . 'tmp';
+        $dateDateTime = getCurrentDate();
+        $contentRaw = addslashes($content);
+        $result = array();
+        $result['status'] = false;
+        $result['updated'] = false;
+        
+        $tmpLocation = $tmpPath . "/" . $fName;
+
+        $myfile = fopen($tmpLocation, "w") or die("fail"); //die("Unable to open file!");
+        fwrite($myfile, $content);
+        fclose($myfile);
+
+        $fileLocation = $destinationPath . "/" . $fName;
+        
+        if (copy($tmpLocation,$fileLocation)) {
+            chmod($fileLocation, 0777);
+            unlink($tmpLocation);
+            $result['status'] = true;
+        }
+
+        $prepare = $container->cogworks->prepare("
+            update cog_files
+            set updated = '$dateDateTime'
+            where id = '$fileID'
+        ");
+        $result['dbUpdated'] = $prepare->execute();
+        return json_encode($result);
+    });
+    $app->post('/cogworks/main-tool-backend/make-cog-backup', function ($request, $response, $args) use ($container) {
+        $id = $request->getParam('id');
+        $content = addslashes($request->getParam('content'));
+
+        $cog = $container->cogworks->query("
+            select * from cog_files
+            where id = '$id'
+        ")->fetch(PDO::FETCH_ASSOC);
+        $cogID = $cog['id'];
+        $userID = $cog['user_id'];
+        $cogFileCount = $container->cogworks->query("
+            select count(id) from cog_file_backup
+            where cog_file_id='$cogID'
+        ")->fetch(PDO::FETCH_ASSOC);
+
+        $cogFileVersion = ($cogFileCount['count(id)'] + 1);
+
+        $result = $container->cogworks->query("
+            insert into cog_file_backup
+            (user_id, cog_file_id, cog_file_backup_content, version)
+            values('$userID', '$id', '$content','$cogFileVersion')
+        ");
         return json_encode($result);
     });
 };

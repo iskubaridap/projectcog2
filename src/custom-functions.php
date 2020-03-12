@@ -314,7 +314,7 @@ function generateDirectory($path)
     // check first if the directory exists
     if(!is_dir($path))
     {
-        mkdir($path, 0777);
+        mkdir($path, 0777, true);
         return false;
     }
     else
@@ -346,21 +346,98 @@ function generateCogworksUserDirectories($path)
     generateDirectory($path . '/tmp');
     generateCogworksDefaultDirectories($path);
 }
+function getCogfilePath($id, $container){
+    $obj = $container->cogworks->query("
+        select * from cog_files
+        where id = '$id';
+    ")->fetch(PDO::FETCH_ASSOC);
+    $projID = $obj['project_id'];
+    $userID = $obj['user_id'];
+
+    $userObj = $container->projectcog->query("
+        select * from users
+        where id = '$userID';
+    ")->fetch(PDO::FETCH_ASSOC);
+    $orgID = $userObj['organization_id'];
+    if($projID == 0) {
+        if($orgID == 1) {
+            $result = setCogworksDirectoryPath($orgID) . 'users/' . $userID . '/raw-files/' . $id . '.cog';
+        } else if($orgID == 2) {
+            $result = setCogworksDirectoryPath($orgID) . $userID . '/raw-files/' . $id . '.cog';
+        } else {
+            $result = setCogworksDirectoryPath($orgID) . $orgID . '/users/' . $userID . '/raw-files/' . $id . '.cog';
+        }
+    } else {
+        if($orgID == 1) {
+            $result = setCogworksDirectoryPath($orgID) . 'projects/' . $projID . '/' . $id . '.cog';
+        } else if($orgID == 2) {
+            $result = setCogworksDirectoryPath($orgID) . $userID . '/projects/' . $projID . '/' . $id . '.cog';
+        } else {
+            $result = setCogworksDirectoryPath($orgID) . $orgID . '/projects/' . $projID . '/' . $id . '.cog';
+        }
+    }
+    
+    return $result;
+}
+function getCogResourcesPath($id, $container){
+    $obj = $container->cogworks->query("
+        select * from cog_files
+        where id = '$id';
+    ")->fetch(PDO::FETCH_ASSOC);
+    $projID = $obj['project_id'];
+    $userID = $obj['user_id'];
+
+    $userObj = $container->projectcog->query("
+        select * from users
+        where id = '$userID';
+    ")->fetch(PDO::FETCH_ASSOC);
+    $orgID = $userObj['organization_id'];
+    $result = array();
+    $path = '';
+    $audio = '';
+    $extra = '';
+    $pdf = '';
+    $video = '';
+
+    if($orgID == 1) {
+        $path = setCogworksDirectoryPath($orgID) . 'resources/';
+    } else if($orgID == 2) {
+        $path = setCogworksDirectoryPath($orgID) . $userID . '/resources/';
+    } else {
+        $path = setCogworksDirectoryPath($orgID) . $orgID . '/resources/';
+    }
+    
+    $result['audio'] = $path . '/audio/' . $id . '/';
+    $result['pdf'] = $path . '/pdf/' . $id . '/';
+    $result['video'] = $path . '/video/' . $id . '/';
+    $result['extra'] = $path . '/extra/' . $id . '/';
+    return $result;
+}
+function getCogUserFolderPath($id, $container){
+    $result = '';
+    $obj = $container->projectcog->query("
+        select * from users
+        where id = '$id';
+    ")->fetch(PDO::FETCH_ASSOC);
+    $orgID = $obj['organization_id'];
+    if($orgID == 1) {
+        $result = setCogworksDirectoryPath($orgID) . 'users/' . $id . '/';
+    } else if($orgID == 2) {
+        $result = setCogworksDirectoryPath($orgID) . $id . '/';
+    } else {
+        $result = setCogworksDirectoryPath($orgID) . $orgID . '/users/' . $id . '/';
+    }
+    return $result;
+}
 function rrmdir($dir)
 {
-    if (is_dir($dir))
-    {
+    if (is_dir($dir)) {
         $objects = scandir($dir);
-        foreach ($objects as $object)
-        {
-            if ($object != "." && $object != "..")
-            {
-                if (filetype($dir."/".$object) == "dir")
-                {
+        foreach ($objects as $object) {
+            if ($object != "." && $object != "..") {
+                if (filetype($dir."/".$object) == "dir") {
                     rrmdir($dir."/".$object); 
-                }
-                else
-                {
+                } else {
                     unlink($dir."/".$object);
                 }
             }
@@ -428,6 +505,60 @@ function custom_redirect($loc) {
             echo "<script language='javascript'> window.location = '" . $home . "'</script>";
     }
     exit();
+}
+function copydir($source, $destination)
+{
+    if(!is_dir($destination)){
+        $oldumask = umask(0); 
+        mkdir($destination, 01777); // so you get the sticky bit set 
+        umask($oldumask);
+    }
+    $dir_handle = @opendir($source) or die("fail");
+    while ($file = readdir($dir_handle))  {
+        if($file!="." && $file!=".." && !is_dir("$source/$file")) //if it is file
+        {
+            copy("$source/$file","$destination/$file");
+        }
+        if($file!="." && $file!=".." && is_dir("$source/$file")) //if it is folder
+        {
+            copydir("$source/$file","$destination/$file");
+        }
+    }
+    closedir($dir_handle);
+}
+function convertToZip($path, $filename) {
+    $rootPath = realpath($path);
+
+    // Initialize archive object
+    $zip = new ZipArchive();
+    $zip->open($path . $filename .'.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+    // Create recursive directory iterator
+    /** @var SplFileInfo[] $files */
+    $files = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($rootPath),
+        RecursiveIteratorIterator::LEAVES_ONLY
+    );
+    
+    foreach ($files as $name => $file)
+    {
+        // Skip directories (they would be added automatically)
+        if (!$file->isDir())
+        {
+            // Get real and relative path for current file
+            $filePath = $file->getRealPath();
+            $relativePath = substr($filePath, strlen($rootPath) + 1);
+            
+            echo "filePath - " . $filePath . "\n";
+            echo "relativePath - " . $relativePath . "\n";
+
+            // Add current file to archive
+            $zip->addFile($filePath, $relativePath) or die ("fail"); //die ("ERROR: Could not add file: $key");
+        }
+    }
+
+    // Zip archive will be created only after closing object
+    $zip->close();
 }
 
 function check_session() {

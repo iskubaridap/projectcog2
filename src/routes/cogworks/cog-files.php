@@ -285,4 +285,7 @@ return function (App $app) {
         $userID = 5; // temporary value...this assumes that i'm nina of jsi
         $cogID = $request->getParam('id');
     });
+    $app->post('/cogworks/cog-files/add', function ($request, $response, $args) use ($container) {
+        // this is reserve for the dashboard
+    });
 };

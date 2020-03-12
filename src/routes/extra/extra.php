@@ -285,7 +285,7 @@ return function (App $app) {
         echo '<br><br>';
         echo 'Process is complete!';
     });
-    $app->post('/extra/replicate/cogworks', function ($request, $response, $args) use ($container) {
+    $app->post('/extra/replicate/cog-files', function ($request, $response, $args) use ($container) {
         $cogIndex = 0;
         $cogFilesTotal = 0;
         $cogworks = $container->cogworks_original->query("

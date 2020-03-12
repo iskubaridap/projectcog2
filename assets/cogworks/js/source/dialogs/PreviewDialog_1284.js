@@ -74,9 +74,13 @@ define([], function() {
         var ExportContext = require("../contexts/ExportContext");
 		var parsePath = require("../helpers/parsePath");
         var Bootstrap = require("../Bootstrap");
+        var base64 = require('../Base64');
         var PreviewDialog = function(_Dialog) {
             _inherits(PreviewDialog, _Dialog);
             var classObj = null;
+            var dir = '';
+            var previewPage = '';
+            var cogfileInfo = null;
 
             function PreviewDialog(elem) {
                 _classCallCheck(this, PreviewDialog);
@@ -98,7 +102,10 @@ define([], function() {
                     var audio = "";
                     var video = "";
                     var pdf = "";
+                    var extra = '';
                     var numErrors = 0;
+                    dir = app.userPath + "preview";
+                    previewPage = (dir).substr((dir).indexOf('/cogworks/'), ((dir).length - 1)) + '/index.html';
                     
                     function startPreview()
 					{
@@ -107,15 +114,16 @@ define([], function() {
 						var errorMessage = "";
 						var writtenFiles = 0;
 						var sep = "/";
-						var dir = "user_files/" + (ORG.replace(" ","_")) + "/" + USERNAME + "/preview";
                         var audioDir = null;
                         var pdfDir = null;
+                        var videoDir = null;
+                        var extraDir = null;
 						var exp = new ExportContext;
                         var bootstrap = null;
                         var pagesHTML = null;
                         var htmlFiles = null;
                         var ajaxAry = new Array();
-                        
+
                         app.context.serialize();
 						exp.unserialize(app.context.serialize());
                         exp.generateFileExport({
@@ -311,37 +319,37 @@ define([], function() {
                                 operations.push(writeFile(dir + sep + sheet, themeContent))
                             } else {
                                 var originalSheet = (classObj.getActiveTheme(exp) + "/bootstrap.min.css");
-                                operations.push(copyFilePromise((originalSheet.replace("./","")), dir + sep + "bootstrap/css/bootstrap.min.css"))
+                                operations.push(copyFilePromise((originalSheet.replace('../', '')), dir + sep + "bootstrap/css/bootstrap.min.css"))
                             }
-                            operations.push(copyFolderFiles("../assets/cogworks/embed/fonts/bootstrap", (dir + sep + "bootstrap" + sep + "fonts")));
-                            mkdir("user_files/" + (ORG.replace(" ","_")) + "/" + USERNAME + "/preview" + sep + "fonts")
+                            operations.push(copyFolderFiles("assets/cogworks/embed/fonts/bootstrap", (dir + sep + "bootstrap" + sep + "fonts")));
+                            mkdir(dir + sep + "fonts");
                             if(themeID == "mcafee" || themeID == "jsi")
                             {
                                 if(themeID == "jsi")
                                 {
-                                    mkdir("user_files/" + (ORG.replace(" ","_")) + "/" + USERNAME + "/preview" + sep + "fonts" + sep + "jsi");
-                                    operations.push(copyFolderFiles("../assets/cogworks/embed/fonts/jsi", (dir + sep + "fonts" + sep + "jsi")));
+                                    mkdir(dir + sep + "fonts" + sep + "jsi");
+                                    operations.push(copyFolderFiles("assets/cogworks/embed/fonts/jsi", (dir + sep + "fonts" + sep + "jsi")));
                                 }
                                 else if(themeID == "mcafee")
                                 {
-                                    mkdir("user_files/" + (ORG.replace(" ","_")) + "/" + USERNAME + "/preview" + sep + "fonts" + sep + "mcafee");
-                                    operations.push(copyFilePromise("../assets/cogworks/embed/fonts/simple-line-icons.min.css", dir + sep + "fonts" + sep + "simple-line-icons.min.css"));
-                                    operations.push(copyFolderFiles("../assets/cogworks/embed/fonts/mcafee", (dir + sep + "fonts" + sep + "mcafee")));
+                                    mkdir(dir + sep + "fonts" + sep + "mcafee");
+                                    operations.push(copyFilePromise("assets/cogworks/embed/fonts/simple-line-icons.min.css", dir + sep + "fonts" + sep + "simple-line-icons.min.css"));
+                                    operations.push(copyFolderFiles("assets/cogworks/embed/fonts/mcafee", (dir + sep + "fonts" + sep + "mcafee")));
                                 }
-                                operations.push(copyFilePromise("../assets/cogworks/js/jquery.min.js", dir + sep + "js" + sep + "jquery.min.js"));
-                                operations.push(copyFilePromise("../assets/cogworks/js/bootstrap.min.js", dir + sep + "bootstrap" + sep + "js" + sep + "bootstrap.min.js"));
+                                operations.push(copyFilePromise("assets/cogworks/js/jquery/jquery.min.js", dir + sep + "js" + sep + "jquery.min.js"));
+                                operations.push(copyFilePromise("assets/cogworks/js/bootstrap.min.js", dir + sep + "bootstrap" + sep + "js" + sep + "bootstrap.min.js"));
                             }
                             else
                             {
-                                operations.push(copyFilePromise("../assets/cogworks/embed/js/jquery-" + jqueryVersion + ".min.js", dir + sep + "js" + sep + "jquery.min.js"));
-                                //operations.push(copyFilePromise("../assets/cogworks/js/jquery.min.js", dir + sep + "js" + sep + "jquery.min.js"));
+                                operations.push(copyFilePromise("assets/cogworks/embed/js/jquery-" + jqueryVersion + ".min.js", dir + sep + "js" + sep + "jquery.min.js"));
+                                //operations.push(copyFilePromise("assets/cogworks/js/jquery.min.js", dir + sep + "js" + sep + "jquery.min.js"));
                                 if(bootstrapVer == 3)
                                 {
-                                    operations.push(copyFilePromise("../assets/cogworks/js/bootstrap.min.js", dir + sep + "bootstrap" + sep + "js" + sep + "bootstrap.min.js"));
+                                    operations.push(copyFilePromise("assets/cogworks/js/bootstrap.min.js", dir + sep + "bootstrap" + sep + "js" + sep + "bootstrap.min.js"));
                                 }
                                 else
                                 {
-                                    operations.push(copyFilePromise("../assets/cogworks/js/bootstrap4.min.js", dir + sep + "bootstrap" + sep + "js" + sep + "bootstrap.min.js"));
+                                    operations.push(copyFilePromise("assets/cogworks/js/bootstrap4.min.js", dir + sep + "bootstrap" + sep + "js" + sep + "bootstrap.min.js"));
                                 }
                             }
                             
@@ -351,7 +359,7 @@ define([], function() {
                             try {
                                 for (var _iterator15 = bootstrap.getUsedIconFontPaths(exp)[Symbol.iterator](), _step15; !(_iteratorNormalCompletion15 = (_step15 = _iterator15.next()).done); _iteratorNormalCompletion15 = true) {
                                     var path = _step15.value;
-                                    //operations.push(copyFilePromise("../assets/cogworks/embed/" + path, dir + sep + "assets" + sep + path))
+                                    //operations.push(copyFilePromise("assets/cogworks/embed/" + path, dir + sep + "assets" + sep + path))
                                 }
                             } catch (err) {
                                 _didIteratorError15 = true;
@@ -431,17 +439,14 @@ define([], function() {
 							filesToWrite.push(folder);
 							
 							ajaxObj = $.ajax({
-								url: (ROOT + "extra/copy_directory"),
+								url: '../cogworks/main-tool-backend/copy-folder',
 								type: "POST",
 								cache: true,
 								data: {source: objFrom, destination: objTo},
 								success: function (info) {
-									if(info == 'fail')
-                                    {
+									if(info == 'fail') {
                                         numErrors++;
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         writtenFiles++;
                                     }
                                     previewReady();
@@ -461,18 +466,15 @@ define([], function() {
 							filesToWrite.push((parsePath(objPath)).basename);
 							
 							ajaxObj = $.ajax({
-								url: "./public/php/write_image.php",
+								url: "../cogworks/main-tool-backend/write-image",
 								type: "POST",
 								cache: true,
 								data: {path:(parsePath(objPath)).dirname,fName:(parsePath(objPath)).basename,content:objContent},
 								success: function (info) {
-									if(info == 'fail')
-                                    {
+									if(info == 'fail') {
                                         numErrors++;
                                         
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         writtenFiles++;
                                     }
                                     previewReady();
@@ -492,25 +494,20 @@ define([], function() {
 							filesToWrite.push((parsePath(objPath)).basename);
 							
 							ajaxObj = $.ajax({
-								url: "./public/php/write_file.php",
+								url: "../cogworks/main-tool-backend/write-file",
 								type: "POST",
 								cache: true,
 								data: {path:(parsePath(objPath)).dirname,fName:(parsePath(objPath)).basename,content:objContent},
 								success: function (info) {
-									if(info == 'fail')
-                                    {
+									if(info == 'fail') {
                                         numErrors++;
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         writtenFiles++;
                                     }
                                     previewReady();
 								},
 								error: function (request, status, error) {
-                                    console.log(request);
                                     console.log(status);
-                                    console.log(error);
 									numErrors++;
                                     previewReady();
 								}
@@ -521,21 +518,18 @@ define([], function() {
 						function mkdir(objPath)
 						{
                             var ajaxObj = null;
-                            console.log(objPath);
 							ajaxObj = $.ajax({
-								url: "./public/php/mkdir.php",
+								url: "../cogworks/main-tool-backend/mkdir",
 								type: "POST",
 								cache: true,
 								data: {path:objPath},
 								success: function (info) {
-									if(info == 'fail')
-                                    {
+									if(info == 'false') {
                                         numErrors++;
                                         previewReady();
                                     }
 								},
 								error: function (request, status, error) {
-                                    console.log(status);
 									numErrors++;
                                     previewReady();
 								}
@@ -549,17 +543,14 @@ define([], function() {
                             filesToWrite.push((((objTo).split("/"))[((objTo).split("/").length - 1)]));
 							
                             ajaxObj = $.ajax({
-								url: "./public/php/copy_file.php",
+								url: "../cogworks/main-tool-backend/copy-file",
 								type: "POST",
 								cache: true,
 								data: {from:objFrom, to:objTo},
 								success: function (info) {
-									if(info == 'fail')
-                                    {
+									if(info == 'fail') {
                                         numErrors++;
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         writtenFiles++;
                                     }
                                     previewReady();
@@ -576,23 +567,17 @@ define([], function() {
 						function previewReady()
 						{
 							var percent = Math.round((writtenFiles / filesToWrite.length) * 100);
-							if(writtenFiles == filesToWrite.length)
-							{
+							if(writtenFiles == filesToWrite.length) {
 								cogworks.loadingScreen("dynamic","Generating preview for " + app.context.name + " file.<br><br>Preview - 100%","show");
 								setTimeout(function(){cogworks.loadingScreen("","","fadeOut")},0);
 								app.previewDialog.open();
-							}
-							else
-							{
-                                if(numErrors > 0)
-                                {
+							} else {
+                                if(numErrors > 0) {
                                     $.each(ajaxAry, function(index, value){
                                         value.abort();
                                     });
                                     cogworks.loadingScreen("alert","<p>Cannot preview the file '" + app.context.name + "'.</p><p>Report error ID: 011 to the admin if issue persist.</p>","show");
-                                }
-                                else
-                                {
+                                } else {
                                     cogworks.loadingScreen("dynamic","Generating preview for " + app.context.name + " file.<br><br>Preview - " + percent + "%","show");
                                 }
 							}
@@ -602,52 +587,26 @@ define([], function() {
                             cogworks.loadingScreen("alert","<p>Can not process file to preview.<p></p>" + e + "</p>","show");
 							setTimeout(function(){cogworks.loadingScreen("","","fadeOut")},1000);
 						}
-					}
-					$.ajax({
-						url: "./public/php/remove_files.php",
-						type: "POST",
-						cache: true,
-						data: {path:("user_files/" + (ORG.replace(" ","_")) + "/" + USERNAME + "/preview/")},
-						success: function (info) {
-							//console.log(info);
-                            var cogName = ((app.context.path).split("/"))[((app.context.path).split("/").length - 1)];
-                            var cogDirName = ((app.context.path).split("/"))[((app.context.path).split("/").length - 2)];
-                            var cogDir = '';
-                            //var cogDir = (((app.context.path).split("/"))[((app.context.path).split("/").length - 2)] == "raw_files") ? "0" : ((app.context.path).split("/"))[((app.context.path).split("/").length - 2)];
-                            if(cogDirName == 'raw_files')
-                            {
-                                cogDir = 0;
-                            }
-                            else if(cogDirName === undefined)
-                            {
-                                cogDir = '';
-                            }
-                            else
-                            {
-                                cogDir = ((app.context.path).split("/"))[((app.context.path).split("/").length - 2)];
-                            }
-                            $.post((ROOT + "extra/get_cog_id"),{cogName: cogName, cogDir: cogDir}, function(id){
-                                console.log(id);
-                                if(ORG != "Developer")
-                                {
-                                    audio = "user_files/" + (ORG.replace(" ", "_")) + "/resources/audio/" + id;
-                                    video = "user_files/" + (ORG.replace(" ", "_")) + "/resources/video/" + id;
-                                    pdf = "user_files/" + (ORG.replace(" ", "_")) + "/resources/pdf/" + id;
-                                }
-                                else
-                                {
-                                    audio = "user_files/" + (USERNAME.replace(".com", "")) + "/audio/" + id;
-                                    video = "user_files/" + (USERNAME.replace(".com", "")) + "/video/" + id;
-                                    pdf = "user_files/" + (USERNAME.replace(".com", "")) + "/pdf/" + id;
-                                }
-                                
+                    }
+                    $.post('../cogworks/main-tool-backend/general-info/cog-file',{id: app.context.fileID}, function(data){
+                        cogfileInfo = JSON.parse(data);
+                        audio = cogfileInfo.resources.audio;
+                        video = cogfileInfo.resources.video;
+                        pdf = cogfileInfo.resources.pdf;
+                        extra = cogfileInfo.resources.extra;
+                        $.ajax({
+                            url: "../cogworks/main-tool-backend/remove-files",
+                            type: "POST",
+                            cache: true,
+                            data: {path:(dir + '/')},
+                            success: function (info) {
                                 startPreview();
-                            });
-						},
-                        error: function (request, status, error) {
-                            cogworks.loadingScreen("alert","<p>Cannot preview the file '" + app.context.name + "'.</p><p>Report error ID: 010 to the admin if issue persist.</p>","show");
-                        }
-					});
+                            },
+                            error: function (request, status, error) {
+                                cogworks.loadingScreen("alert","<p>Cannot preview the file '" + app.context.name + "'.</p><p>Report error ID: 010 to the admin if issue persist.</p>","show");
+                            }
+                        });
+                    });
 				}
 			}, {
 				key: "createURLForIP",
@@ -663,8 +622,9 @@ define([], function() {
 			}, {
 				key: "onOK",
 				value: function onOK() {
-					this.close();
-                    window.open((location.protocol + '//' + location.host + "/user_files/" + (ORG.replace(" ","_")) + "/" + USERNAME + "/preview/index.html"));
+                    // console.log(base64.btoa(app.user));
+                    this.close();
+                    window.open((location.protocol + '//' + location.host + previewPage));
 				}
 			}, {
 				key: "update",
@@ -696,6 +656,7 @@ define([], function() {
         "./Dialog": 498,
         "../contexts/ExportContext": 373,
         "../helpers/parsePath": 595,
-        "../Bootstrap": 538
+        "../Bootstrap": 538,
+        '../Base64': 623
     }]
 });

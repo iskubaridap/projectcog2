@@ -189,6 +189,7 @@ define([], function() {
                     this.favoriteColors = electron.readSetting("favoriteColors", []);
                     this.recent = electron.readSetting("recent", []);
                     app.user = 0;
+                    app.userPath = '';
                     app.fileID = 0;
                     app.openFile = null;
                     app.openFilePath = ''
@@ -2561,15 +2562,13 @@ define([], function() {
                     if (context.existsOnDisk()) {
                         app.writeContextToDisk(context, context.path)
                     } else {
-                        context.path = DOCUMENT_ROOT + "user_files/" + (ORG.replace(" ","_")) + "/" + USERNAME + "/raw_files/" + context.name + ".cog";
-						
-						$.post(ROOT + "cog_files/insert_new_cogfile", {"fName":context.name, content: (context.stringify())}, function(e) {
-							if(e <= 0)
-							{
+						$.post('../cogworks/main-tool-backend/cog-file/add', {id: app.user, content: (context.stringify())}, function(data) {
+                            var obj = JSON.parse(data);
+                            context.path = obj.path;
+                            context.fileID = obj.fileID;
+							if(obj.result == false) {
 								cogworks.loadingScreen("alert","<p>Something went wrong, your file '" + (context.name).replace(".cog","") + "' failed to save.</p><p>Report error ID: 007 to the admin if issue persist.</p>","show");
-							}
-							else
-							{
+							} else {
 								app.writeContextToDisk(context,context.path);
 							}
 						});
@@ -2579,62 +2578,71 @@ define([], function() {
                 key: "writeContextToDisk",
                 value: function writeContextToDisk(context, path) {
                     if (!path) return;
-					
-					path = path.replace(DOCUMENT_ROOT,"");
-					
                     path = enforceFileExtension(path, "cog");
-                    //console.log(path);
-                    console.log(context);
                     var parsed = parsePath(path);
-                    context.name = parsed.name;
                     var content = context.stringify();
-                    var tmpPath = "user_files/" + (ORG.replace(" ","_")) + "/" + USERNAME + "/tmp";
+                    var tmpPath = app.userPath + "tmp";
                     var cogfileName = parsed.basename;
-                    
-                    $.ajax({
-						url: "./public/php/write_context_to_disk.php",
-						type: "POST",
-						cache: true,
-						data: {tmpPath:tmpPath, destinationPath:parsed.dirname, fName:parsed.basename, content:content},
-						success: function (data) {
-							context.markAsSaved(path);
-                        	app.trigger("context-saved", context);
-                            
-                            setTimeout(function(){cogworks.loadingScreen("","","fadeOut")},1000);
-                            
-                            $.post(ROOT + "cog_files/create_backup", {filename: cogfileName,content: content}, function(e) {
-                                if(e <= 0)
-                                {
-                                    app.notifications.create({
-                                        type: "backup_error",
-                                        title: "Can't make a backup file",
-                                        description: "Something went wrong to your file '" + (context.name).replace(".cog","") + "'error ID: 009"
-                                    }).show();
+
+                    if(parseInt(context.fileID) == 0) {
+                        cogworks.loadingScreen("alert","<p>Something went wrong, your file '" + (context.name).replace(".cog","") + "' failed to save.</p><p>Report error ID: 021 to the admin if issue persist.</p>","show");
+                    } else {
+                        $.ajax({
+                            url: '../cogworks/main-tool-backend/write-context-to-disk',
+                            type: "POST",
+                            cache: true,
+                            data: {userID: app.user, fileID: context.fileID, destinationPath: parsed.dirname, fName: parsed.basename, content: content},
+                            success: function (data) {
+                                var obj = null;
+                                if(data == 'fail') {
+                                    cogworks.loadingScreen("alert","<p>Something went wrong, your file '" + (context.name).replace(".cog","") + "' is not generated.</p><p>Report error ID: 022 to the admin if issue persist.</p>","show");
+                                } else {
+                                    obj = JSON.parse(data);
+                                    if(obj.status == true) {
+                                        context.markAsSaved(path);
+                                        app.trigger("context-saved", context);
+                                        
+                                        setTimeout(function(){cogworks.loadingScreen("","","fadeOut")},1000);
+                                        
+                                        // separated this to make things more faster
+                                        $.post('../cogworks/main-tool-backend/make-cog-backup', {id: context.fileID, content: content}, function(data) {
+                                            if(data == 'false') {
+                                                app.notifications.create({
+                                                    type: "backup_error",
+                                                    title: "Can't make a backup file",
+                                                    description: "Something went wrong to your file '" + (context.name).replace(".cog","") + "' Report error ID: 009"
+                                                }).show();
+                                            } else {
+                                                app.notifications.create({
+                                                    type: "backup_succeed",
+                                                    title: "Success creating backup",
+                                                    description: "Your file is successfully have a backup."
+                                                }).show();
+                                            }
+                                        }).fail(function(error){
+                                            app.notifications.create({
+                                                type: "backup_error",
+                                                title: "Can't make a backup file",
+                                                description: "Something went wrong to your file '" + (context.name).replace(".cog","") + "' Report error ID: 018."
+                                            }).show();
+                                        });
+                                    } else {
+                                        cogworks.loadingScreen("alert","<p>Something went wrong, your file '" + (context.name).replace(".cog","") + "' is not generated.</p><p>Report error ID: 023 to the admin if issue persist.</p>","show");
+                                    }
+                                    if(obj.dbUpdated == false) {
+                                        cogworks.loadingScreen("alert","<p>Date is not updated.</p><p>Report error ID: 024 to the admin if issue persist.</p>","show");
+                                    }
                                 }
-                                else
-                                {
-                                    app.notifications.create({
-                                        type: "backup_succeed",
-                                        title: "Success creating backup",
-                                        description: "Your file is successfully have a backup."
-                                    }).show();
-                                }
-                            }).fail(function(error){
+                            },
+                            error: function(data){
                                 app.notifications.create({
                                     type: "backup_error",
                                     title: "Can't make a backup file",
-                                    description: "Something went wrong to your file '" + (context.name).replace(".cog","") + "'error ID: 018."
+                                    description: "Something went wrong to your file '" + (context.name).replace(".cog","") + "' error ID: 008."
                                 }).show();
-                            });
-						},
-                        error: function(data){
-                            app.notifications.create({
-                                type: "backup_error",
-                                title: "Can't make a backup file",
-                                description: "Something went wrong to your file '" + (context.name).replace(".cog","") + "' error ID: 008."
-                            }).show();
-                        }
-					});
+                            }
+                        });
+                    }
                 }
             }, {
                 key: "getErrorMessage",
@@ -3054,6 +3062,9 @@ define([], function() {
                     var audio = "";
                     var video = "";
                     var pdf = "";
+                    var extra = '';
+                    var dir = app.userPath + "tmp";
+                    var cogfileInfo = null;
                     
                     cogworks.loadingScreen("dynamic","Exporting " + app.context.name + " file.","fadeIn");
                     
@@ -3064,9 +3075,10 @@ define([], function() {
 						var errorMessage = "";
 						var writtenFiles = 0;
 						var sep = "/";
-						var dir = "user_files/" + (ORG.replace(" ","_")) + "/" + USERNAME + "/tmp";
                         var audioDir = null;
                         var pdfDir = null;
+                        var videoDir = null;
+                        var extraDir = null;
 						var exp = new ExportContext;
                         var bootstrap = null;
                         var pagesHTML = null;
@@ -3284,38 +3296,38 @@ define([], function() {
                                 var themeContent = app.context.getActiveTheme().raw;
                                 operations.push(writeFile(dir + sep + sheet, themeContent))
                             } else {
-                                var path = (exp.settings.theme.id != undefined) ? "../assets/cogworks/embed/bootstrap/" + (exp.framework.version) + "/" + (exp.settings.theme.id) : "../assets/cogworks/embed/bootstrap/" + (exp.framework.version) + "/" + (exp.settings.theme);
+                                var path = (exp.settings.theme.id != undefined) ? "assets/cogworks/embed/bootstrap/" + (exp.framework.version) + "/" + (exp.settings.theme.id) : "assets/cogworks/embed/bootstrap/" + (exp.framework.version) + "/" + (exp.settings.theme);
                                 var originalSheet = (path + "/bootstrap.min.css");
-                                operations.push(copyFilePromise((originalSheet.replace("./","")), dir + sep + "bootstrap/css/bootstrap.min.css"))
+                                operations.push(copyFilePromise((originalSheet.replace("../","")), dir + sep + "bootstrap/css/bootstrap.min.css"))
                             }
-                            operations.push(copyFolderFiles("../assets/cogworks/embed/fonts/bootstrap", (dir + sep + "bootstrap" + sep + "fonts")));
-                            mkdir("user_files/" + (ORG.replace(" ","_")) + "/" + USERNAME + "/tmp" + sep + "fonts")
+                            operations.push(copyFolderFiles("assets/cogworks/embed/fonts/bootstrap", (dir + sep + "bootstrap" + sep + "fonts")));
+                            mkdir(dir + sep + "fonts");
                             if(themeID == "mcafee" || themeID == "jsi")
                             {
                                 if(themeID == "jsi")
                                 {
-                                    mkdir("user_files/" + (ORG.replace(" ","_")) + "/" + USERNAME + "/tmp" + sep + "fonts" + sep + "jsi");
-                                    operations.push(copyFolderFiles("../assets/cogworks/embed/fonts/jsi", (dir + sep + "fonts" + sep + "jsi")));
+                                    mkdir(dir + sep + "fonts" + sep + "jsi");
+                                    operations.push(copyFolderFiles("assets/cogworks/embed/fonts/jsi", (dir + sep + "fonts" + sep + "jsi")));
                                 }
                                 else if(themeID == "mcafee")
                                 {
-                                    mkdir("user_files/" + (ORG.replace(" ","_")) + "/" + USERNAME + "/tmp" + sep + "fonts" + sep + "mcafee");
-                                    operations.push(copyFilePromise("../assets/cogworks/embed/fonts/simple-line-icons.min.css", dir + sep + "fonts" + sep + "simple-line-icons.min.css"));
-                                    operations.push(copyFolderFiles("../assets/cogworks/embed/fonts/mcafee", (dir + sep + "fonts" + sep + "mcafee")));
+                                    mkdir(dir + sep + "fonts" + sep + "mcafee");
+                                    operations.push(copyFilePromise("assets/cogworks/embed/fonts/simple-line-icons.min.css", dir + sep + "fonts" + sep + "simple-line-icons.min.css"));
+                                    operations.push(copyFolderFiles("assets/cogworks/embed/fonts/mcafee", (dir + sep + "fonts" + sep + "mcafee")));
                                 }
-                                operations.push(copyFilePromise("../assets/cogworks/js/jquery.min.js", dir + sep + "js" + sep + "jquery.min.js"));
-                                operations.push(copyFilePromise("../assets/cogworks/js/bootstrap.min.js", dir + sep + "bootstrap" + sep + "js" + sep + "bootstrap.min.js"));
+                                operations.push(copyFilePromise("assets/cogworks/js/jquery/jquery.min.js", dir + sep + "js" + sep + "jquery.min.js"));
+                                operations.push(copyFilePromise("assets/cogworks/js/bootstrap.min.js", dir + sep + "bootstrap" + sep + "js" + sep + "bootstrap.min.js"));
                             }
                             else
                             {
-                                operations.push(copyFilePromise("../assets/cogworks/embed/js/jquery-" + jqueryVersion + ".min.js", dir + sep + "js" + sep + "jquery.min.js"));
+                                operations.push(copyFilePromise("assets/cogworks/embed/js/jquery-" + jqueryVersion + ".min.js", dir + sep + "js" + sep + "jquery.min.js"));
                                 if(bootstrapVer == 3)
                                 {
-                                    operations.push(copyFilePromise("../assets/cogworks/js/bootstrap.min.js", dir + sep + "bootstrap" + sep + "js" + sep + "bootstrap.min.js"));
+                                    operations.push(copyFilePromise("assets/cogworks/js/bootstrap.min.js", dir + sep + "bootstrap" + sep + "js" + sep + "bootstrap.min.js"));
                                 }
                                 else
                                 {
-                                    operations.push(copyFilePromise("../assets/cogworks/js/bootstrap4.min.js", dir + sep + "bootstrap" + sep + "js" + sep + "bootstrap.min.js"));
+                                    operations.push(copyFilePromise("assets/cogworks/js/bootstrap4.min.js", dir + sep + "bootstrap" + sep + "js" + sep + "bootstrap.min.js"));
                                 }
                             }
                             var _iteratorNormalCompletion15 = true;
@@ -3324,7 +3336,7 @@ define([], function() {
                             try {
                                 for (var _iterator15 = bootstrap.getUsedIconFontPaths(exp)[Symbol.iterator](), _step15; !(_iteratorNormalCompletion15 = (_step15 = _iterator15.next()).done); _iteratorNormalCompletion15 = true) {
                                     var path = _step15.value;
-                                    //operations.push(copyFilePromise("../assets/cogworks/embed/" + path, dir + sep + "assets" + sep + path))
+                                    //operations.push(copyFilePromise("assets/cogworks/embed/" + path, dir + sep + "assets" + sep + path))
                                 }
                             } catch (err) {
                                 _didIteratorError15 = true;
@@ -3394,9 +3406,9 @@ define([], function() {
                             }
                             if(app.context.settings.lms)
                             {
-                                mkdir("user_files/" + (ORG.replace(" ","_")) + "/" + USERNAME + "/tmp" + sep + "lms");
-                                operations.push(copyFolderFiles("../assets/cogworks/embed/js/lms", ("user_files/" + (ORG.replace(" ","_")) + "/" + USERNAME + "/tmp" + sep + "lms")));
-                                generateManifestXML((ORG.replace(" ","_")), app.context.name, ("user_files/" + (ORG.replace(" ","_")) + "/" + USERNAME + "/tmp"));
+                                mkdir(dir + sep + "lms");
+                                operations.push(copyFolderFiles("assets/cogworks/embed/js/lms", (dir + sep + "lms")));
+                                generateManifestXML(cogfileInfo.userOrg, app.context.name, dir);
                             }
                             
                             Promise.all(operations).then(function() {
@@ -3409,17 +3421,14 @@ define([], function() {
 							filesToWrite.push((((objTo).split("/"))[((objTo).split("/").length - 1)]));
 							
 							ajaxObj = $.ajax({
-								url: (ROOT + "extra/copy_directory"),
+								url: '../cogworks/main-tool-backend/copy-folder',
 								type: "POST",
 								cache: true,
 								data: {source: objFrom, destination: objTo},
 								success: function (info) {
-									if(info == 'fail')
-                                    {
+									if(info == 'fail') {
                                         numErrors++;
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         writtenFiles++;
                                     }
 									convertToZip();
@@ -3439,17 +3448,14 @@ define([], function() {
                             filesToWrite.push((parsePath(objPath)).basename);
 
                             ajaxObj = $.ajax({
-                                url: "./public/php/write_image.php",
+                                url: "../cogworks/main-tool-backend/write-image",
                                 type: "POST",
                                 cache: true,
                                 data: {path:(parsePath(objPath)).dirname,fName:(parsePath(objPath)).basename,content:objContent},
                                 success: function (info) {
-                                    if(info == 'fail')
-                                    {
+                                    if(info == 'fail') {
                                         numErrors++;
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         writtenFiles++;
                                     }
                                     convertToZip();
@@ -3469,17 +3475,14 @@ define([], function() {
                             filesToWrite.push((parsePath(objPath)).basename);
 
                             ajaxObj = $.ajax({
-                                url: "./public/php/write_file.php",
+                                url: "../cogworks/main-tool-backend/write-file",
                                 type: "POST",
                                 cache: true,
                                 data: {path:(parsePath(objPath)).dirname,fName:(parsePath(objPath)).basename,content:objContent},
                                 success: function (info) {
-                                    if(info == 'fail')
-                                    {
+                                    if(info == 'fail') {
                                         numErrors++;
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         writtenFiles++;
                                     }
                                     convertToZip();
@@ -3497,13 +3500,12 @@ define([], function() {
                         {
                             var ajaxObj = null;
                             ajaxObj = $.ajax({
-                                url: "./public/php/mkdir.php",
+                                url: "../cogworks/main-tool-backend/mkdir",
                                 type: "POST",
                                 cache: true,
                                 data: {path:objPath},
                                 success: function (info) {
-                                    if(info == 'fail')
-                                    {
+                                    if(info == 'false') {
                                         numErrors++;
                                         previewReady();
                                     }
@@ -3522,17 +3524,14 @@ define([], function() {
                             var ajaxObj = null;
                             filesToWrite.push((((objTo).split("/"))[((objTo).split("/").length - 1)]));
                             ajaxObj = $.ajax({
-                                url: "./public/php/copy_file.php",
+                                url: "../cogworks/main-tool-backend/copy-file",
                                 type: "POST",
                                 cache: true,
                                 data: {from:objFrom, to:objTo},
                                 success: function (info) {
-                                    if(info == 'fail')
-                                    {
+                                    if(info == 'fail') {
                                         numErrors++;
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         writtenFiles++;
                                     }
 									convertToZip();
@@ -3546,24 +3545,21 @@ define([], function() {
                             ajaxAry.push(ajaxObj);
                         }
                         
-                        function generateManifestXML(org, filename, path)
+                        function generateManifestXML(org, filename)
                         {
                             var ajaxObj = null;
+                            var docRoot = (app.userPath).substr(0, (app.userPath).indexOf('/cogworks/'));
                             filesToWrite.push(filename);
                             ajaxObj = $.ajax({
-                                url: (ROOT + "extra/read_file"),
+                                url: '../cogworks/main-tool-backend/read-file',
                                 type: "POST",
                                 cache: true,
-                                data: {path: "../assets/cogworks/embed/xml", fName:"imsmanifest.xml"},
+                                data: {path: (docRoot + '/assets/cogworks/embed/xml'), fName:"imsmanifest.xml"},
                                 success: function (info) {
-                                    //console.log(info);
-                                    if(info == 'fail')
-                                    {
+                                    if(info == 'fail') {
                                         numErrors++;
                                         convertToZip();
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         var ajaxObj2 = null;
                                         var xml = $.parseXML(info);
                                         var xmlRaw = $(xml);
@@ -3573,27 +3569,21 @@ define([], function() {
                                         xml.getElementsByTagName("organizations")[0].getElementsByTagName("organization")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue = filename;
                                         xml.getElementsByTagName("organizations")[0].getElementsByTagName("organization")[0].getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue = filename;
 
-                                        if (window.ActiveXObject)
-                                        {
+                                        if (window.ActiveXObject) {
                                             xmlString = xmlRaw;
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             // code for Mozilla, Firefox, Opera, etc.
                                             xmlString = (new XMLSerializer()).serializeToString(xml);
                                         }
                                         ajaxObj2 = $.ajax({
-                                            url: (ROOT + "extra/write_file"),
+                                            url: '../cogworks/main-tool-backend/write-file',
                                             type: "POST",
                                             cache: true,
                                             data: {path: dir,fName: "imsmanifest.xml",content: xmlString},
                                             success: function (info) {
-                                                if(info == 'fail')
-                                                {
+                                                if(info == 'fail') {
                                                     numErrors++;
-                                                }
-                                                else
-                                                {
+                                                } else {
                                                     writtenFiles++;
                                                 }
                                                 convertToZip();
@@ -3621,27 +3611,25 @@ define([], function() {
                         function convertToZip()
                         {
                             var percent = Math.round((writtenFiles / filesToWrite.length) * 100);
-                            if(writtenFiles == filesToWrite.length)
-                            {
+                            if(writtenFiles == filesToWrite.length) {
                                 cogworks.loadingScreen("dynamic","Exporting " + app.context.name + " file.<br><br>Export - 100%","show");
                                 app.notifications.create({
                                     title: "Your design was exported."
                                 }).show();
 
                                 $.ajax({
-                                    url: "./public/php/convert_to_zip.php",
+                                    url: "../cogworks/main-tool-backend/convert-to-zip",
                                     type: "POST",
                                     cache: true,
-                                    data: {path:"user_files/" + (ORG.replace(" ","_")) + "/" + USERNAME + "/tmp/", filename:app.context.name},
+                                    data: {path: (dir + '/'), filename:app.context.name},
                                     success: function (info) {
-                                        if(info == 'fail')
-                                        {
+                                        if(info == 'fail') {
                                             cogworks.loadingScreen("alert","<p>Cannot export the file '" + app.context.name + "'.</p><p>Report error ID: 015 to the admin if issue persist.</p>","show");
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             cogworks.loadingScreen("","","fadeOut");
-                                            $("a#downloadFile").attr({target: '_blank', href: (location.protocol + '//' + location.host + "/user_files/" + (ORG.replace(" ","_")) + "/" + USERNAME + "/tmp/" + app.context.name + ".zip"), download : (app.context.name + ".zip")});
+                                            var tmpPath = (dir).substr((dir).indexOf('/cogworks/'), ((dir).length - 1)) + '/';
+                                            
+                                            $("a#downloadFile").attr({target: '_blank', href: (location.protocol + '//' + location.host + tmpPath + app.context.name + ".zip"), download : (app.context.name + ".zip")});
                                             $("a#downloadFile")[0].click();
                                         }
                                     },
@@ -3649,18 +3637,13 @@ define([], function() {
                                         cogworks.loadingScreen("alert","<p>Cannot export the file '" + app.context.name + "'.</p><p>Report error ID: 014 to the admin if issue persist.</p>","show");
                                     }
                                 });
-                            }
-                            else
-                            {
-                                if(numErrors > 0)
-                                {
+                            } else {
+                                if(numErrors > 0) {
                                     $.each(ajaxAry, function(index, value){
                                         value.abort();
                                     });
                                     cogworks.loadingScreen("alert","<p>Cannot export the file '" + app.context.name + "'.</p><p>Report error ID: 013 to the admin if issue persist.</p>","show");
-                                }
-                                else
-                                {
+                                } else {
                                     cogworks.loadingScreen("dynamic","Exporting for " + app.context.name + " file.<br><br>Preview - " + percent + "%","show");
                                 }
                             }
@@ -3675,34 +3658,25 @@ define([], function() {
                             }).show()
                         }
                     }
-                    $.ajax({
-                        url: "./public/php/remove_files.php",
-                        type: "POST",
-                        cache: true,
-                        data: {path:("user_files/" + (ORG.replace(" ","_")) + "/" + USERNAME + "/tmp/")},
-                        success: function (info) {
-                            //console.log(info);
-                            var cogName = ((app.context.path).split("/"))[((app.context.path).split("/").length - 1)];
-                            var cogDir = (((app.context.path).split("/"))[((app.context.path).split("/").length - 2)] == "raw_files") ? "0" : ((app.context.path).split("/"))[((app.context.path).split("/").length - 2)];
-                            $.post((ROOT + "extra/get_cog_id"),{cogName: cogName, cogDir: cogDir}, function(id){
-                                if(ORG != "Developer")
-                                {
-                                    audio = "user_files/" + (ORG.replace(" ", "_")) + "/resources/audio/" + id;
-                                    video = "user_files/" + (ORG.replace(" ", "_")) + "/resources/video/" + id;
-                                    pdf = "user_files/" + (ORG.replace(" ", "_")) + "/resources/pdf/" + id;
-                                }
-                                else
-                                {
-                                    audio = "user_files/" + (USERNAME.replace(".com", "")) + "/audio/" + id;
-                                    video = "user_files/" + (USERNAME.replace(".com", "")) + "/video/" + id;
-                                    pdf = "user_files/" + (USERNAME.replace(".com", "")) + "/pdf/" + id;
-                                }
+                    $.post('../cogworks/main-tool-backend/general-info/cog-file',{id: app.context.fileID}, function(data){
+                        cogfileInfo = JSON.parse(data);
+                        audio = cogfileInfo.resources.audio;
+                        video = cogfileInfo.resources.video;
+                        pdf = cogfileInfo.resources.pdf;
+                        extra = cogfileInfo.resources.extra;
+                        $.ajax({
+                            url: "../cogworks/main-tool-backend/remove-files",
+                            type: "POST",
+                            cache: true,
+                            data: {path:(dir + "/")},
+                            success: function (info) {
+                                // console.log(info);
                                 startExport();
-                            });
-                        },
-                        error: function (request, status, error) {
-                            cogworks.loadingScreen("alert","<p>Cannot export the file '" + app.context.name + "'.</p><p>Report error ID: 012 to the admin if issue persist.</p>","show");
-                        }
+                            },
+                            error: function (request, status, error) {
+                                cogworks.loadingScreen("alert","<p>Cannot export the file '" + app.context.name + "'.</p><p>Report error ID: 012 to the admin if issue persist.</p>","show");
+                            }
+                        });
                     });
                 }
             }, {
@@ -4040,7 +4014,6 @@ define([], function() {
                         success: function (data) {
                             var json = JSON.parse(data);
                             var context = null;
-                            
                             try {
                                 if(typeof json.design.assets.audio === "undefined") {
                                     var obj = new Object();
@@ -4064,6 +4037,7 @@ define([], function() {
                                     app.assetPDFObj = json.design.assets.pdf;
                                 }
                                 context = parseCogDesignFormat(json, path);
+                                context.fileID = json.fileID;
                                 console.log(context);
                                 context.name = json.design.name;
                                 return app.openContext(context, focusOnOpen);
@@ -4447,9 +4421,10 @@ define([], function() {
 						cache: true,                  
                         data: {value: linkCode},
                         success: function(data){
-                            if(data != 'null' || data != 'fail'){
+                            if(data != 'null' && data != 'fail'){
                                 var obj = JSON.parse(data);
                                 app.user = obj.user;
+                                app.userPath = obj.userPath;
                                 app.fileID = obj.fileID;
                                 app.openFile = obj.file;
                                 app.openFilePath = obj.filePath;
@@ -4506,7 +4481,7 @@ define([], function() {
             }, {
                 key: "dashboardPage",
                 value: function dashboardPage() {
-                    window.location = ROOT + 'dashboard';
+                    window.location = location.protocol + '//' + location.host + '/dashboard';
                 }
             }, {
                 key: "hideStartScreen",
