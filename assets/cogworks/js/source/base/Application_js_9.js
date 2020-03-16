@@ -3665,7 +3665,7 @@ define([], function() {
                         pdf = cogfileInfo.resources.pdf;
                         extra = cogfileInfo.resources.extra;
                         $.ajax({
-                            url: "../cogworks/main-tool-backend/remove-files",
+                            url: "../cogworks/main-tool-backend/remove-dir-files",
                             type: "POST",
                             cache: true,
                             data: {path:(dir + "/")},
@@ -4152,7 +4152,7 @@ define([], function() {
                         if (ctx.assets.css.hasSCSS()) {
                             app.compileSASS(ctx)
                         }
-                    })
+                    });
                 }
             }, {
                 key: "confirmCloseContext",

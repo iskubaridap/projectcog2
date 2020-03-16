@@ -240,10 +240,12 @@ return function (App $app) {
         $myfile = fopen($sourcePath, "w");
         fwrite($myfile, (json_encode($cogFileContent)));
         fclose($myfile);
+        chmod($sourcePath,0777);
         
         if($cogProjectID != $projID)
         {
             $result = rename($sourcePath, $targetPath);
+            chmod($targetPath,0777);
         }
         if(!empty($file))
         {

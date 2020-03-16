@@ -209,12 +209,11 @@ define([], function () {
 					var parsed = parsePath(path);
 					
 					$.ajax({
-					url: "./public/php/read_file.php",
+					url: '../cogworks/main-tool-backend/read-file',
 					type: "POST",
 					cache: true,
 					data: {path:parsed.dirname,fName:parsed.basename},
 					success: function (data) {
-                            console.log(app);
 							app.htmlContentRead = data;
                             app.getPanel("design").importHTMLFilesByPaths(eval("['" + path + "']"),folder);
 						}
@@ -231,58 +230,68 @@ define([], function () {
 					resetLoader();
 				});
 				elem.find(".button.htmlUploadBtn").on("click", function(){
-                    var loopCount = 0;
-                    
-                    $.each(fileLists, function(index, value){
-                        var paths = ["./tmp/"];
-                        var form_data = new FormData();                  
-                        form_data.append('file', value);
-                        form_data.append('orgname', ORG);
-                        form_data.append('username', USERNAME);
+					var fileIndex = 0;
+					var processFile = function(){
+						var value = fileLists[fileIndex];
+						var paths = ["./tmp/"];
+						var form_data = new FormData();
+						if(fileIndex < fileLists.length) {
+							form_data.append('file', value);
+							form_data.append('user', app.user);
+							
+							cogworks.loadingScreen("dynamic","Importing " + value.name + ".","fadeIn");
 
-                        cogworks.loadingScreen("dynamic","Importing " + value.name + ".","fadeIn");
+							$.ajax({
+								url: '../cogworks/main-tool-backend/move/file/tmp',
+								dataType: 'text',
+								cache: false,
+								contentType: false,
+								processData: false,
+								data: form_data,                         
+								type: 'post',
+								success: function(data){
+									var obj = JSON.parse(data);
+									if(obj.status) {
+										var parsed = parsePath(obj.path);
+										$.ajax({
+											url: '../cogworks/main-tool-backend/read-file',
+											type: "POST",
+											cache: true,
+											data: {path:parsed.dirname,fName:parsed.basename},
+											success: function (data2) {
+												if(data2 != 'fail') {
+													app.htmlContentRead = data2;
+													app.getPanel("design").importHTMLFilesByPaths(eval("['" + obj.path + "']"), folder);
+													fileIndex++;
+													processFile();
+												} else {
+													cogworks.loadingScreen("alert","<p>We encountered error in file " + value.name + ". Try it again.</p><p>Report error ID: 028 to the admin if issue persist.</p>","show");
+												}
+											},
+											error: function (request, status, error) {
+												cogworks.loadingScreen("alert","<p>We encountered error in file " + value.name + ". Try it again.</p><p>Report error ID: 027 to the admin if issue persist.</p>","show");
+											}
+										});
+									} else {
+										cogworks.loadingScreen("alert","<p>We encountered error in file " + value.name + ". Try it again.</p><p>Report error ID: 026 to the admin if issue persist.</p>","show");
+									}
+								},
+								error: function (request, status, error) {
+									cogworks.loadingScreen("alert","<p>We encountered error in file " + value.name + ". Try it again.</p><p>Report error ID: 025 to the admin if issue persist.</p>","show");
+								}
+							});
+						} else {
+							app.notifications.create({
+								title: fileLists.length == 1 ? "A html page was imported" : fileLists.length + " html pages were imported",
+								description: "You can see " + (fileLists.length == 1 ? "it" : "them") + " in the Design panel."
+							}).show();
 
-                        $.ajax({
-                            url: './public/php/move_file.php',
-                            dataType: 'text',
-                            cache: false,
-                            contentType: false,
-                            processData: false,
-                            data: form_data,                         
-                            type: 'post',
-                            success: function(data){
-                                var parsed = parsePath(data);
-                                console.log(data);
-
-                                $.ajax({
-                                url: "./public/php/read_file.php",
-                                type: "POST",
-                                cache: true,
-                                data: {path:parsed.dirname,fName:parsed.basename},
-                                success: function (data2) {
-                                    app.htmlContentRead = data2;
-                                    app.getPanel("design").importHTMLFilesByPaths(eval("['" + data + "']"), folder);
-
-                                    if(loopCount < (fileLists.length - 1))
-                                    {
-                                        loopCount = loopCount + 1;
-                                    }
-                                    else if(loopCount >= (fileLists.length - 1))
-                                    {
-                                        app.notifications.create({
-                                            title: fileLists.length == 1 ? "A html page was imported" : fileLists.length + " html pages were imported",
-                                            description: "You can see " + (fileLists.length == 1 ? "it" : "them") + " in the Design panel."
-                                        }).show();
-                                        $("#upload-html-file-dialog .button.htmlCancel").trigger("click");
-                                        setTimeout(function(){cogworks.loadingScreen("","","fadeOut")},1000);
-                                        app.getPanel("design").instantExpandCategory("Pages");
-                                    }
-                                }
-
-                                });
-                            }
-                         });
-                    });
+							$("#upload-html-file-dialog .button.htmlCancel").trigger("click");
+							cogworks.loadingScreen("","","fadeOut");
+							app.getPanel("design").instantExpandCategory("Pages");
+						}
+					}
+					processFile();
 				});
 			}
 			_createClass(UploadHTMLFileDialog, [{
@@ -304,13 +313,26 @@ define([], function () {
 				key: "removeHTML",
 				value: function removeHTML(htmlPath){
 					$.ajax({
-						url: "./public/php/remove_file.php",
+						url: "../cogworks/main-tool-backend/remove-file",
 						type: "POST",
 						cache: true,
 						data: {path:htmlPath},
 						success: function (data) {
-							setTimeout(function(){cogworks.loadingScreen("","","fadeOut")},1000);
-							//console.log(data);
+							var obj = JSON.parse(data);
+							if(!obj.status){
+								// let's make this notification simple and not too obvious. this is not much a big deal.
+								app.notifications.create({
+									title: 'Fail to Delete',
+									description: 'Fail to Delete a file. Error ID: 030.'
+								}).show();
+							}
+						},
+						error: function (request, status, error) {
+							// let's make this notification simple and not too obvious. this is not much a big deal.
+							app.notifications.create({
+								title: 'Fail to Delete',
+								description: 'Fail to Delete a file. Error ID: 029.'
+							}).show();
 						}
 					});
 				}

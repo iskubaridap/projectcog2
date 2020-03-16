@@ -347,6 +347,18 @@ return function (App $app) {
         
         echo 'success';
     });
+    $app->post('/cogworks/main-tool-backend/read-image', function ($request, $response, $args) use ($container) {
+        header('Content-type: text/html; charset=utf-8');
+        $path = urldecode($request->getParam('path'));
+        $fName = $request->getParam('fName');
+        
+        $fileLocation = $path . "/" . $fName;
+
+        $im = file_get_contents($fileLocation);
+        $imdata = base64_encode($im);
+        
+        return $imdata;
+    });
     $app->post('/cogworks/main-tool-backend/write-image', function ($request, $response, $args) use ($container) {
         $path = urldecode($request->getParam('path'));
         $fName = $request->getParam('fName');
@@ -366,6 +378,8 @@ return function (App $app) {
         fwrite($ifp, base64_decode($data[1])); 
         fclose($ifp);
 
+        chmod($fileLocation, 0777);
+
         echo 'success';
     });
     $app->post('/cogworks/main-tool-backend/write-file', function ($request, $response, $args) use ($container) {
@@ -384,6 +398,8 @@ return function (App $app) {
         $myfile = fopen($fileLocation, "w") or die("fail"); //die("Unable to open file!");
         fwrite($myfile, $content);
         fclose($myfile);
+
+        chmod($fileLocation, 0777);
         
         echo 'success';
     });
@@ -392,6 +408,7 @@ return function (App $app) {
         $result = true;
         if (!is_dir($path)) {
             $result = mkdir($path, 0777, true);
+            chmod($path, 0777);
         }
         return json_encode($result);
     });
@@ -406,9 +423,18 @@ return function (App $app) {
             mkdir($folder, 0777, true);
         }
         $result = copy($from, $to);
+        chmod($to, 0777);
+
         return json_encode($result);
     });
-    $app->post('/cogworks/main-tool-backend/remove-files', function ($request, $response, $args) use ($container) {
+    $app->post('/cogworks/main-tool-backend/remove-file', function ($request, $response, $args) use ($container) {
+        $sourceVal = $request->getParam('path');
+        $result = array();
+        $result['status'] = unlink($sourceVal);
+        $result['path'] = $sourceVal;
+        return json_encode($result);
+    });
+    $app->post('/cogworks/main-tool-backend/remove-dir-files', function ($request, $response, $args) use ($container) {
         $sourceVal = $request->getParam('path');
         rrmdir($sourceVal);
         echo $sourceVal;
@@ -561,6 +587,28 @@ return function (App $app) {
             (user_id, cog_file_id, cog_file_backup_content, version)
             values('$userID', '$id', '$content','$cogFileVersion')
         ");
+        return json_encode($result);
+    });
+    $app->post('/cogworks/main-tool-backend/move/file/tmp', function ($request, $response, $args) use ($container) {
+        $file = $request->getUploadedFiles();
+        $userID = $request->getParam('user');
+        $result = array();
+
+        $uploadedFile = $file['file'];
+        $path = getCogUserFolderPath($userID, $container) . 'tmp/' . $file['file']->getClientFilename();
+        $uploadedFile->moveTo($path);
+        chmod($path,0777);
+        $result['status'] = true;
+        $result['path'] = $path;
+
+        // if ($file->getError() == 'UPLOAD_ERR_OK') {
+        //     $result['status'] = false;
+        //     $result['path'] = '';
+        // }
+        // else {
+            
+        // }
+        // return json_encode($file);
         return json_encode($result);
     });
 };

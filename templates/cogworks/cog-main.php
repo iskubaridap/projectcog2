@@ -58,7 +58,7 @@
                 </div>
             </div>
 
-            <div class="bottom row">
+            <div class="bottom row dont-display">
 
                 <div class="left col">
                     <p>Recent designs</p>

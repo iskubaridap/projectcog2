@@ -212,7 +212,7 @@ define([], function () {
 					var parsed = parsePath(path);
 					
 					$.ajax({
-					url: "./public/php/read_image.php",
+					url: '../cogworks/main-tool-backend/read-image',
 					type: "POST",
 					cache: true,
 					data: {path:parsed.dirname,fName:parsed.basename},
@@ -233,58 +233,68 @@ define([], function () {
 					resetLoader();
 				});
 				elem.find(".button.imageUploadBtn").on("click", function(){
-                    var loopCount = 0;
-                    
-                    $.each(fileLists, function(index, value){
-                        var paths = ["./tmp/"];
-                        var form_data = new FormData();                  
-                        form_data.append('file', value);
-                        form_data.append('orgname', ORG);
-                        form_data.append('username', USERNAME);
+					var fileIndex = 0;
+					var processFile = function(){
+						var value = fileLists[fileIndex];
+						var paths = ["./tmp/"];
+						var form_data = new FormData();
+						if(fileIndex < fileLists.length) {
+							form_data.append('file', value);
+							form_data.append('user', app.user);
+							
+							cogworks.loadingScreen("dynamic","Importing " + value.name + ".","fadeIn");
 
-                        cogworks.loadingScreen("dynamic","Importing " + value.name + ".","fadeIn");
+							$.ajax({
+								url: '../cogworks/main-tool-backend/move/file/tmp',
+								dataType: 'text',
+								cache: false,
+								contentType: false,
+								processData: false,
+								data: form_data,                         
+								type: 'post',
+								success: function(data){
+									var obj = JSON.parse(data);
+									if(obj.status) {
+										var parsed = parsePath(obj.path);
+										$.ajax({
+											url: '../cogworks/main-tool-backend/read-image',
+											type: "POST",
+											cache: true,
+											data: {path:parsed.dirname,fName:parsed.basename},
+											success: function (data2) {
+												if(data2 != 'fail') {
+													app.imageContentRead = data2;
+                                    				app.getPanel("design").importImagesByPaths(eval("['" + obj.path + "']"), folder);
+													fileIndex++;
+													processFile();
+												} else {
+													cogworks.loadingScreen("alert","<p>We encountered error in file " + value.name + ". Try it again.</p><p>Report error ID: 045 to the admin if issue persist.</p>","show");
+												}
+											},
+											error: function (request, status, error) {
+												cogworks.loadingScreen("alert","<p>We encountered error in file " + value.name + ". Try it again.</p><p>Report error ID: 044 to the admin if issue persist.</p>","show");
+											}
+										});
+									} else {
+										cogworks.loadingScreen("alert","<p>We encountered error in file " + value.name + ". Try it again.</p><p>Report error ID: 043 to the admin if issue persist.</p>","show");
+									}
+								},
+								error: function (request, status, error) {
+									cogworks.loadingScreen("alert","<p>We encountered error in file " + value.name + ". Try it again.</p><p>Report error ID: 042 to the admin if issue persist.</p>","show");
+								}
+							});
+						} else {
+							app.notifications.create({
+								title: fileLists.length == 1 ? "An image was imported" : fileLists.length + " images were imported",
+								description: "You can see " + (fileLists.length == 1 ? "it" : "them") + " in the Design panel."
+							}).show()
 
-                        $.ajax({
-                            url: './public/php/move_file.php',
-                            dataType: 'text',
-                            cache: false,
-                            contentType: false,
-                            processData: false,
-                            data: form_data,                         
-                            type: 'post',
-                            success: function(data){
-                                var parsed = parsePath(data);
-                                console.log(data);
-
-                                $.ajax({
-                                url: "./public/php/read_image.php",
-                                type: "POST",
-                                cache: true,
-                                data: {path:parsed.dirname,fName:parsed.basename},
-                                success: function (data2) {
-                                    app.imageContentRead = data2;
-                                    app.getPanel("design").importImagesByPaths(eval("['" + data + "']"), folder);
-
-                                    if(loopCount < (fileLists.length - 1))
-                                    {
-                                        loopCount = loopCount + 1;
-                                    }
-                                    else if(loopCount >= (fileLists.length - 1))
-                                    {
-                                        app.notifications.create({
-                                            title: fileLists.length == 1 ? "An image was imported" : fileLists.length + " images were imported",
-                                            description: "You can see " + (fileLists.length == 1 ? "it" : "them") + " in the Design panel."
-                                        }).show()
-                                        $("#upload-image-file-dialog .button.imageCancel").trigger("click");
-                                        setTimeout(function(){cogworks.loadingScreen("","","fadeOut")},1000);
-                                        app.getPanel("design").instantExpandCategory("Images");
-                                    }
-                                }
-
-                                });
-                            }
-                         });
-                    });
+							$("#upload-image-file-dialog .button.imageCancel").trigger("click");
+							setTimeout(function(){cogworks.loadingScreen("","","fadeOut")},1000);
+							app.getPanel("design").instantExpandCategory("Images");
+						}
+					}
+					processFile();
 				});
 			}
 			_createClass(UploadImageFileDialog, [{
@@ -306,13 +316,26 @@ define([], function () {
 				key: "removeImage",
 				value: function removeImage(imagePath){
 					$.ajax({
-						url: "./public/php/remove_file.php",
+						url: "../cogworks/main-tool-backend/remove-file",
 						type: "POST",
 						cache: true,
 						data: {path:imagePath},
 						success: function (data) {
-							setTimeout(function(){cogworks.loadingScreen("","","fadeOut")},1000);
-							//console.log(data);
+							var obj = JSON.parse(data);
+							if(!obj.status){
+								// let's make this notification simple and not too obvious. this is not much a big deal.
+								app.notifications.create({
+									title: 'Fail to Delete',
+									description: 'Fail to Delete a file. Error ID: 047.'
+								}).show();
+							}
+						},
+						error: function (request, status, error) {
+							// let's make this notification simple and not too obvious. this is not much a big deal.
+							app.notifications.create({
+								title: 'Fail to Delete',
+								description: 'Fail to Delete a file. Error ID: 046.'
+							}).show();
 						}
 					});
 				}

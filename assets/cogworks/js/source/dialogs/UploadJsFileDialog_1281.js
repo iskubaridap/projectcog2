@@ -219,7 +219,6 @@ define([], function () {
 					data: {path:parsed.dirname,fName:parsed.basename},
 					success: function (data) {
 							app.jsContentRead = data;
-                            console.log(path);
                             app.getPanel("design").importJSFilesByPaths(eval("['" + path + "']"), folder);
 						}
 					
@@ -235,59 +234,68 @@ define([], function () {
 					resetLoader();
 				});
 				elem.find(".button.jsUploadBtn").on("click", function(){
-                    var loopCount = 0;
-                    
-                    $.each(fileLists, function(index, value){
-                        var paths = ["./tmp/"];
-                        var form_data = new FormData();                  
-                        form_data.append('file', value);
-                        form_data.append('orgname', ORG);
-                        form_data.append('username', USERNAME);
+					var fileIndex = 0;
+					var processFile = function(){
+						var value = fileLists[fileIndex];
+						var paths = ["./tmp/"];
+						var form_data = new FormData();
+						if(fileIndex < fileLists.length) {
+							form_data.append('file', value);
+							form_data.append('user', app.user);
+							
+							cogworks.loadingScreen("dynamic","Importing " + value.name + ".","fadeIn");
 
-                        cogworks.loadingScreen("dynamic","Importing " + value.name + ".","fadeIn");
-
-                        $.ajax({
-                            url: './public/php/move_file.php',
-                            dataType: 'text',
-                            cache: false,
-                            contentType: false,
-                            processData: false,
-                            data: form_data,                         
-                            type: 'post',
-                            success: function(data){
-                                var parsed = parsePath(data);
-                                console.log(data);
-
-                                $.ajax({
-                                url: "./public/php/read_file.php",
-                                type: "POST",
-                                cache: true,
-                                data: {path:parsed.dirname,fName:parsed.basename},
-                                success: function (data2) {
-                                    app.jsContentRead = data2;
-                                    app.getPanel("design").importJSFilesByPaths(eval("['" + data + "']"), folder);
-
-                                    if(loopCount < (fileLists.length - 1))
-                                    {
-                                        loopCount = loopCount + 1;
-                                    }
-                                    else if(loopCount >= (fileLists.length - 1))
-                                    {
-                                        app.notifications.create({
-                                            title: fileLists.length == 1 ? "A JavaScript file was imported" : fileLists.length + " JavaScript files were imported",
-                                            description: "You can see " + (fileLists.length == 1 ? "it" : "them") + " in the Design panel."
-                                        }).show();
-                                        $("#upload-js-file-dialog .button.jsCancel").trigger("click");
-                                        setTimeout(function(){cogworks.loadingScreen("","","fadeOut")},1000);
-                                        app.getPanel("design").instantExpandCategory("JavaScript");
-                                    }
-                                }
-
-                                });
-                            }
-                         });
-                    });
-					
+							$.ajax({
+								url: '../cogworks/main-tool-backend/move/file/tmp',
+								dataType: 'text',
+								cache: false,
+								contentType: false,
+								processData: false,
+								data: form_data,                         
+								type: 'post',
+								success: function(data){
+									var obj = JSON.parse(data);
+									if(obj.status) {
+										var parsed = parsePath(obj.path);
+										$.ajax({
+											url: '../cogworks/main-tool-backend/read-file',
+											type: "POST",
+											cache: true,
+											data: {path:parsed.dirname,fName:parsed.basename},
+											success: function (data2) {
+												if(data2 != 'fail') {
+													app.jsContentRead = data2;
+                                    				app.getPanel("design").importJSFilesByPaths(eval("['" + obj.path + "']"), folder);
+													fileIndex++;
+													processFile();
+												} else {
+													cogworks.loadingScreen("alert","<p>We encountered error in file " + value.name + ". Try it again.</p><p>Report error ID: 039 to the admin if issue persist.</p>","show");
+												}
+											},
+											error: function (request, status, error) {
+												cogworks.loadingScreen("alert","<p>We encountered error in file " + value.name + ". Try it again.</p><p>Report error ID: 038 to the admin if issue persist.</p>","show");
+											}
+										});
+									} else {
+										cogworks.loadingScreen("alert","<p>We encountered error in file " + value.name + ". Try it again.</p><p>Report error ID: 037 to the admin if issue persist.</p>","show");
+									}
+								},
+								error: function (request, status, error) {
+									cogworks.loadingScreen("alert","<p>We encountered error in file " + value.name + ". Try it again.</p><p>Report error ID: 036 to the admin if issue persist.</p>","show");
+								}
+							});
+						} else {
+							app.notifications.create({
+								title: fileLists.length == 1 ? "A JavaScript file was imported" : fileLists.length + " JavaScript files were imported",
+								description: "You can see " + (fileLists.length == 1 ? "it" : "them") + " in the Design panel."
+							}).show();
+							
+							$("#upload-js-file-dialog .button.jsCancel").trigger("click");
+							cogworks.loadingScreen("","","fadeOut");
+							app.getPanel("design").instantExpandCategory("JavaScript");
+						}
+					}
+					processFile();
 				});
 			}
 			_createClass(UploadJsFileDialog, [{
@@ -309,13 +317,26 @@ define([], function () {
 				key: "removeJs",
 				value: function removeJs(jsPath){
 					$.ajax({
-						url: "./public/php/remove_file.php",
+						url: "../cogworks/main-tool-backend/remove-file",
 						type: "POST",
 						cache: true,
 						data: {path:jsPath},
 						success: function (data) {
-							setTimeout(function(){cogworks.loadingScreen("","","fadeOut")},1000);
-							//console.log(data);
+							var obj = JSON.parse(data);
+							if(!obj.status){
+								// let's make this notification simple and not too obvious. this is not much a big deal.
+								app.notifications.create({
+									title: 'Fail to Delete',
+									description: 'Fail to Delete a file. Error ID: 041.'
+								}).show();
+							}
+						},
+						error: function (request, status, error) {
+							// let's make this notification simple and not too obvious. this is not much a big deal.
+							app.notifications.create({
+								title: 'Fail to Delete',
+								description: 'Fail to Delete a file. Error ID: 040.'
+							}).show();
 						}
 					});
 				}

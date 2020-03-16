@@ -315,6 +315,7 @@ function generateDirectory($path)
     if(!is_dir($path))
     {
         mkdir($path, 0777, true);
+        chmod($path,0777);
         return false;
     }
     else
@@ -518,6 +519,7 @@ function copydir($source, $destination)
         if($file!="." && $file!=".." && !is_dir("$source/$file")) //if it is file
         {
             copy("$source/$file","$destination/$file");
+            chmod("$destination/$file",0777);
         }
         if($file!="." && $file!=".." && is_dir("$source/$file")) //if it is folder
         {
@@ -559,6 +561,7 @@ function convertToZip($path, $filename) {
 
     // Zip archive will be created only after closing object
     $zip->close();
+    chmod($path . $filename .'.zip',0777);
 }
 
 function check_session() {
