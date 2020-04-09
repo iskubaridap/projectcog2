@@ -507,6 +507,22 @@ function custom_redirect($loc) {
     }
     exit();
 }
+function chmodDir($source)
+{
+    $dir_handle = @opendir($source) or die("fail");
+    while ($file = readdir($dir_handle))  {
+        if($file!="." && $file!=".." && !is_dir("$source/$file")) //if it is file
+        {
+            chmod("$source/$file",0777);
+        }
+        if($file!="." && $file!=".." && is_dir("$source/$file")) //if it is folder
+        {
+            chmod("$source/$file",0777);
+            chmodDir("$source/$file");
+        }
+    }
+    closedir($dir_handle);
+}
 function copydir($source, $destination)
 {
     if(!is_dir($destination)){

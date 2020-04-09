@@ -8,17 +8,56 @@ use Slim\Http\UploadedFile;
 return function (App $app) {
     $container = $app->getContainer();
     $app->get('/cogworks/[{cogfile}]', function ($request, $response, $args) use ($container) {
-        check_session();
+        @session_start();
+        // check_session();
         $obj = json_decode(base64_decode($args['cogfile']), true);
         $result = array();
         $result['user'] = $obj['u'];
         $result['file'] = $obj['c'];
-        // return json_encode($result);
-        $content .= $container->renderer->fetch('cogworks/cog-main.php', array(
-            'root' => ROOT,
-            'obj' => json_encode($result)
-        ));
+    
+        if(!isset($_SESSION["logged"])) {
+            $content .= $container->renderer->fetch('cogworks/cog-login.php');
+        } else {
+            $content .= $container->renderer->fetch('cogworks/cog-main.php', array(
+                'root' => ROOT,
+                'obj' => json_encode($result)
+            ));
+        }
         return $response->write($content);
+    });
+    $app->post('/cogworks/login/validate', function ($request, $response, $args) use ($container) {
+        @session_start();
+        $result = 'false';
+        $dateDateTime = getCurrentDate();
+        
+        // using email for now
+        $email = $request->getParam('email');
+        $pass = md5($request->getParam('password'));
+        
+        $user = $container->projectcog->query("
+            select * from users
+            where email = '$email' and password = '$pass'
+        ")->fetch(PDO::FETCH_ASSOC);
+        
+        if(is_array($user) && count($user) > 0)
+        {
+            $id = $user['id'];
+            $prepare = $container->projectcog->prepare("
+                update users
+                set last_login = '$dateDateTime'
+                where id = '$id'
+            ");
+
+            $prepare->execute();
+            $_SESSION['id'] = $id;
+            $_SESSION['logged'] = true;
+            $result = true;
+        }
+        else
+        {
+            $result = false;
+        }
+        return json_encode($result);
     });
     // reserve code. this might be useful in the future
     
