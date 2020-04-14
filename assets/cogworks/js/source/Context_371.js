@@ -42,6 +42,8 @@ define([], function() {
                 if (name === undefined) name = "";
                 if (path === undefined) path = "";
                 if (fileID === undefined) fileID = 0;
+                // let me do this next time
+                // app.getPublicID(fileID);
                 _classCallCheck(this, Context);
                 this.id = app.generateUniqueID();
                 this.name = name;

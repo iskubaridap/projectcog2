@@ -345,6 +345,11 @@ function generateCogworksUserDirectories($path)
     generateDirectory($path . '/preview');
     generateDirectory($path . '/raw-files');
     generateDirectory($path . '/tmp');
+    generateDirectory($path . '/tmp-resources');
+    generateDirectory($path . '/tmp-resources/audio');
+    generateDirectory($path . '/tmp-resources/video');
+    generateDirectory($path . '/tmp-resources/pdf');
+    generateDirectory($path . '/tmp-resources/extra');
     generateCogworksDefaultDirectories($path);
 }
 function getCogfilePath($id, $container){
@@ -395,10 +400,6 @@ function getCogResourcesPath($id, $container){
     $orgID = $userObj['organization_id'];
     $result = array();
     $path = '';
-    $audio = '';
-    $extra = '';
-    $pdf = '';
-    $video = '';
 
     if($orgID == 1) {
         $path = setCogworksDirectoryPath($orgID) . 'resources/';
@@ -408,11 +409,22 @@ function getCogResourcesPath($id, $container){
         $path = setCogworksDirectoryPath($orgID) . $orgID . '/resources/';
     }
     
-    $result['audio'] = $path . '/audio/' . $id . '/';
-    $result['pdf'] = $path . '/pdf/' . $id . '/';
-    $result['video'] = $path . '/video/' . $id . '/';
-    $result['extra'] = $path . '/extra/' . $id . '/';
+    $result['audio'] = $path . 'audio/' . $id;
+    $result['pdf'] = $path . 'pdf/' . $id;
+    $result['video'] = $path . 'video/' . $id;
+    $result['extra'] = $path . 'extra/' . $id;
     return $result;
+}
+function getTmpResourcesDirectoryPath($orgID, $userID, $resourceFolder) {
+    $path = '';
+    if($orgID == 1) {
+        $path = setCogworksDirectoryPath($orgID) . 'users/' . $userID . '/tmp-resources/' . $resourceFolder;
+    } else if($orgID == 2) {
+        $path = setCogworksDirectoryPath($orgID) . $userID . '/tmp-resources/' . $resourceFolder;
+    } else {
+        $path = setCogworksDirectoryPath($orgID) . $orgID . '/users/' . $userID . '/tmp-resources/' . $resourceFolder;
+    }
+    return $path;
 }
 function getCogUserFolderPath($id, $container){
     $result = '';

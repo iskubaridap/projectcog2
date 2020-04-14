@@ -2163,6 +2163,9 @@ define([], function() {
             }, {
                 key: "getPublicID",
                 value: function getPublicID() {
+                // let me do this next time
+                // value: function getPublicID(id) {
+                    // return id;
                     return app.user;
                 }
             }, {
@@ -2723,7 +2726,6 @@ define([], function() {
                         path: "",
                         frameworks: frameworks,
                         onSave: function onSave(prop) {
-                            console.log(prop);
                             if (prop.template.id == "blank") {
                                 app.openContext(Application.createContext(prop), true)
                             } else {
@@ -4010,10 +4012,11 @@ define([], function() {
                         url: "../cogworks/main-tool-backend/read-cog-file",
                         type: "POST",
                         cache: true,
-                        data: {path:parsed.dirname,fName:parsed.basename},
+                        data: {path:parsed.dirname,fName:parsed.basename, user: app.user},
                         success: function (data) {
                             var json = JSON.parse(data);
                             var context = null;
+                            console.log(json);
                             try {
                                 if(typeof json.design.assets.audio === "undefined") {
                                     var obj = new Object();
@@ -4136,6 +4139,7 @@ define([], function() {
             }, {
                 key: "openContext",
                 value: function openContext(ctx) {
+                    var assetsObj = null;
                     var switchTo = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
                     app.openedContexts.push(ctx);
                     return ctx.framework.setupContext(ctx).then(function() {
@@ -4147,11 +4151,20 @@ define([], function() {
                         ctx.canvasDimensions.width = 1200;
                         app.trigger("context-opened", ctx);
                         if (switchTo) {
-                            app.activateContext(ctx)
+                            app.activateContext(ctx);
+                            console.log(ctx);
+                            console.log(app.context.id);
                         }
                         if (ctx.assets.css.hasSCSS()) {
                             app.compileSASS(ctx)
                         }
+                        assetsObj = (JSON.parse((app.context).stringify())).design.assets;
+                        $.post('../cogworks/main-tool-backend/make-resource-folders', {user: app.user, cogID: app.context.fileID, designID: app.context.id, assets: JSON.stringify(assetsObj)}, function() {
+                            // reserve code
+                        })
+                        .fail(function() {
+                            cogworks.loadingScreen("dashboard_reload","<p>Something went wrong.</p><p>Report error ID: 048 to the admin if issue persist.</p>","show");
+                        })
                     });
                 }
             }, {
@@ -4430,11 +4443,19 @@ define([], function() {
                                 app.openFilePath = obj.filePath;
                                 app.setOpenFileTable();
                                 console.log(obj);
-                                setTimeout(function(){
+                                $.post('../cogworks/main-tool-backend/clean-tmp-resources', {userID: app.user}, function() {
                                     app.initWhatNots(null); // initial value
                                     console.log(app.openFilePath);
                                     app.openCogPath(app.openFilePath);
-                                },1000);
+                                })
+                                .fail(function() {
+                                    cogworks.loadingScreen("dashboard_reload","<p>Something went wrong.</p><p>Reload the page by clicking the \'Reload\' button<br>or go back to the Dashboard page by clicking the \'Return to Dashboard\' button.</p><p>Report error ID: 048 to the admin if issue persist.</p>","show");
+                                })
+                                /* setTimeout(function(){
+                                    app.initWhatNots(null); // initial value
+                                    console.log(app.openFilePath);
+                                    app.openCogPath(app.openFilePath);
+                                },1000); */
                             } else {
                                 cogworks.loadingScreen("dashboard_reload","<p>Something went wrong.</p><p>File cannot be retrieve.</p><p>Reload the page by clicking the \'Reload\' button<br>or go back to the Dashboard page by clicking the \'Return to Dashboard\' button.</p><p>Report error ID: 018 to the admin if issue persist.</p>","show");
                             }

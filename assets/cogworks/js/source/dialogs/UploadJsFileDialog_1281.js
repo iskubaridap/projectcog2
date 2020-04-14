@@ -208,7 +208,7 @@ define([], function () {
 					$("#startreadJs").show();
 					$("#upload-js-file-dialog .button.jsUploadBtn").hide();
 				}
-				function readJs(path)
+				/* function readJs(path)
 				{
 					var parsed = parsePath(path);
 					
@@ -223,7 +223,7 @@ define([], function () {
 						}
 					
 					});
-				}
+				} */
                 init();
 				
                 elem.find(".button.jsCancel").on("click", function(){

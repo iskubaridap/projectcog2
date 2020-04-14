@@ -58,7 +58,7 @@
                 </div>
             </div>
 
-            <div class="bottom row dont-display">
+            <!-- <div class="bottom row dont-display">
 
                 <div class="left col">
                     <p>Recent designs</p>
@@ -75,7 +75,7 @@
 
                 </div>
 
-            </div>
+            </div> -->
 
         </div>
 
@@ -423,7 +423,6 @@
                         <div id="imageStatus"></div>
                     </form>
                 </div>
-
                 <div class="buttons">
                     <div class="button imageCancel">Cancel</div>
                     <div class="button imageReset">Reset</div>

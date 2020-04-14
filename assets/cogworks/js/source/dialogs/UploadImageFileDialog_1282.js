@@ -207,7 +207,7 @@ define([], function () {
 					$("#startreadImage").show();
 					$("#upload-image-file-dialog .button.imageUploadBtn").hide();
 				}
-				function readImage(path)
+				/* function readImage(path)
 				{
 					var parsed = parsePath(path);
 					
@@ -222,7 +222,7 @@ define([], function () {
 						}
 					
 					});
-				}
+				} */
 				init();
 				
                 elem.find(".button.imageCancel").on("click", function(){

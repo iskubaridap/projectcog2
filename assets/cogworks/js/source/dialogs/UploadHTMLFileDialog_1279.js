@@ -204,7 +204,7 @@ define([], function () {
 					$("#htmlStatus").html("");
 					$("#upload-html-file-dialog .button.htmlUploadBtn").hide();
 				}
-				function readHTML(path)
+				/* function readHTML(path)
 				{
 					var parsed = parsePath(path);
 					
@@ -219,7 +219,7 @@ define([], function () {
 						}
 					
 					});
-				}
+				} */
                 init();
 				
                 elem.find(".button.htmlCancel").on("click", function(){

@@ -87,9 +87,10 @@ define([], function() {
                 var filename = "";
 				var thefile = null;
 				var reader = null;
-				var firstProgress = true;
+                var firstProgress = true;
+                var fileErrorAry = new Array();
 				
-				$("#upload-audio-file-dialog .button.audioUploadBtn").hide();
+                $("#upload-audio-file-dialog .button.audioUploadBtn").hide();
 	
 				function init() {
 					var bHaveFileAPI = (window.File && window.FileReader);
@@ -196,7 +197,8 @@ define([], function() {
 					filename = "";
 					thefile = null;
 					reader = null;
-					firstProgress = true;
+                    firstProgress = true;
+                    fileErrorAry = new Array();
 					$("#audioProgressBar").val(0);
 					$("#uploadAudioFile").val("");
 					$("#audioStatus").html("");
@@ -204,63 +206,82 @@ define([], function() {
 					$("#upload-audio-file-dialog .button.audioUploadBtn").hide();
 				}
 				
-				init();
+                init();
+                
+                var indicateError = function(file) {
+                    var str = '';
+                    fileErrorAry.push(file);
+                    $.each(fileErrorAry, function(index, value) {
+                        str += value + ((index < (fileErrorAry.length - 1)) ? ', ' : '');
+                    });
+                    cogworks.loadingScreen("alert","<p>You have an error in " + ((fileErrorAry.length == 1) ? 'file ' : 'files ') + str + ".</p>","show");
+                }
 				
                 elem.find(".button.audioCancel").on("click", function(){
 					obj.close();
 					resetLoader();
 				});
 				elem.find(".button.audioReset").on("click", function(){
-					resetLoader();
+                    resetLoader();
 				});
 				elem.find(".button.audioUploadBtn").on("click", function(){
-                    var cogName = ((app.context.path).split("/"))[((app.context.path).split("/").length - 1)];
-                    var cogDir = (((app.context.path).split("/"))[((app.context.path).split("/").length - 2)] == "raw_files") ? "0" : ((app.context.path).split("/"))[((app.context.path).split("/").length - 2)];
-                    $.post((ROOT + "extra/get_cog_id"),{cogName: (((app.context.path).split("/"))[((app.context.path).split("/").length - 1)]), cogDir: cogDir}, function(data){
-                        var loopCount = 0;
-                        cogID = data;
-                        
-                        $.each(fileLists, function(index, value){
-                            var form_data = new FormData();
-                            form_data.username = USERNAME;
-                            form_data.append('file', value);
-                            form_data.append('id', cogID);
-                            form_data.append('asset', 'audio');
-                            form_data.append('orgname', ORG);
-                            form_data.append('username', USERNAME);
-                            
-                            cogworks.loadingScreen("dynamic","Importing " + value.name + ".","fadeIn");
+                    var fileID = app.context.fileID;
+                    var designID = app.context.id;
+                    var user = app.user;
+                    var loopCount = 0;
+                    var formData = null;
+                    fileErrorAry = new Array();
+                    
+                    var processFile = function() {
+                        var value = fileLists[loopCount];
+                        formData = new FormData();
+                        if(loopCount < fileLists.length) {
+                            formData.append('file', value);
+                            formData.append('fileID', fileID);
+                            formData.append('asset', 'audio');
+                            formData.append('designID', designID);
+                            formData.append('user', user);
+                            console.log(fileErrorAry.length);
+                            if(fileErrorAry.length <= 0) {
+                                cogworks.loadingScreen("dynamic","<p>Importing " + value.name + ".</p>","fadeIn");
+                            }
 
                             $.ajax({
-                                url: (ROOT + "extra/move_asset"),
+                                url: '../cogworks/main-tool-backend/move/upload/assets',
                                 dataType: 'text',
                                 cache: false,
                                 contentType: false,
                                 processData: false,
-                                data: form_data,                         
+                                data: formData,                         
                                 type: 'post',
                                 success: function(data){
+                                    var filePath = (JSON.parse(data)).path;
                                     app.audioContentRead = value;
-                                    app.getPanel("design").importAudioFilesByPaths(eval("['" + data + "']"), folder);
+                                    app.getPanel("design").importAudioFilesByPaths(eval("['" + filePath + "']"), folder);
                                     
-                                    if(loopCount < (fileLists.length - 1))
-                                    {
-                                        loopCount = loopCount + 1;
-                                    }
-                                    else if(loopCount >= (fileLists.length - 1))
-                                    {
-                                        app.notifications.create({
-                                            title: fileLists.length == 1 ? "A Audio file was imported" : fileLists.length + " Audio files were imported",
-                                            description: "You can see " + (fileLists.length == 1 ? "it" : "them") + " in the Design panel."
-                                        }).show();
-                                        $("#upload-audio-file-dialog .button.audioCancel").trigger("click");
-                                        setTimeout(function(){cogworks.loadingScreen("","","fadeOut")},1000);
-                                        app.getPanel("design").instantExpandCategory("Audio");
-                                    }
+                                    loopCount++;
+                                    processFile();
+                                },
+                                error: function(data){
+                                    loopCount++;
+                                    processFile();
+                                    indicateError(value.name);
                                 }
-                             });
-                        })
-                    });
+                            });
+                        } else {
+                            app.notifications.create({
+                                title: fileLists.length == 1 ? "A Audio file was imported" : fileLists.length + " Audio files were imported",
+                                description: "You can see " + (fileLists.length == 1 ? "it" : "them") + " in the Design panel."
+                            }).show();
+                            $("#upload-audio-file-dialog .button.audioCancel").trigger("click");
+                            
+                            if(fileErrorAry.length <= 0) {
+                                setTimeout(function(){cogworks.loadingScreen("","","fadeOut")},1000);
+                            }
+                            app.getPanel("design").instantExpandCategory("Audio");
+                        }
+                    };
+                    processFile();
 				});
             }
             _createClass(UploadAudioDialog, [{
@@ -281,7 +302,7 @@ define([], function() {
 			},{
 				key: "removeAudio",
 				value: function removeAudio(audioPath){
-					$.ajax({
+					/* $.ajax({
 						url: "./public/php/remove_file.php",
 						type: "POST",
 						cache: true,
@@ -290,7 +311,7 @@ define([], function() {
 							setTimeout(function(){cogworks.loadingScreen("","","fadeOut")},1000);
 							//console.log(data);
 						}
-					});
+					}); */
 				}
 			}]);
             return UploadAudioDialog

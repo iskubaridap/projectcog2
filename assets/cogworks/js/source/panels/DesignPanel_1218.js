@@ -462,40 +462,38 @@ define([], function() {
                     var category = this.domToCategory.get(item[0]);
                     var group = this.domToGroup.get(item[0]);
                     var result = null;
+                    var dID = '';
+                    var userID = '';
                     if (!obj || !category || !group) return;
                     oldName = obj.name;
                     newName = newName.trim();
                     if (!(obj instanceof TreeFolder)) {
-                        newName = obj.applyExtensionToName(newName)
+                        newName = obj.applyExtensionToName(newName);
+                        dID = app.context.id;
+                        userID = app.user;
                         
                         if((category.name).toLowerCase() == "audio")
                         {
-                            var cogName = ((app.context.path).split("/"))[((app.context.path).split("/").length - 1)];
-                            var cogDir = (((app.context.path).split("/"))[((app.context.path).split("/").length - 2)] == "raw_files") ? "0" : ((app.context.path).split("/"))[((app.context.path).split("/").length - 2)];
-                            var cogID = "";
-                            $.post((ROOT + "extra/get_cog_id"),{cogName: cogName, cogDir: cogDir}, function(data){
-                                cogID = data;
-                                $.post((ROOT + "extra/rename_asset"), {asset: "audio", id: cogID, oldName: oldName, newName: newName}, function(data2){
-                                    console.log(data2);
-                                    app.context.history.stackID += 1;
-                                    $("#menu").find(".save").toggleClass("active");
-                                    app.trigger("context-changed", app.context);
-                                });
+                            $.post('../cogworks/main-tool-backend/rename/asset', {oldName: oldName, newName: newName, designID: dID, user: userID, asset: 'audio'}, function(data){
+                                app.context.history.stackID += 1;
+                                $("#menu").find(".save").toggleClass("active");
+                                app.trigger("context-changed", app.context);
+                            }).fail(function() {
+                                cogworks.loadingScreen("alert","<p>Failed to rename " + oldName + " into " + newName + ".</p><p>Report error ID: 049 to the admin if issue persist.</p>","show");
+                            }).error(function() {
+                                cogworks.loadingScreen("alert","<p>Failed to rename " + oldName + " into " + newName + ".</p><p>Report error ID: 050 to the admin if issue persist.</p>","show");
                             });
                         }
                         else if((category.name).toLowerCase() == "pdf")
                         {
-                            var cogName = ((app.context.path).split("/"))[((app.context.path).split("/").length - 1)];
-                            var cogDir = (((app.context.path).split("/"))[((app.context.path).split("/").length - 2)] == "raw_files") ? "0" : ((app.context.path).split("/"))[((app.context.path).split("/").length - 2)];
-                            var cogID = "";
-                            $.post((ROOT + "extra/get_cog_id"),{cogName: cogName, cogDir: cogDir}, function(data){
-                                cogID = data;
-                                $.post((ROOT + "extra/rename_asset"), {asset: "pdf", id: cogID, oldName: oldName, newName: newName}, function(data2){
-                                    console.log(data2);
-                                    app.context.history.stackID += 1;
-                                    $("#menu").find(".save").toggleClass("active");
-                                    app.trigger("context-changed", app.context);
-                                });
+                            $.post('../cogworks/main-tool-backend/rename/asset', {oldName: oldName, newName: newName, designID: dID, user: userID, asset: 'pdf'}, function(data){
+                                app.context.history.stackID += 1;
+                                $("#menu").find(".save").toggleClass("active");
+                                app.trigger("context-changed", app.context);
+                            }).fail(function() {
+                                cogworks.loadingScreen("alert","<p>Failed to rename " + oldName + " into " + newName + ".</p><p>Report error ID: 051 to the admin if issue persist.</p>","show");
+                            }).error(function() {
+                                cogworks.loadingScreen("alert","<p>Failed to rename " + oldName + " into " + newName + ".</p><p>Report error ID: 052 to the admin if issue persist.</p>","show");
                             });
                         }
                     }
@@ -1917,25 +1915,32 @@ define([], function() {
                     var op = parentFolder.removeOp(item);
                     op["do"]();
                     app.trigger("resource-changed", type, "delete", item);
+                    var dID = app.context.id;
+                    var userID = app.user;
                     if(type == "audio")
                     {
-                        var cogName = ((app.context.path).split("/"))[((app.context.path).split("/").length - 1)];
-                        var cogDir = (((app.context.path).split("/"))[((app.context.path).split("/").length - 2)] == "raw_files") ? "0" : ((app.context.path).split("/"))[((app.context.path).split("/").length - 2)];
-                        var cogID = "";
-                        
-                        $.post((ROOT + "extra/get_cog_id"),{cogName: cogName, cogDir: cogDir}, function(data){
-                            cogID = data;
-                            $.post((ROOT + "extra/remove_asset"), {asset: "audio", id: cogID, fileName: (item.name)}, function(data2){
-                                console.log(data2);
-                                app.context.history.stackID += 1;
-                                $("#menu").find(".save").toggleClass("active");
-                                app.trigger("context-changed", app.context);
-                            });
+                        $.post('../cogworks/main-tool-backend/remove/asset', {file: item.name, designID: dID, user: userID, asset: 'audio'}, function(data){
+                            app.context.history.stackID += 1;
+                            $("#menu").find(".save").toggleClass("active");
+                            app.trigger("context-changed", app.context);
+                        }).fail(function() {
+                            cogworks.loadingScreen("alert","<p>Failed to delete " + item.name + ".</p><p>Report error ID: 052 to the admin if issue persist.</p>","show");
+                        }).error(function() {
+                            cogworks.loadingScreen("alert","<p>Failed to delete " + item.name + ".</p><p>Report error ID: 053 to the admin if issue persist.</p>","show");
                         });
                     }
                     else if(type == "pdf")
                     {
-                        var cogName = ((app.context.path).split("/"))[((app.context.path).split("/").length - 1)];
+                        $.post('../cogworks/main-tool-backend/remove/asset', {file: item.name, designID: dID, user: userID, asset: 'pdf'}, function(data){
+                            app.context.history.stackID += 1;
+                            $("#menu").find(".save").toggleClass("active");
+                            app.trigger("context-changed", app.context);
+                        }).fail(function() {
+                            cogworks.loadingScreen("alert","<p>Failed to delete " + item.name + ".</p><p>Report error ID: 054 to the admin if issue persist.</p>","show");
+                        }).error(function() {
+                            cogworks.loadingScreen("alert","<p>Failed to delete " + item.name + ".</p><p>Report error ID: 055 to the admin if issue persist.</p>","show");
+                        });
+                        /* var cogName = ((app.context.path).split("/"))[((app.context.path).split("/").length - 1)];
                         var cogDir = (((app.context.path).split("/"))[((app.context.path).split("/").length - 2)] == "raw_files") ? "0" : ((app.context.path).split("/"))[((app.context.path).split("/").length - 2)];
                         var cogID = "";
                         
@@ -1947,7 +1952,7 @@ define([], function() {
                                 $("#menu").find(".save").toggleClass("active");
                                 app.trigger("context-changed", app.context);
                             });
-                        });
+                        }); */
                     }
                     else
                     {

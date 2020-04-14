@@ -25,6 +25,45 @@ return function (App $app) {
     $app->post('/extra/test-function', function ($request, $response, $args) use ($container) {
         test();
     });
+
+    // reserve code
+    $app->post('/extra/clean-tmp-resources', function ($request, $response, $args) use ($container) {
+        $userID = $request->getParam('userID');
+        $user = getUserInfo($userID, $container);
+
+        // audio
+        rrmdir(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'audio'));
+        generateDirectory(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'audio'));
+        // extra
+        rrmdir(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'extra'));
+        generateDirectory(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'extra'));
+        // pdf
+        rrmdir(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'pdf'));
+        generateDirectory(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'pdf'));
+        // video
+        rrmdir(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'video'));
+        generateDirectory(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'video'));
+
+        echo 'complete';
+    });
+
+    // reserve code
+    $app->post('/extra/transfer-resources', function ($request, $response, $args) use ($container) {
+        $userID = $request->getParam('userID');
+        $cogID = $request->getParam('cogID');
+        $designID = $request->getParam('designID');
+        $resource = $request->getParam('resource');
+
+        $user = getUserInfo($userID, $container);
+
+        $resourceFolder = (getCogResourcesPath($cogID, $container))[$resource];
+        $tmpResourceFolder = getTmpResourcesDirectoryPath($user['organization_id'], $userID, $resource) . '/' . $designID;
+
+        // rrmdir($resourceFolder);
+        copydir($tmpResourceFolder, $resourceFolder);
+
+        echo 'complete';
+    });
     $app->post('/extra/db-test', function ($request, $response, $args) use ($container) {
         $users = $container->cogworks_original->query("
             select * from users order by id;

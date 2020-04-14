@@ -87,7 +87,8 @@ define([], function() {
                 var filename = "";
 				var thefile = null;
 				var reader = null;
-				var firstProgress = true;
+                var firstProgress = true;
+                var fileErrorAry = new Array();
 				
 				$("#upload-pdf-file-dialog .button.pdfUploadBtn").hide();
 	
@@ -195,7 +196,8 @@ define([], function() {
 					filename = "";
 					thefile = null;
 					reader = null;
-					firstProgress = true;
+                    firstProgress = true;
+                    fileErrorAry = new Array();
 					$("#pdfProgressBar").val(0);
 					$("#uploadPDFFile").val("");
 					$("#pdfStatus").html("");
@@ -203,7 +205,16 @@ define([], function() {
 					$("#upload-pdf-file-dialog .button.pdfUploadBtn").hide();
 				}
 				
-				init();
+                init();
+                
+                var indicateError = function(file) {
+                    var str = '';
+                    fileErrorAry.push(file);
+                    $.each(fileErrorAry, function(index, value) {
+                        str += value + ((index < (fileErrorAry.length - 1)) ? ', ' : '');
+                    });
+                    cogworks.loadingScreen("alert","<p>You have an error in " + ((fileErrorAry.length == 1) ? 'file ' : 'files ') + str + ".</p>","show");
+                }
 				
                 elem.find(".button.pdfCancel").on("click", function(){
 					obj.close();
@@ -213,7 +224,64 @@ define([], function() {
 					resetLoader();
 				});
 				elem.find(".button.pdfUploadBtn").on("click", function(){
-                    var cogName = ((app.context.path).split("/"))[((app.context.path).split("/").length - 1)];
+                    var fileID = app.context.fileID;
+                    var designID = app.context.id;
+                    var user = app.user;
+                    var loopCount = 0;
+                    var formData = null;
+                    fileErrorAry = new Array();
+                    
+                    var processFile = function() {
+                        var value = fileLists[loopCount];
+                        formData = new FormData();
+                        if(loopCount < fileLists.length) {
+                            formData.append('file', value);
+                            formData.append('fileID', fileID);
+                            formData.append('asset', 'pdf');
+                            formData.append('designID', designID);
+                            formData.append('user', user);
+                            
+                            if(fileErrorAry.length <= 0) {
+                                cogworks.loadingScreen("dynamic","<p>Importing " + value.name + ".</p>","fadeIn");
+                            }
+
+                            $.ajax({
+                                url: '../cogworks/main-tool-backend/move/upload/assets',
+                                dataType: 'text',
+                                cache: false,
+                                contentType: false,
+                                processData: false,
+                                data: formData,                         
+                                type: 'post',
+                                success: function(data){
+                                    var filePath = (JSON.parse(data)).path;
+                                    app.pdfContentRead = value;
+                                    app.getPanel("design").importPDFFilesByPaths(eval("['" + filePath + "']"), folder);
+                                    
+                                    loopCount++;
+                                    processFile();
+                                },
+                                error: function(data){
+                                    loopCount++;
+                                    processFile();
+                                    indicateError(value.name);
+                                }
+                            });
+                        } else {
+                            app.notifications.create({
+                                title: fileLists.length == 1 ? "A PDF file was imported" : fileLists.length + " PDF files were imported",
+                                description: "You can see " + (fileLists.length == 1 ? "it" : "them") + " in the Design panel."
+                            }).show()
+                            $("#upload-pdf-file-dialog .button.pdfCancel").trigger("click");
+                            if(fileErrorAry.length <= 0) {
+                                setTimeout(function(){cogworks.loadingScreen("","","fadeOut")},1000);
+                            }
+                            app.getPanel("design").instantExpandCategory("PDF");
+                        }
+                    };
+                    processFile();
+
+                    /* var cogName = ((app.context.path).split("/"))[((app.context.path).split("/").length - 1)];
                     var cogDir = (((app.context.path).split("/"))[((app.context.path).split("/").length - 2)] == "raw_files") ? "0" : ((app.context.path).split("/"))[((app.context.path).split("/").length - 2)];
                     $.post((ROOT + "extra/get_cog_id"),{cogName: (((app.context.path).split("/"))[((app.context.path).split("/").length - 1)]), cogDir: cogDir}, function(data){
                         var loopCount = 0;
@@ -259,7 +327,7 @@ define([], function() {
                                 }
                              });
                         })
-                    });
+                    }); */
 					
 				});
             }
@@ -279,18 +347,18 @@ define([], function() {
 					folder = folderObj;
 				}
 			},{
-				key: "removeAudio",
-				value: function removeAudio(audioPath){
-					$.ajax({
+				key: "removePDF",
+				value: function removePDF(pdfPath){
+					/* $.ajax({
 						url: "./public/php/remove_file.php",
 						type: "POST",
 						cache: true,
-						data: {path:audioPath},
+						data: {path:pdfPath},
 						success: function (data) {
 							setTimeout(function(){cogworks.loadingScreen("","","fadeOut")},1000);
 							//console.log(data);
 						}
-					});
+					}); */
 				}
 			}]);
             return UploadPDFDialog
