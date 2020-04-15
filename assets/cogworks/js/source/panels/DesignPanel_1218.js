@@ -1615,18 +1615,8 @@ define([], function() {
             }, {
 				key: "importAudioAction",
 				value: function importAudioAction(folder) {
-                    var cogName = ((app.context.path).split("/"))[((app.context.path).split("/").length - 1)];
-                    var cogDir = (((app.context.path).split("/"))[((app.context.path).split("/").length - 2)] == "raw_files") ? "0" : ((app.context.path).split("/"))[((app.context.path).split("/").length - 2)];
-                    
-                    if(cogName.length > 0 && cogDir != undefined)
-                    {
-                        app.uploadAudioFileDialog.getFolder(folder);
-                        app.uploadAudioFileDialog.open();
-                    }
-                    else
-                    {
-                        cogworks.loadingScreen("alert","<p>Something went wrong, save this file first then try it again.</p><p>Report error ID: 016 to the admin if issue persist.</p>","show");
-                    }
+                    app.uploadAudioFileDialog.getFolder(folder);
+                    app.uploadAudioFileDialog.open();
 				}
 			}, {
                 key: "audioDeleteAction",
@@ -1636,18 +1626,8 @@ define([], function() {
             }, {
 				key: "importPDFAction",
 				value: function importPDFAction(folder) {
-                    var cogName = ((app.context.path).split("/"))[((app.context.path).split("/").length - 1)];
-                    var cogDir = (((app.context.path).split("/"))[((app.context.path).split("/").length - 2)] == "raw_files") ? "0" : ((app.context.path).split("/"))[((app.context.path).split("/").length - 2)];
-                    
-                    if(cogName.length > 0 && cogDir != undefined)
-                    {
-                        app.uploadPDFFileDialog.getFolder(folder);
-                        app.uploadPDFFileDialog.open();
-                    }
-                    else
-                    {
-                        cogworks.loadingScreen("alert","<p>Something went wrong, save this file first then try it again.</p><p>Report error ID: 017 to the admin if issue persist.</p>","show");
-                    }
+                    app.uploadPDFFileDialog.getFolder(folder);
+                    app.uploadPDFFileDialog.open();
 				}
 			}, {
                 key: "pdfDeleteAction",
@@ -1940,19 +1920,6 @@ define([], function() {
                         }).error(function() {
                             cogworks.loadingScreen("alert","<p>Failed to delete " + item.name + ".</p><p>Report error ID: 055 to the admin if issue persist.</p>","show");
                         });
-                        /* var cogName = ((app.context.path).split("/"))[((app.context.path).split("/").length - 1)];
-                        var cogDir = (((app.context.path).split("/"))[((app.context.path).split("/").length - 2)] == "raw_files") ? "0" : ((app.context.path).split("/"))[((app.context.path).split("/").length - 2)];
-                        var cogID = "";
-                        
-                        $.post((ROOT + "extra/get_cog_id"),{cogName: cogName, cogDir: cogDir}, function(data){
-                            cogID = data;
-                            $.post((ROOT + "extra/remove_asset"), {asset: "pdf", id: cogID, fileName: (item.name)}, function(data2){
-                                console.log(data2);
-                                app.context.history.stackID += 1;
-                                $("#menu").find(".save").toggleClass("active");
-                                app.trigger("context-changed", app.context);
-                            });
-                        }); */
                     }
                     else
                     {

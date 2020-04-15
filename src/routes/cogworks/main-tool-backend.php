@@ -329,8 +329,18 @@ return function (App $app) {
         $userID = $request->getParam('user');
         $user = getUserInfo($userID, $container);
         $assets = json_decode($request->getParam('assets'), true);
+        $resources = array('audio', 'pdf', 'extra', 'video');
 
-        // generating folders for the assets
+        foreach($resources as $resource) {
+            $resourcePath = ($cogID != 0) ? (getCogResourcesPath($cogID, $container))[$resource] : 0;
+            $tmpResourcePath = getTmpResourcesDirectoryPath($user['organization_id'], $userID, $resource);
+            generateDirectory($tmpResourcePath . '/' . $designID);
+            if(count($assets[$resource]['children']) > 0) {
+                copydir($resourcePath, $tmpResourcePath . '/' . $designID);
+            }
+        }
+
+        /* // generating folders for the assets
         $resourcePath = ($cogID != 0) ? (getCogResourcesPath($cogID, $container))['audio'] : 0;
         $tmpResourcePath = getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'audio');
         generateDirectory($tmpResourcePath . '/' . $designID);
@@ -357,7 +367,7 @@ return function (App $app) {
         generateDirectory($tmpResourcePath . '/' . $designID);
         if(count($assets['extra']['children']) > 0) {
             copydir($resourcePath, $tmpResourcePath . '/' . $designID);
-        }
+        } */
         
         return json_encode(true);
     });
@@ -378,8 +388,13 @@ return function (App $app) {
     $app->post('/cogworks/main-tool-backend/clean-tmp-resources', function ($request, $response, $args) use ($container) {
         $userID = $request->getParam('userID');
         $user = getUserInfo($userID, $container);
+        $resources = array('audio', 'pdf', 'extra', 'video');
 
-        // audio
+        foreach($resources as $resource) {
+            rrmdir(getTmpResourcesDirectoryPath($user['organization_id'], $userID, $resource));
+            generateDirectory(getTmpResourcesDirectoryPath($user['organization_id'], $userID, $resource));
+        }
+        /* // audio
         rrmdir(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'audio'));
         generateDirectory(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'audio'));
         // extra
@@ -390,7 +405,7 @@ return function (App $app) {
         generateDirectory(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'pdf'));
         // video
         rrmdir(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'video'));
-        generateDirectory(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'video'));
+        generateDirectory(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'video')); */
 
         // this is may be handy in the future
         return json_encode(true);
@@ -443,7 +458,7 @@ return function (App $app) {
         $sourceVal = $request->getParam('source');
         $destinationVal = $request->getParam('destination');
         
-        copydir($sourceVal, $destinationVal);
+        copyFilesIndirectory($sourceVal, $destinationVal);
         
         echo 'success';
     });
@@ -543,18 +558,52 @@ return function (App $app) {
         $id = $request->getParam('id');
         return json_encode(getCogResourcesPath($id, $container));
     });
+    // reserve code
+    $app->post('/cogworks/main-tool-backend/tmp-resources-path', function ($request, $response, $args) use ($container) {
+        $userID = $request->getParam('userID');
+        $designID = $request->getParam('designID');
+        $resources = array('audio', 'pdf', 'extra', 'video');
+        $user = getUserInfo($userID, $container);
+        $result = array();
+
+        foreach($resources as $resource) {
+            $result[$resource] = getTmpResourcesDirectoryPath($user['organization_id'], $userID, $resource) . '/' . $designID;
+        }
+        return json_encode($result);
+    });
     $app->post('/cogworks/main-tool-backend/general-info/cog-file', function ($request, $response, $args) use ($container) {
         $result = null;
+        $fileName = $request->getParam('fileName');
+        $uID = $request->getParam('userID');
         $id = $request->getParam('id');
+        $designID = $request->getParam('designID');
         $basePath = '';
+        $resources = array('audio', 'pdf', 'extra', 'video');
         $tmpAry = array();
 
-        $cog = $container->cogworks->query("
-            select * from cog_files
-            where id = '$id';
-        ")->fetch(PDO::FETCH_ASSOC);
-        $userID = $cog['user_id'];
-        $projID = $cog['project_id'];
+        // identify if the file exist first. if not, the logged user will be used
+        if($id != 0) {
+            // gets the file info coming from the original user
+            $cog = $container->cogworks->query("
+                select * from cog_files
+                where id = '$id';
+            ")->fetch(PDO::FETCH_ASSOC);
+            $userID = $cog['user_id'];
+            $projID = $cog['project_id'];
+        } else {
+            $cog = array();
+            $userID = $uID;
+            $projID = 0;
+            $cog['id'] = 0;
+            $cog['cog_file'] = $fileName;
+            $cog['user_id'] = $userID;
+            $cog['project_id'] = $projID;
+            $cog['status_id'] = 1;
+            $cog['image'] = null;
+            $cog['updated'] = getCurrentDate();
+            $cog['created'] = getCurrentDate();
+        }
+
         $project = $container->cogworks->query("
             select * from projects
             where id = '$projID';
@@ -595,7 +644,11 @@ return function (App $app) {
         $result['created'] = (explode(" ",$cog['created']))[0];
         $result['filename'] = $cog['id'] . '.cog';
         $result['basePath'] = $basePath = getCogFileDirectory($projID, $orgID, $userID);
-        $result['resources'] = getCogResourcesPath($id, $container);
+        // $result['resources'] = getCogResourcesPath($id, $container);
+
+        foreach($resources as $resource) {
+            $result['resources'][$resource] = getTmpResourcesDirectoryPath($user['organization_id'], $userID, $resource) . '/' . $designID;
+        }
 
         return json_encode($result);
     });
@@ -607,6 +660,8 @@ return function (App $app) {
         $content = json_decode($request->getParam('content'), true);
         $contentRaw = addslashes($request->getParam('content'));
         $filename = $content['design']['name'] . '.cog';
+        $designID = $content['design']['id'];
+        $resources = array('audio', 'pdf', 'extra', 'video');
         $user = getUserInfo($userID, $container);
         $result = array();
         $result['path'] = '';
@@ -626,6 +681,15 @@ return function (App $app) {
             $cogID = $cog['id'];
             $result['fileID'] = $cogID;
             $result['path'] = getCogfilePath($cogID, $container);
+
+            foreach($resources as $resource) {
+                if($content['design']['assets'][$resource]['children'] > 0) {
+                    $resourceFolder = (getCogResourcesPath($cogID, $container))[$resource];
+                    $tmpResourceFolder = getTmpResourcesDirectoryPath($user['organization_id'], $userID, $resource) . '/' . $designID;
+                    rrmdir($resourceFolder);
+                    copydir($tmpResourceFolder, $resourceFolder);
+                }
+            }
         }
         return json_encode($result);
     });
@@ -642,6 +706,10 @@ return function (App $app) {
         $result = array();
         $result['status'] = false;
         $result['updated'] = false;
+        $contentObj = json_decode($content, true);
+        $designID = $contentObj['design']['id'];
+        $user = getUserInfo($userID, $container);
+        $resources = array('audio', 'pdf', 'extra', 'video');
         
         $tmpLocation = $tmpPath . "/" . $fName;
 
@@ -663,6 +731,16 @@ return function (App $app) {
             where id = '$fileID'
         ");
         $result['dbUpdated'] = $prepare->execute();
+
+        foreach($resources as $resource) {
+            if($contentObj['design']['assets'][$resource]['children'] > 0) {
+                $resourceFolder = (getCogResourcesPath($fileID, $container))[$resource];
+                $tmpResourceFolder = getTmpResourcesDirectoryPath($user['organization_id'], $userID, $resource) . '/' . $designID;
+                rrmdir($resourceFolder);
+                copydir($tmpResourceFolder, $resourceFolder);
+            }
+        }
+
         return json_encode($result);
     });
     $app->post('/cogworks/main-tool-backend/make-cog-backup', function ($request, $response, $args) use ($container) {

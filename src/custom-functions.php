@@ -535,6 +535,21 @@ function chmodDir($source)
     }
     closedir($dir_handle);
 }
+function copyFilesIndirectory($src,$dst) { 
+    $dir = opendir($src); 
+    @mkdir($dst); 
+    while(false !== ( $file = readdir($dir)) ) { 
+        if (( $file != '.' ) && ( $file != '..' )) { 
+            if ( is_dir($src . '/' . $file) ) { 
+                copyFilesIndirectory($src . '/' . $file,$dst . '/' . $file); 
+            } 
+            else { 
+                copy($src . '/' . $file,$dst . '/' . $file); 
+            } 
+        } 
+    } 
+    closedir($dir); 
+} 
 function copydir($source, $destination)
 {
     if(!is_dir($destination)){

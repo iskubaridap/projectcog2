@@ -280,55 +280,6 @@ define([], function() {
                         }
                     };
                     processFile();
-
-                    /* var cogName = ((app.context.path).split("/"))[((app.context.path).split("/").length - 1)];
-                    var cogDir = (((app.context.path).split("/"))[((app.context.path).split("/").length - 2)] == "raw_files") ? "0" : ((app.context.path).split("/"))[((app.context.path).split("/").length - 2)];
-                    $.post((ROOT + "extra/get_cog_id"),{cogName: (((app.context.path).split("/"))[((app.context.path).split("/").length - 1)]), cogDir: cogDir}, function(data){
-                        var loopCount = 0;
-                        cogID = data;
-                        
-                        $.each(fileLists, function(index, value){
-                            var form_data = new FormData();
-                            form_data.username = USERNAME;
-                            form_data.append('file', value);
-                            form_data.append('id', cogID);
-                            form_data.append('asset', 'pdf');
-                            form_data.append('orgname', ORG);
-                            form_data.append('username', USERNAME);
-                            
-                            cogworks.loadingScreen("dynamic","Importing " + value.name + ".","fadeIn");
-                            
-                            $.ajax({
-                                url: (ROOT + "extra/move_asset"),
-                                dataType: 'text',
-                                cache: false,
-                                contentType: false,
-                                processData: false,
-                                data: form_data,                         
-                                type: 'post',
-                                success: function(data){
-                                    app.pdfContentRead = value;
-                                    app.getPanel("design").importPDFFilesByPaths(eval("['" + data + "']"), folder);
-                                    
-                                    if(loopCount < (fileLists.length - 1))
-                                    {
-                                        loopCount = loopCount + 1;
-                                    }
-                                    else if(loopCount >= (fileLists.length - 1))
-                                    {
-                                        app.notifications.create({
-                                            title: fileLists.length == 1 ? "A PDF file was imported" : fileLists.length + " PDF files were imported",
-                                            description: "You can see " + (fileLists.length == 1 ? "it" : "them") + " in the Design panel."
-                                        }).show()
-                                        $("#upload-pdf-file-dialog .button.pdfCancel").trigger("click");
-                                        setTimeout(function(){cogworks.loadingScreen("","","fadeOut")},1000);
-                                        app.getPanel("design").instantExpandCategory("PDF");
-                                    }
-                                }
-                             });
-                        })
-                    }); */
-					
 				});
             }
             _createClass(UploadPDFDialog, [{

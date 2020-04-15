@@ -335,9 +335,15 @@ define([], function() {
                                     mkdir(dir + sep + "fonts" + sep + "mcafee");
                                     operations.push(copyFilePromise("assets/cogworks/embed/fonts/simple-line-icons.min.css", dir + sep + "fonts" + sep + "simple-line-icons.min.css"));
                                     operations.push(copyFolderFiles("assets/cogworks/embed/fonts/mcafee", (dir + sep + "fonts" + sep + "mcafee")));
+                                    operations.push(copyFolderFiles("assets/cogworks/extra/export/default/img/mcafee", (dir + sep + "img")));
                                 }
                                 operations.push(copyFilePromise("assets/cogworks/js/jquery/jquery.min.js", dir + sep + "js" + sep + "jquery.min.js"));
                                 operations.push(copyFilePromise("assets/cogworks/js/bootstrap.min.js", dir + sep + "bootstrap" + sep + "js" + sep + "bootstrap.min.js"));
+
+                                operations.push(copyFilePromise("assets/cogworks/extra/export/default/README.md", (dir + sep + "media" + sep + "audio" + sep + "README.md")));
+                                operations.push(copyFilePromise("assets/cogworks/extra/export/default/README.md", (dir + sep + "media" + sep + "video" + sep + "README.md")));
+                                operations.push(copyFilePromise("assets/cogworks/extra/export/default/README.md", (dir + sep + "pdf" + sep + "README.md")));
+                                operations.push(copyFilePromise("assets/cogworks/extra/export/default/audio/blank.mp3", (dir + sep + "media" + sep + "audio" + sep + "blank.mp3")));
                             }
                             else
                             {
@@ -419,13 +425,53 @@ define([], function() {
                                     }
                                 }
                             }
-                            if(app.context.assets.pdf.length > 0)
-                            {
-                                operations.push(copyFolderFiles(pdf, (pdfDir ? pdfDir : dir + sep + "pdf")));
+                            var _iteratorNormalCompletion18 = true;
+                            var _didIteratorError18 = false;
+                            var _iteratorError18 = undefined;
+                            try {
+                                for (var _iterator18 = exp.assets.audio.getLocal()[Symbol.iterator](), _step18; !(_iteratorNormalCompletion18 = (_step18 = _iterator18.next()).done); _iteratorNormalCompletion18 = true) {
+                                    var audioObj = _step18.value;
+                                    var path = dir + sep + "media" + sep + "audio" + sep + exp.assets.audio.getRelativePathForItem(audioObj);
+                                    var parseObj = parsePath(path);
+                                    operations.push(copyFilePromise((audio + '/' + parseObj.basename), path));
+                                }
+                            } catch (err) {
+                                _didIteratorError18 = true;
+                                _iteratorError18 = err
+                            } finally {
+                                try {
+                                    if (!_iteratorNormalCompletion18 && _iterator18["return"]) {
+                                        _iterator18["return"]()
+                                    }
+                                } finally {
+                                    if (_didIteratorError18) {
+                                        throw _iteratorError18
+                                    }
+                                }
                             }
-                            if(app.context.assets.audio.length > 0)
-                            {
-                                operations.push(copyFolderFiles(audio, (audioDir ? audioDir : dir + sep + "media" + sep + "audio")));
+                            var _iteratorNormalCompletion19 = true;
+                            var _didIteratorError19 = false;
+                            var _iteratorError19 = undefined;
+                            try {
+                                for (var _iterator19 = exp.assets.pdf.getLocal()[Symbol.iterator](), _step19; !(_iteratorNormalCompletion19 = (_step19 = _iterator19.next()).done); _iteratorNormalCompletion19 = true) {
+                                    var pdfObj = _step19.value;
+                                    var path = dir + sep + "pdf" + sep + exp.assets.pdf.getRelativePathForItem(pdfObj);
+                                    var parseObj = parsePath(path);
+                                    operations.push(copyFilePromise((pdf + '/' + parseObj.basename), path));
+                                }
+                            } catch (err) {
+                                _didIteratorError19 = true;
+                                _iteratorError19 = err
+                            } finally {
+                                try {
+                                    if (!_iteratorNormalCompletion19 && _iterator19["return"]) {
+                                        _iterator19["return"]()
+                                    }
+                                } finally {
+                                    if (_didIteratorError19) {
+                                        throw _iteratorError19
+                                    }
+                                }
                             }
                             
                             Promise.all(operations).then(function() {
@@ -588,7 +634,7 @@ define([], function() {
 							setTimeout(function(){cogworks.loadingScreen("","","fadeOut")},1000);
 						}
                     }
-                    $.post('../cogworks/main-tool-backend/general-info/cog-file',{id: app.context.fileID}, function(data){
+                    $.post('../cogworks/main-tool-backend/general-info/cog-file',{userID: app.user, id: app.context.fileID, fileName: app.context.name, designID: app.context.id}, function(data){
                         cogfileInfo = JSON.parse(data);
                         audio = cogfileInfo.resources.audio;
                         video = cogfileInfo.resources.video;

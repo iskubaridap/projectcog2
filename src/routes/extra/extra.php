@@ -59,7 +59,7 @@ return function (App $app) {
         $resourceFolder = (getCogResourcesPath($cogID, $container))[$resource];
         $tmpResourceFolder = getTmpResourcesDirectoryPath($user['organization_id'], $userID, $resource) . '/' . $designID;
 
-        // rrmdir($resourceFolder);
+        rrmdir($resourceFolder);
         copydir($tmpResourceFolder, $resourceFolder);
 
         echo 'complete';
