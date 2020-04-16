@@ -38,9 +38,6 @@
         <!-- Main view  -->
         <div ui-view></div>
         
-        <script>
-            var root = '<?= $root; ?>';
-        </script>
         <!-- jQuery and Bootstrap -->
         <script src="<?= $root; ?>assets/js/jquery/jquery-3.1.1.min.js"></script>
         <script src="<?= $root; ?>assets/js/plugins/jquery-ui/jquery-ui.min.js"></script>

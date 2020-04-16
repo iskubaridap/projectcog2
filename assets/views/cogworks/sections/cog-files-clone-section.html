@@ -1,0 +1,63 @@
+<div id="cog-files-clone-section" ng-controller="cogFilesCloneCtrl as cogFileClone">
+    <div ng-if="cogFileClone.details !== undefined && cogFileClone.details.error === undefined">
+        <p ng-if="cogFileClone.details.id === null" class="large-font m-t">File does not exist.</p>
+        <div ng-if="cogFileClone.details.id !== null" class="m-t">
+            <div class="row">
+                <div class="col-md-10 col-md-push-1">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <p class="text-danger text-center">This page is for Cloning or Duplicating a file. It is suggested that you rename the file or at the least indicate that is a copy of it.</p>
+                            <div class="row">
+                                <div class="col-md-6 col-md-push-3">
+                                    <div class="cog-image-preview-thumbnail m-md">
+                                        <img alt="image" class="" ng-src="{{cogFileClone.details.image}}">
+                                    </div>
+                                    <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                                        <div class="form-control" data-trigger="fileinput"><i class="glyphicon glyphicon-file fileinput-exists"></i> <span class="fileinput-filename"></span></div>
+                                        <span class="input-group-addon btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists">Change</span><input data-orginal-value="{{cogFileClone.details.imageValue}}" id="cog-clone-image" class="cog-input" type="file" name="cog-image"></span>
+                                        <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+                                    </div>
+                                    <!-- <input type="file" id="cog-image-file" class="center-element"> -->
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="hr-line-dashed"></div>
+                                </div>
+                            </div>
+
+                            <form method="post" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Filename</label>
+                                            <input data-orginal-value="{{cogFileClone.details.cogfile}}" id="cog-clone-filename" name="cog-filename" type="text" class="cog-input form-control" value="{{(cogFileClone.details.cogfile).replace('.cog','')}}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" ng-if="cogFileClone.activeProjects !== undefined">
+                                        <div class="form-group">
+                                            <label class="control-label">Project</label>
+
+                                            <select data-orginal-value="{{cogFileClone.details.projectID}}" id="cog-clone-project" class="cog-input form-control m-b" name="cog-project">
+                                                <!-- <option value="0" selected>(Personal File)</option> -->
+                                                <option ng-repeat="item in cogFileClone.activeProjects" ng-selected="item.id == cogFileClone.details.projectID" value="{{item.id}}">{{item.project}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="pull-right">
+                                            <button ng-click="cogFileClone.reset($event)" class="btn btn-primary" type="button">Reset</button>
+                                            <button ng-click="cogFileClone.submit($event)" class="btn btn-primary" type="button">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

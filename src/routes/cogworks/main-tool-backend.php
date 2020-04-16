@@ -394,19 +394,6 @@ return function (App $app) {
             rrmdir(getTmpResourcesDirectoryPath($user['organization_id'], $userID, $resource));
             generateDirectory(getTmpResourcesDirectoryPath($user['organization_id'], $userID, $resource));
         }
-        /* // audio
-        rrmdir(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'audio'));
-        generateDirectory(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'audio'));
-        // extra
-        rrmdir(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'extra'));
-        generateDirectory(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'extra'));
-        // pdf
-        rrmdir(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'pdf'));
-        generateDirectory(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'pdf'));
-        // video
-        rrmdir(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'video'));
-        generateDirectory(getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'video')); */
-
         // this is may be handy in the future
         return json_encode(true);
     });

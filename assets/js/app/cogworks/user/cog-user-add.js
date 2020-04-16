@@ -117,7 +117,7 @@ function cogUserAddCtrl($rootScope, $scope, $element, $state, $http, $timeout, c
             formData.append('country', country);
             
             $http({
-                url: ( root + 'cogworks/developers/add'),
+                url: './cogworks/developers/add',
                 method: "POST",
                 data: formData,
                 headers: {'Content-Type': undefined}

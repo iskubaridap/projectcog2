@@ -242,6 +242,15 @@ function sectionCogworksFilesUpdate($rootScope) {
         link: function(scope, elem, attrs){}
     };
 }
+function sectionCogworksFilesClone($rootScope) {
+    return {
+        restrict: 'E',
+        scope: {
+        },
+        templateUrl: 'assets/views/cogworks/sections/cog-files-clone-section.html',
+        link: function(scope, elem, attrs){}
+    };
+}
 function tasksHome($rootScope) {
     return {
         restrict: 'E',
@@ -277,5 +286,6 @@ angular
     .directive('sectionCogworksFilesProjects', sectionCogworksFilesProjects)
     .directive('sectionCogworksFilesDetails', sectionCogworksFilesDetails)
     .directive('sectionCogworksFilesUpdate', sectionCogworksFilesUpdate)
+    .directive('sectionCogworksFilesClone', sectionCogworksFilesClone)
     .directive('tasksHome', tasksHome)
     .directive('userForm', userForm);

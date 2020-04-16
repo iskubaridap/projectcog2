@@ -23,7 +23,8 @@ return function (App $app) {
     $container = $app->getContainer();
 
     $app->post('/extra/test-function', function ($request, $response, $args) use ($container) {
-        test();
+        // test();
+        return json_encode(setCogworksDesignUniqueID(100));
     });
 
     // reserve code

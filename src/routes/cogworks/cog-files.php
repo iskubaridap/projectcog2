@@ -97,6 +97,7 @@ return function (App $app) {
             $cogFile['project'] = '(Personal File)';
             $cogFile['imageValue'] = '';
             $cogFile['status'] = $cog['status_id'];
+            $cogFile['code'] = base64_encode('{"c":"' . $cog['id'] . '","u":"' . $userID . '"}');
             $tmpAry = array();
 
             foreach($projects as $prj)
@@ -200,11 +201,6 @@ return function (App $app) {
         return json_encode($result);
     });
     $app->post('/cogworks/cog-files/update', function ($request, $response, $args) use ($container) {
-        // @session_start();
-        // $result = null;
-        // $userID = $_SESSION['id'];
-        // $userID = 5; // temporary value...this assumes that i'm nina of jsi
-        $userID = 5; // temporary value...this assumes that i'm nina of jsi
         $cogID = $request->getParam('id');
         $name = $request->getParam('cogName');
         $projID = $request->getParam('cogProject');
@@ -280,12 +276,70 @@ return function (App $app) {
         return json_encode($result);
     });
     $app->post('/cogworks/cog-files/clone', function ($request, $response, $args) use ($container) {
-        // @session_start();
-        // $result = null;
-        // $userID = $_SESSION['id'];
-        // $userID = 5; // temporary value...this assumes that i'm nina of jsi
-        $userID = 5; // temporary value...this assumes that i'm nina of jsi
+        $loggedUser = identifyLoggedUser($container);
+        $userID = $loggedUser['id'];
         $cogID = $request->getParam('id');
+        $name = $request->getParam('cogName');
+        $projID = $request->getParam('cogProject');
+        $file = $request->getUploadedFiles();
+        $dateDateTime = getCurrentDate();
+        $path = '';
+        $cogFileContent = null;
+        $result = null;
+        $cogName = $name . '.cog';
+        $imageName = null;
+
+        // getting the orginal info before making any updates
+        $cog = $container->cogworks->query("
+            select * from cog_files
+            where id = '$cogID';
+        ")->fetch(PDO::FETCH_ASSOC);
+        $cogFilename = $cog['cog_file'];
+        $cogUserID = $cog['user_id'];
+        // this is to retrieve the original user who made the file.
+        $cogUser = $container->projectcog->query("
+            select * from users
+            where id = '$cogUserID';
+        ")->fetch(PDO::FETCH_ASSOC);
+        $cogProjectID = $cog['project_id'];
+        $cogOrgID = $cogUser['organization_id'];
+
+        $imagePath = getCogImageThumbnailDirectory($projID, $cogOrgID, $cogUserID, 'cog-files', false);
+        $sourcePath = getCogFileDirectory($cogProjectID, $cogOrgID, $cogUserID) . $cogID . '.cog';
+        $targetPath = getCogFileDirectory($projID, $loggedUser['organization_id'], $userID) . $cogID . '.cog';
+        $cogFileContent = json_decode(file_get_contents($sourcePath, true));        
+        $cogFileContent->design->id = setCogworksDesignUniqueID($userID);
+        $cogFileContent->design->name = $name;
+
+        $myfile = fopen($targetPath, "w");
+        fwrite($myfile, (json_encode($cogFileContent)));
+        fclose($myfile);
+        chmod($targetPath,0777);
+
+        if(!empty($file)) {
+            $uploadedFile = $file['file'];
+            $imageName = $file['file']->getClientFilename();
+            $uploadedFile->moveTo($imagePath . $imageName);
+            chmod($imagePath . $imageName,0777);
+
+            $insert = $container->cogworks->exec("
+                insert into cog_files
+                (cog_file, image, project_id, user_id)
+                values('$cogName', '$imageName', '$projID', '$userID')
+            ");
+        } else {
+            $insert = $container->cogworks->exec("
+                insert into cog_files
+                (cog_file, project_id, user_id)
+                values('$cogName' , '$projID', '$userID')
+            ");
+        }
+        if($insert == 1) {
+            $result = true;
+        } else {
+            $result = false;
+        }
+        return json_encode($result);
     });
     $app->post('/cogworks/cog-files/add', function ($request, $response, $args) use ($container) {
         // this is reserve for the dashboard

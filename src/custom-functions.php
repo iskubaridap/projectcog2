@@ -273,6 +273,11 @@ function getCogFileDirectory($projID, $orgID, $userID)
     }
     return $path;
 }
+function setCogworksDesignUniqueID($userID)
+{
+    $milliseconds = (int) (microtime(true) * 1000);
+    return $userID . '_' . $milliseconds;
+}
 function setCogworksDirectoryPath($orgID)
 {
     $path = '';

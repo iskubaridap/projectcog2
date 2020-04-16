@@ -132,7 +132,7 @@ function cogUserCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogP
             switch(self.userCategory) {
                 case 'new':
                     $http({
-                        url: ( root + 'cogworks/developers/add'),
+                        url: './cogworks/developers/add',
                         method: "POST",
                         data: formData,
                         headers: {'Content-Type': undefined}
@@ -156,7 +156,7 @@ function cogUserCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogP
                     break;
                 case 'update':
                     $http({
-                        url: ( root + 'cogworks/developers/update'),
+                        url: './cogworks/developers/update',
                         method: "POST",
                         data: formData,
                         headers: {'Content-Type': undefined}

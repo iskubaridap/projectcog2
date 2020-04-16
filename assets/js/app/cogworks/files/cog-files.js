@@ -37,11 +37,11 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, log
     };
     var openFile = function(id)
     {
-        console.log(id);
+        window.location.href = window.location.protocol + '//' + window.location.host + '/cogworks/' + id;
     };
-    var duplicateFile = function(id)
+    var cloneFile = function(id)
     {
-        console.log(id);
+        $state.go('cog-files.clone', {id: id});
     };
     var updateFile = function(fileID)
     {
@@ -188,7 +188,7 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, log
     self.open = function(event)
     {
         var elem = $(event.target);
-        openFile(elem.attr('data-id'));
+        openFile(elem.attr('data-code'));
         // $('#myModal').modal('show');
     };
     self.details = function(event)
@@ -196,10 +196,10 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, log
         var elem = $(event.target);
         detailFile(elem.attr('data-id'));
     };
-    self.duplicate = function(event)
+    self.clone = function(event)
     {
         var elem = $(event.target);
-        duplicateFile(elem.attr('data-id'));
+        cloneFile(elem.attr('data-id'));
     };
     self.update = function(event)
     {

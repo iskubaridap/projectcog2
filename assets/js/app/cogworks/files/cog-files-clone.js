@@ -1,5 +1,5 @@
-var cogFilesUpdate = angular.module("cog-files-update", []);
-function cogFilesUpdateCtrl($rootScope, $scope, $element, $state, $http, cogProjects, cogFilesDetails, SweetAlert)
+var cogFilesClone = angular.module("cog-files-clone", []);
+function cogFilesCloneCtrl($rootScope, $scope, $element, $state, $http, cogProjects, cogFilesDetails, SweetAlert)
 {
     var self = this;
     var cogID = $state.params.id;
@@ -9,7 +9,11 @@ function cogFilesUpdateCtrl($rootScope, $scope, $element, $state, $http, cogProj
         obj.project = '(Personal File)';
         self.activeProjects.unshift(obj);
     });
-    cogFilesDetails.getDetails(self, {id: cogID});
+    cogFilesDetails.getDetails(self, {id: cogID}, function(data){
+        if(data.cogfile.search('-copy') < 0) {
+            self.details.cogfile = data.cogfile + '-copy';
+        }
+    });
     self.reset = function(event)
     {
         $state.go($state.current, {}, {reload: true});
@@ -17,13 +21,13 @@ function cogFilesUpdateCtrl($rootScope, $scope, $element, $state, $http, cogProj
     self.submit = function(event)
     {
         var formData = new FormData();
-        var fileData = $element.find('#cog-update-image').prop('files')[0];
-        var cogName = $element.find('#cog-update-filename').val();
-        var cogProject = $element.find('#cog-update-project').val();
+        var fileData = $element.find('#cog-clone-image').prop('files')[0];
+        var cogName = $element.find('#cog-clone-filename').val();
+        var cogProject = $element.find('#cog-clone-project').val();
         var filename =  '';
-        var fileUpdate = false;
-        var cogNameUpdate = false;
-        var cogProjectUpdate = false;
+        var fileClone = false;
+        var cogNameClone = false;
+        var cogProjectClone = false;
 
         try
         {
@@ -37,7 +41,7 @@ function cogFilesUpdateCtrl($rootScope, $scope, $element, $state, $http, cogProj
         if((cogName.trim()).length <= 0)
         {
             SweetAlert.swal({
-                title: "File Update Fail",
+                title: "File Clone Fail",
                 text: "Please provide a filename."
             }, function(isConfirm){
                 if(isConfirm)
@@ -52,16 +56,17 @@ function cogFilesUpdateCtrl($rootScope, $scope, $element, $state, $http, cogProj
             formData.append('cogProject', cogProject);
 
             $http({
-                url: './cogworks/cog-files/update',
+                url: './cogworks/cog-files/clone',
                 method: "POST",
                 data: formData,
                 headers: {'Content-Type': undefined}
             }).success(function (response) {
                 console.log(response);
-                $state.go($state.current, {}, {reload: true});
+                // $state.go($state.current, {}, {reload: true});
+                SweetAlert.swal("Success!", "File is successfully Cloned.", "success");
             }).error(function(error){
                 SweetAlert.swal({
-                    title: "File Update Fail",
+                    title: "File Clone Fail",
                     text: "Something went wrong. Please try it again."
                 }, function(isConfirm){
                     if(isConfirm)
@@ -72,4 +77,4 @@ function cogFilesUpdateCtrl($rootScope, $scope, $element, $state, $http, cogProj
     };
 }
 
-cogFilesUpdate.controller('cogFilesUpdateCtrl', cogFilesUpdateCtrl);
+cogFilesClone.controller('cogFilesCloneCtrl', cogFilesCloneCtrl);

@@ -43,7 +43,7 @@ function cogProjectCtrl($rootScope, $scope, $element, $state, $http, cogProject,
             formData.append('cogProjName', cogProjectName);
 
             $http({
-                url: ( root + 'cogworks/projects/update'),
+                url: './cogworks/projects/update',
                 method: "POST",
                 data: formData,
                 headers: {'Content-Type': undefined}
