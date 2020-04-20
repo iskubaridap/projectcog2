@@ -209,6 +209,43 @@
     padding-top: 15px;
     padding-bottom: 15px;
 }
+#section-cogworks-add .panel-body {
+    max-height: 300px;
+    overflow-y: auto;
+}
+.template-item-row {
+    display: flex;
+}
+.template-item-wrap {
+    margin-right: 8px;
+    margin-left: 8px;
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    width: 100px;
+    align-items: flex-start;
+}
+.template-item-check {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    font-size: 2em;
+    color: #8CC74F;
+    background-color: #fff;
+    border-radius: 500px;
+    padding: 1px 3px;
+    display: none;
+}
+.template-item-image img {
+    width: 100px;
+    height: auto;
+}
+.template-item.selected .template-item-check {
+    display: block;
+}
+.template-item-name {
+    text-align: center;
+}
 /* .item-deleted .contact-box.center-version > a img {
     opacity: 0.5;
 } */

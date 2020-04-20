@@ -24,7 +24,11 @@ return function (App $app) {
 
     $app->post('/extra/test-function', function ($request, $response, $args) use ($container) {
         // test();
-        return json_encode(setCogworksDesignUniqueID(100));
+        $template = $container->cogworks->query("
+            select * from templates
+            where id = '4';
+        ")->fetch(PDO::FETCH_ASSOC);
+        return getCogTemplateDirectory($template);
     });
 
     // reserve code

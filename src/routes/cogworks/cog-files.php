@@ -17,11 +17,6 @@ return function (App $app) {
         $projectID = $request->getParam('projID');
         $page = $request->getParam('page');
 
-        $user = $container->projectcog->query("
-            select * from users
-            where id = '$userID';
-        ")->fetch(PDO::FETCH_ASSOC);
-
         $orgs = $container->projectcog->query("
             select * from organizations
             order by organization asc
@@ -30,7 +25,7 @@ return function (App $app) {
         // This assumes that the user is the Admin
         if($page == 'manage')
         {
-            if($projectID == 'all') {
+            if($projectID === 'all') {
                 $cogFiles = $container->cogworks->query("
                     select * from cog_files
                     order by cog_file asc
@@ -54,7 +49,7 @@ return function (App $app) {
         }
         else
         {
-            if($projectID == 'all') {
+            if($projectID === 'all') {
                 $cogFiles = $container->cogworks->query("
                     select * from cog_files
                     where user_id = '$userID' and status_id = '1'
@@ -71,11 +66,6 @@ return function (App $app) {
                     where project_id = '$projectID' and status_id = '1'
                     order by cog_file asc
                 ")->fetchAll(PDO::FETCH_ASSOC);
-                /* $cogFiles = $container->cogworks->query("
-                    select * from cog_files
-                    where user_id = '$userID' and project_id = '$projectID' and status_id = '1'
-                    order by cog_file asc
-                ")->fetchAll(PDO::FETCH_ASSOC); */
                 $projects = $container->cogworks->query("
                     select * from projects
                     where id = '$projectID' and organization_id = '$userOrg' and status_id = '1'
@@ -112,6 +102,34 @@ return function (App $app) {
             $cogFile['imageValue'] = $tmpAry['imageValue'];
             $cogFile['image'] = $tmpAry['path'];
             array_push($result, $cogFile);
+        }
+        return json_encode($result);
+    });
+    $app->post('/cogworks/cog-files/retrieve/templates', function ($request, $response, $args) use ($container) {
+        $loggedUser = identifyLoggedUser($container);
+        $userID = $loggedUser['id'];
+        $userPosition = $loggedUser['position_id'];
+        $userOrg = $loggedUser['organization_id'];
+        $result = array();
+        $bs3Blank = array();
+        $bs4Blank = array();
+
+        if($userOrg == 1 && $userPosition == 1) {
+            $result = $container->cogworks->query("
+                select * from templates where status_id = '1' order by bootstrap_version asc
+            ")->fetchAll(PDO::FETCH_ASSOC);
+        } else if($userOrg == 1) {
+            $result = $container->cogworks->query("
+                select * from templates where user_id = '0' and (organization_id = '0' or organization_id = '1') and status_id = '1' order by bootstrap_version asc
+            ")->fetchAll(PDO::FETCH_ASSOC);
+        } else if ($userOrg == 2) {
+            $result = $container->cogworks->query("
+                select * from templates where (user_id = '0' or user_id = '$userID') and status_id = '1' order by bootstrap_version asc
+            ")->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            $result = $container->cogworks->query("
+                select * from templates where user_id = '0' and (organization_id = '0' or organization_id = '$userOrg') and status_id = '1' order by bootstrap_version asc
+            ")->fetchAll(PDO::FETCH_ASSOC);
         }
         return json_encode($result);
     });
@@ -226,8 +244,8 @@ return function (App $app) {
         ")->fetch(PDO::FETCH_ASSOC);
         $cogProjectID = $cog['project_id'];
         $cogOrgID = $cogUser['organization_id'];
-
-        $imagePath = getCogImageThumbnailDirectory($projID, $cogOrgID, $cogUserID, 'cog-files', false);
+        $imagePathAry = getCogImageThumbnailDirectory($cogID, $cogOrgID, $cogUserID, 'cog-files');
+        $imagePath = $imagePathAry['path'];
         $sourcePath = getCogFileDirectory($cogProjectID, $cogOrgID, $cogUserID) . $cogID . '.cog';
         $targetPath = getCogFileDirectory($projID, $cogOrgID, $cogUserID) . $cogID . '.cog';
         $cogFileContent = json_decode(file_get_contents($sourcePath, true));        
@@ -304,7 +322,6 @@ return function (App $app) {
         $cogProjectID = $cog['project_id'];
         $cogOrgID = $cogUser['organization_id'];
 
-        $imagePath = getCogImageThumbnailDirectory($projID, $cogOrgID, $cogUserID, 'cog-files', false);
         $sourcePath = getCogFileDirectory($cogProjectID, $cogOrgID, $cogUserID) . $cogID . '.cog';
         $targetPath = getCogFileDirectory($projID, $loggedUser['organization_id'], $userID) . $cogID . '.cog';
         $cogFileContent = json_decode(file_get_contents($sourcePath, true));        
@@ -319,9 +336,56 @@ return function (App $app) {
         if(!empty($file)) {
             $uploadedFile = $file['file'];
             $imageName = $file['file']->getClientFilename();
+
+            $insert = $container->cogworks->exec("
+                insert into cog_files
+                (cog_file, image, project_id, user_id)
+                values('$cogName', '$imageName', '$projID', '$userID')
+            ");
+            $newCog = $container->cogworks->query("
+                select * from cog_files
+                where cog_file = '$cogName' and user_id = '$userID'
+                order by id desc limit 1
+            ")->fetch(PDO::FETCH_ASSOC);
+
+            $imagePathAry = getCogImageThumbnailDirectory($newCog['id'], $loggedUser['organization_id'], $userID, 'cog-files');
+            $imagePath = $imagePathAry['path'];
+
             $uploadedFile->moveTo($imagePath . $imageName);
             chmod($imagePath . $imageName,0777);
+        } else {
+            $insert = $container->cogworks->exec("
+                insert into cog_files
+                (cog_file, project_id, user_id)
+                values('$cogName' , '$projID', '$userID')
+            ");
+        }
+        if($insert == 1) {
+            $result = true;
+        } else {
+            $result = false;
+        }
+        echo($result);
+    });
+    $app->post('/cogworks/cog-files/add', function ($request, $response, $args) use ($container) {
+        $cogUser = (int) $request->getParam('cogUser');
+        $user = $cogUser !== 0 ? getUserInfo($cogUser, $container) : identifyLoggedUser($container);
+        $userID = $user['id'];
+        $userOrgID = $user['organization_id'];
+        $cogTempID = $request->getParam('cogTemplate');
+        $name = $request->getParam('cogName');
+        $projID = $request->getParam('cogProject');
+        $file = $request->getUploadedFiles();
+        $cogName = $name . '.cog';
 
+        $template = $container->cogworks->query("
+            select * from templates
+            where id = '$cogTempID';
+        ")->fetch(PDO::FETCH_ASSOC);
+
+        if(!empty($file)) {
+            $uploadedFile = $file['file'];
+            $imageName = $file['file']->getClientFilename();
             $insert = $container->cogworks->exec("
                 insert into cog_files
                 (cog_file, image, project_id, user_id)
@@ -335,13 +399,37 @@ return function (App $app) {
             ");
         }
         if($insert == 1) {
+            // just in-case there's more than 1 similar filename
+            $cogfile = $container->cogworks->query("
+                select * from cog_files
+                where cog_file = '$cogName' and user_id = '$userID'
+                order by id desc limit 1
+            ")->fetch(PDO::FETCH_ASSOC);
+            $cogfile['code'] = base64_encode('{"c":"' . $cogfile['id'] . '","u":"' . $userID . '"}');
+            $cogID = $cogfile['id'];
+
+            $sourcePath = getCogTemplateDirectory($template) . 'template.json';
+            $targetPath = getCogFileDirectory($projID, $userOrgID, $userID) . $cogID . '.cog';
+            $cogFileContent = json_decode(file_get_contents($sourcePath, true));        
+            $cogFileContent->design->id = setCogworksDesignUniqueID($userID);
+            $cogFileContent->design->name = $name;
+
+            $myfile = fopen($targetPath, "w");
+            fwrite($myfile, (json_encode($cogFileContent)));
+            fclose($myfile);
+            chmod($targetPath,0777);
+
+            if(!empty($file)) {
+                $imagePathAry = getCogImageThumbnailDirectory($cogID, $userOrgID, $userID, 'cog-files');
+                $imagePath = $imagePathAry['path'];
+                
+                $uploadedFile->moveTo($imagePath . $imageName);
+                chmod($imagePath . $imageName,0777);
+            }
             $result = true;
         } else {
             $result = false;
         }
         return json_encode($result);
-    });
-    $app->post('/cogworks/cog-files/add', function ($request, $response, $args) use ($container) {
-        // this is reserve for the dashboard
     });
 };

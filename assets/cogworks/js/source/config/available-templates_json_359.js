@@ -6,17 +6,17 @@ define([], function() {
             }, {
                 id: "blog-post-page", name: "Blog Post Page", description: "", type: "regular", pages: []
             }, {
-                id: "production_template_bs3", name: "Production Template", description: "", type: "regular", pages: []
+                id: "mcafee-production", name: "McAfee Production", description: "", type: "regular", pages: []
             }, {
-                id: "video_no_quiz_template", name: "Video No Quiz Template", description: "", type: "regular", pages: []
+                id: "mcafee-video-no-quiz", name: "McAfee Video No Quiz", description: "", type: "regular", pages: []
             }, {
-                id: "jsi_wrapper", name: "JSI Wrapper", description: "", type: "regular", pages: []
+                id: "jsi-wrapper", name: "JSI", description: "", type: "regular", pages: []
             }
             ], 4:[ {
                 id: "blank", name: "Blank", description: "", type: "regular"
             }
             , {
-                id: "production_template_bs4", name: "Production Template", description: "", type: "advanced", placeholders:[ {
+                id: "mcafee-production", name: "McAfee Production", description: "", type: "advanced", placeholders:[ {
                         name: "Brand", placeholder: "brand", default: "Brand", tooltip: "The Brand is displayed in your Navbar, and is included in page titles.", type: "input"
                     }
                     , {

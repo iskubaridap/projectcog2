@@ -28,24 +28,43 @@ return function (App $app) {
                 order by users.user asc
             ")->fetchAll(PDO::FETCH_ASSOC);
         }
-        // Disable for now
-        // if(is_array($developers))
-        // {
-            foreach($developers as &$developer)
-            {
-                $imgAry = getCogDeveloperThumbnail($developer['organization_id'], $developer['id'], $developer['image'], $container);
-                $developer['imageValue'] = $imgAry['imageValue'];
-                $developer['image'] = $imgAry['path'];
-                if($developer['status_id'] == 2) {
-                    $developer['status'] = 'inactive';
-                } else if($developer['status_id'] == 5) {
-                    $developer['status'] = 'inactive-org';
-                } else {
-                    $developer['status'] = 'active';
-                }
-                
+        foreach($developers as &$developer)
+        {
+            $imgAry = getCogDeveloperThumbnail($developer['organization_id'], $developer['id'], $developer['image'], $container);
+            $developer['imageValue'] = $imgAry['imageValue'];
+            $developer['image'] = $imgAry['path'];
+            if($developer['status_id'] == 2) {
+                $developer['status'] = 'inactive';
+            } else if($developer['status_id'] == 5) {
+                $developer['status'] = 'inactive-org';
+            } else {
+                $developer['status'] = 'active';
             }
-        // }
+            
+        }
+        return json_encode($developers);
+    });
+    $app->post('/cogworks/developers/retrieve/org/active', function ($request, $response, $args) use ($container) {
+        $orgID = $request->getParam('org');
+        $developers = $container->projectcog->query("
+            select users.id, users.user, positions.position, users.image, users.organization_id from users, positions 
+            where users.status_id = '1' and users.position_id = positions.id  and (users.id <> 1 and users.id <> 2) and users.organization_id = '$orgID' 
+            order by users.user asc
+        ")->fetchAll(PDO::FETCH_ASSOC);
+        foreach($developers as &$developer)
+        {
+            $imgAry = getCogDeveloperThumbnail($developer['organization_id'], $developer['id'], $developer['image'], $container);
+            $developer['imageValue'] = $imgAry['imageValue'];
+            $developer['image'] = $imgAry['path'];
+            if($developer['status_id'] == 2) {
+                $developer['status'] = 'inactive';
+            } else if($developer['status_id'] == 5) {
+                $developer['status'] = 'inactive-org';
+            } else {
+                $developer['status'] = 'active';
+            }
+            
+        }
         return json_encode($developers);
     });
     $app->post('/cogworks/developers/add', function ($request, $response, $args) use ($container) {

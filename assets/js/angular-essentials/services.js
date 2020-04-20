@@ -239,7 +239,6 @@ var cogDevelopers = function($http){
         return $http.post("./cogworks/developers/retrieve/active", config)
         .then(function (response) {
             obj.activeDevelopers = ((response.data).toString().length > 0) ? response.data : null;
-            console.log(obj.activeDevelopers);
             try
             {
               callback(response.data);
@@ -254,6 +253,26 @@ var cogDevelopers = function($http){
             obj.activeDevelopers.errorData = 'Developers';
             return null;
           });
+    };
+    this.getActiveOrgDevelopers = function(obj, config, callback){
+      return $http.post("./cogworks/developers/retrieve/org/active", config)
+      .then(function (response) {
+          obj.activeOrgDevelopers = ((response.data).toString().length > 0) ? response.data : null;
+          console.log(obj.activeOrgDevelopers);
+          try
+          {
+            callback(response.data);
+          }
+          catch(err)
+          {
+            // no callback function
+          }
+        }, function (response) {
+          obj.activeOrgDevelopers = new Object();
+          obj.activeOrgDevelopers.error = 'serverError';
+          obj.activeOrgDevelopers.errorData = 'Developers';
+          return null;
+        });
     };
     this.getDeveloper = function(obj, config, callback){
       return $http.post("./cogworks/developers/profile", config)
@@ -281,6 +300,7 @@ var cogFiles = function($http){
       return $http.post("./cogworks/cog-files/retrieve/active", config)
       .then(function (response) {
           obj.activeFiles = ((response.data).toString().length > 0 && response.data != 'null') ? response.data : null;
+          console.log(obj.activeFiles);
           try
           {
             callback(response.data);
@@ -296,6 +316,25 @@ var cogFiles = function($http){
           return null;
         });
   };
+  this.getAvailableTemplates = function(obj, config, callback){
+    return $http.post("./cogworks/cog-files/retrieve/templates", config)
+    .then(function (response) {
+        obj.templates = ((response.data).toString().length > 0 && response.data != 'null') ? response.data : null;
+        try
+        {
+          callback(response.data);
+        }
+        catch(err)
+        {
+          // no callback function
+        }
+      }, function (response) {
+        obj.templates = new Object();
+        obj.templates.error = 'serverError';
+        obj.templates.errorData = 'Cog Files';
+        return null;
+      });
+};
 };
 var cogFilesDetails = function($http){
   var self = this;
@@ -359,6 +398,26 @@ var cogProjects = function($http){
           return null;
         });
   };
+  this.getActiveOrgProjects = function(obj, config, callback){
+    return $http.post("./cogworks/projects/retrieve/org/active", config)
+    .then(function (response) {
+        obj.activeProjects = ((response.data).toString().length > 0) ? response.data : null;
+        console.log(obj.activeProjects);
+        try
+        {
+          callback(response.data);
+        }
+        catch(err)
+        {
+          // no callback function
+        }
+      }, function (response) {
+        obj.activeProjects = new Object();
+        obj.activeProjects.error = 'serverError';
+        obj.activeProjects.errorData = 'Cog Projects';
+        return null;
+      });
+};
 };
 var cogPodsWhatNots = function($http){
   var self = this;

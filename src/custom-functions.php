@@ -134,65 +134,62 @@ function getCogFileThumbnail($orgID, $userID, $cogID, $img, $container)
         {
             if($userInfoOrgID == 1)
             {
-                $ary['folder'] = 'cogworks/admin/img/thumbnail/cog-files/' . $cogProjectID;
-                $ary['path'] = 'cogworks/admin/img/thumbnail/cog-files/' . $cogProjectID . '/' . $img;
+                $ary['folder'] = 'cogworks/admin/img/thumbnail/cog-files/' . $cogID;
+                $ary['path'] = 'cogworks/admin/img/thumbnail/cog-files/' . $cogID . '/' . $img;
             }
             else if($userInfoOrgID == 2) // belongs to no organization
             {
-                $ary['folder'] = 'cogworks/developers/' . $userInfoID . '/img/thumbnail/cog-files/' . $cogProjectID;
-                $ary['path'] = 'cogworks/developers/' . $userInfoID . '/img/thumbnail/cog-files/' . $cogProjectID . '/' . $img;
+                $ary['folder'] = 'cogworks/developers/' . $userInfoID . '/img/thumbnail/cog-files/' . $cogID;
+                $ary['path'] = 'cogworks/developers/' . $userInfoID . '/img/thumbnail/cog-files/' . $cogID . '/' . $img;
             }
             else
             {
-                $ary['folder'] = 'cogworks/organizations/' . $userInfoOrgID . '/img/thumbnail/cog-files/' . $cogProjectID;
-                $ary['path'] = 'cogworks/organizations/' . $userInfoOrgID . '/img/thumbnail/cog-files/' . $cogProjectID . '/' . $img;
+                $ary['folder'] = 'cogworks/organizations/' . $userInfoOrgID . '/img/thumbnail/cog-files/' . $cogID;
+                $ary['path'] = 'cogworks/organizations/' . $userInfoOrgID . '/img/thumbnail/cog-files/' . $cogID . '/' . $img;
             }
         }
         else if($orgID == 2)
         {
-            $ary['folder'] = 'cogworks/developers/' . $userID . '/img/thumbnail/cog-files/' . $cogProjectID;
-            $ary['path'] = 'cogworks/developers/' . $userID . '/img/thumbnail/cog-files/' . $cogProjectID . '/' . $img;
+            $ary['folder'] = 'cogworks/developers/' . $userID . '/img/thumbnail/cog-files/' . $cogID;
+            $ary['path'] = 'cogworks/developers/' . $userID . '/img/thumbnail/cog-files/' . $cogID . '/' . $img;
         }
         else
         {
-            $ary['folder'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/cog-files/' . $cogProjectID;
-            $ary['path'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/cog-files/' . $cogProjectID . '/' . $img;
+            $ary['folder'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/cog-files/' . $cogID;
+            $ary['path'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/cog-files/' . $cogID . '/' . $img;
         }
     }
     generateDirectory($ary['folder']);
     return $ary;
 }
-function getCogImageThumbnailDirectory($projID, $orgID, $userID, $type, $useTypePath)
+function getCogImageThumbnailDirectory($fileID, $orgID, $userID, $type)
 {
     $path = '';
     $typePath = '';
     $projPath = '';
+    $result = array();
     if($orgID == 1)
     {
-        $path = setCogworksDirectoryPath($orgID) . 'img/thumbnail/' . $type . '/' . $projID . '/';
-        $typePath = setCogworksDirectoryPath($orgID) . 'img/thumbnail/' . $type;
-        $projPath = setCogworksDirectoryPath($orgID) . 'img/thumbnail/' . $type . '/' . $projID;
+        $result['path'] = setCogworksDirectoryPath($orgID) . 'img/thumbnail/' . $type . '/' . $fileID . '/';
+        $result['typePath'] = setCogworksDirectoryPath($orgID) . 'img/thumbnail/' . $type;
+        $result['filePath'] = setCogworksDirectoryPath($orgID) . 'img/thumbnail/' . $type . '/' . $fileID;
     }
     else if($orgID == 2)
     {
-        $path = setCogworksDirectoryPath($orgID) . $userID . '/img/thumbnail/' . $type . '/' . $projID . '/';
-        $typePath = setCogworksDirectoryPath($orgID) . $userID . '/img/thumbnail/' . $type;
-        $projPath = setCogworksDirectoryPath($orgID) . $userID . '/img/thumbnail/' . $type . '/' . $projID;
+        $result['path'] = setCogworksDirectoryPath($orgID) . $userID . '/img/thumbnail/' . $type . '/' . $fileID . '/';
+        $result['typePath'] = setCogworksDirectoryPath($orgID) . $userID . '/img/thumbnail/' . $type;
+        $result['filePath'] = setCogworksDirectoryPath($orgID) . $userID . '/img/thumbnail/' . $type . '/' . $fileID;
     }
     else
     {
-        $path = setCogworksDirectoryPath($orgID) . $orgID . '/img/thumbnail/' . $type . '/' . $projID . '/';
-        $typePath = setCogworksDirectoryPath($orgID) . $orgID . '/img/thumbnail/' . $type;
-        $projPath = setCogworksDirectoryPath($orgID) . $orgID . '/img/thumbnail/' . $type . '/' . $projID;
+        $result['path'] = setCogworksDirectoryPath($orgID) . $orgID . '/img/thumbnail/' . $type . '/' . $fileID . '/';
+        $result['typePath'] = setCogworksDirectoryPath($orgID) . $orgID . '/img/thumbnail/' . $type;
+        $result['filePath'] = setCogworksDirectoryPath($orgID) . $orgID . '/img/thumbnail/' . $type . '/' . $fileID;
     }
-    generateDirectory($typePath);
-    generateDirectory($projPath);
-    // return json_encode($foobar) . '/' . $typePath . ' - ' . json_encode($foobar2) . '/'. $projPath . ' - ' . $path;
-    if($useTypePath) {
-        return $typePath;
-    } else {
-        return $path;
-    }
+    generateDirectory($result['typePath']);
+    generateDirectory($result['filePath']);
+    
+    return $result;
 }
 // reserve code just in-case it needed
 function getCogImageDirectory($projID, $orgID, $userID, $folder)
@@ -272,6 +269,11 @@ function getCogFileDirectory($projID, $orgID, $userID)
         }
     }
     return $path;
+}
+function getCogTemplateDirectory($obj)
+{
+    $result = $_SERVER['DOCUMENT_ROOT'] . '/assets/cogworks/templates/' . $obj['bootstrap_version'] . '/' . $obj['folder_name'] . '/';
+    return $result;
 }
 function setCogworksDesignUniqueID($userID)
 {

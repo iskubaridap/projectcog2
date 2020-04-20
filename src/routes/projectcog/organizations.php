@@ -77,7 +77,8 @@ return function (App $app) {
                 generateDirectory($cogworksFolder . 'organizations/' . $newOrgObj['id'] . '/users');
                 generateCogworksDefaultDirectories($cogworksFolder . 'organizations/' . $newOrgObj['id']);
 
-                $imagePath = getCogImageThumbnailDirectory('', $newOrgObj['id'], '', 'organizations', true);
+                $imagePathAry = getCogImageThumbnailDirectory('', $orgID, '', 'organizations');
+                $imagePath = $imagePathAry['typePath'];
                 $uploadedFile->moveTo($imagePath . '/' . $imageName);
                 chmod($imagePath . '/' . $imageName,0777); 
             } else {
@@ -131,7 +132,8 @@ return function (App $app) {
        if(!empty($file)) {
             $uploadedFile = $file['file'];
             $imageName = $file['file']->getClientFilename();
-            $imagePath = getCogImageThumbnailDirectory('', $orgID, '', 'organizations', true);
+            $imagePathAry = getCogImageThumbnailDirectory('', $orgID, '', 'organizations');
+            $imagePath = $imagePathAry['typePath'];
             $uploadedFile->moveTo($imagePath . '/' . $imageName);
             chmod($imagePath . '/' . $imageName,0777); 
 

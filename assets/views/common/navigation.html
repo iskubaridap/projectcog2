@@ -59,8 +59,8 @@
                     </li>
                 </ul>
             </li>
-            <li>
-                <a><i class="fa fa-file"></i> <span>New File</span></a>
+            <li ng-class="{active: $state.includes('cog-files-add.add')}">
+                <a ui-sref="cog-files-add.add"><i class="fa fa-file"></i> <span>New File</span></a>
             </li>
             <li ng-class="{active: $state.includes('cog-files')}">
                 <a ui-sref="cog-files.active({project: 'all',page: 'user'})"><i class="fa fa-files-o"></i> <span>Personal Files</span></a>

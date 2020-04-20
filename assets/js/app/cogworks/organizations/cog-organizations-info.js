@@ -205,8 +205,7 @@ function cogOrganizationsInfoCtrl($rootScope, $scope, $element, $state, $http, $
     };
     self.addNewCogfile = function(event) {
         var elem = $(event.target);
-        // $state.go('cog-projects.files', {project: id, page: cogProjPage});
-        console.log('new cog file');
+        $state.go('cog-admin.files-add', {page: 'manage', org: (elem.attr('data-id'))});
     };
 }
 

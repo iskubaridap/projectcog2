@@ -370,6 +370,34 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 }
             }
         })
+        .state('cog-admin.files-add', {
+            url: "/:page/add/:org",
+            templateUrl: "assets/views/cogworks/cog-files/cog-files-add.html",
+            data: { pageTitle: 'Clone Cogworks File' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'cog-files-add',
+                            files: ['assets/js/app/cogworks/files/cog-files-add.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']
+                        },
+                        {
+                            name: 'oitozero.ngSweetAlert',
+                            files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        },
+                        {
+                            files: ['assets/css/plugins/dropzone/basic.css','assets/css/plugins/dropzone/dropzone.css','assets/js/plugins/dropzone/dropzone.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/jasny/jasny-bootstrap.min.js', 'assets/css/plugins/jasny/jasny-bootstrap.min.css' ]
+                        }
+                    ]);
+                }
+            }
+        })
         .state('cog-admin.projects', {
             url: "/:page/projects",
             templateUrl: "assets/views/cogworks/projects/projects-main.html",
@@ -627,6 +655,39 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                         {
                             name: 'cog-developers-profile',
                             files: ['assets/js/app/cogworks/developers/cog-developers-profile.js']
+                        }
+                    ]);
+                }
+            }
+        })
+        .state('cog-files-add', {
+            abstract: true,
+            url: "/cogworks/cog-files",
+            templateUrl: "assets/views/common/content.html",
+        })
+        .state('cog-files-add.add', {
+            url: "/add",
+            templateUrl: "assets/views/cogworks/cog-files/cog-files-add.html",
+            data: { pageTitle: 'Clone Cogworks File' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'cog-files-add',
+                            files: ['assets/js/app/cogworks/files/cog-files-add.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/sweetalert/sweetalert.min.js', 'assets/css/plugins/sweetalert/sweetalert.css']
+                        },
+                        {
+                            name: 'oitozero.ngSweetAlert',
+                            files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        },
+                        {
+                            files: ['assets/css/plugins/dropzone/basic.css','assets/css/plugins/dropzone/dropzone.css','assets/js/plugins/dropzone/dropzone.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/jasny/jasny-bootstrap.min.js', 'assets/css/plugins/jasny/jasny-bootstrap.min.css' ]
                         }
                     ]);
                 }

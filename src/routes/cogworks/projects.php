@@ -77,6 +77,56 @@ return function (App $app) {
         }
         return json_encode($result);
     });
+    $app->post('/cogworks/projects/retrieve/org/active', function ($request, $response, $args) use ($container) {
+        $userOrg = $request->getParam('org');
+        $result = array();
+
+        $orgs = $container->projectcog->query("
+            select * from organizations
+            order by organization asc
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
+        $projects = $container->cogworks->query("
+            select * from projects
+            where status_id = '1' and organization_id = '$userOrg'
+            order by project asc
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach($projects as $prj)
+        {
+            $project = array();
+            $project['id'] = $prj['id'];
+            $projectID = $prj['id'];
+            $project['project'] = $prj['project'];
+            $project['orgID'] = $prj['organization_id'];
+            $project['created'] = (explode(" ",$prj['created']))[0];
+            $project['cogfiles'] = 0;
+            $project['status'] = $prj['status_id'];
+            $projImgAry = array();
+
+            $projImgAry = getCogProjectThumbnail($prj['organization_id'], $prj['id'], $prj['image'], $container);
+            $project['imageValue'] = $projImgAry['imageValue'];
+            $project['image'] = $projImgAry['path'];
+
+            foreach($orgs as $org)
+            {
+                if($prj['organization_id'] == $org['id'])
+                {
+                    $project['organization'] = $org['organization'];
+                    break;
+                }
+            }
+            $cogfiles = $container->cogworks->query("
+                select count(id) from cog_files
+                where project_id = '$projectID' and status_id = '1'
+            ")->fetch(PDO::FETCH_ASSOC);
+
+            $project['cogfiles'] = $cogfiles['count(id)'];
+            
+            array_push($result, $project);
+        }
+        return json_encode($result);
+    });
     $app->post('/cogworks/projects/deactivate', function ($request, $response, $args) use ($container) {
         $id = $request->getParam('id');
         $result = null;
@@ -139,7 +189,8 @@ return function (App $app) {
                 ")->fetch(PDO::FETCH_ASSOC);
                 $projID = $proj['id'];
 
-                $imagePath = getCogImageThumbnailDirectory($projID, $cogOrgID, $cogUserID, 'projects', false);
+                $imagePathAry = getCogImageThumbnailDirectory($projID, $cogOrgID, $cogUserID, 'projects');
+                $imagePath = $imagePathAry['path'];
                 $uploadedFile->moveTo($imagePath . $imageName);
                 chmod($imagePath . $imageName,0777);
             }
@@ -294,7 +345,8 @@ return function (App $app) {
        
        if(!empty($file))
        {
-            $imagePath = getCogImageThumbnailDirectory($projID, $cogOrgID, $cogUserID, 'projects', false);
+            $imagePathAry = getCogImageThumbnailDirectory($projID, $cogOrgID, $cogUserID, 'projects');
+            $imagePath = $imagePathAry['path'];
             $uploadedFile = $file['file'];
             $imageName = $file['file']->getClientFilename();
             $uploadedFile->moveTo($imagePath . $imageName);
