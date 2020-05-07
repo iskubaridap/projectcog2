@@ -1,22 +1,26 @@
 var cogOrganizationUpdate = angular.module("cog-organizations-update", []);
-function cogOrganizationUpdateCtrl($rootScope, $scope, $element, $state, $http, cogOrganizationsService, accountsService, SweetAlert)
-{
+
+function cogOrganizationUpdateCtrl($rootScope, $scope, $element, $state, $http, cogOrganizationsService, accountsService, SweetAlert) {
     var self = this;
     var cogOrgID = ($state.params.id == undefined || (($state.params.id).trim()).length <= 0) ? 0 : $state.params.id;
     self.title = '';
-    
-    if(cogOrgID != 0) {
-        cogOrganizationsService.getOrganization(self, {id: cogOrgID}, function(data) {
-            if(data != 'null') {
+
+    if (cogOrgID != 0) {
+        cogOrganizationsService.getOrganization(self, {
+            id: cogOrgID
+        }, function (data) {
+            if (data != 'null') {
                 self.title = data.organization;
             } else {
                 self.organization = null;
             }
         });
-        accountsService.getAccountOrg(self, {id: cogOrgID}, function(data) {
+        accountsService.getAccountOrg(self, {
+            id: cogOrgID
+        }, function (data) {
             var index = 0;
             var acctObj = null;
-            if(data != 'null') {
+            if (data != 'null') {
                 acctObj = data.account;
                 data.accountType.shift(); // this is to remove the Admin to be selected
                 self.typeInitValue = data.accountType[(parseInt(acctObj.account_type_id) - 2)].id; // minus by 2 because "Admin" is been removed in the array
@@ -29,30 +33,32 @@ function cogOrganizationUpdateCtrl($rootScope, $scope, $element, $state, $http, 
     } else {
         self.organization = null;
     }
-    
-    self.reset = function(event) {
-        $state.go($state.current, {}, {reload: true});
+
+    self.reset = function (event) {
+        $state.go($state.current, {}, {
+            reload: true
+        });
     };
-    self.submit = function(event) {
+    self.submit = function (event) {
         var formData = new FormData();
         var fileData = $element.find('#cog-organization-update-image').prop('files')[0];
         var cogOrgName = $element.find('#cog-organization-update-name').val();
         var acctType = $element.find('#cog-organization-type-option').val();
         var allowedUsers = $element.find('#cog-organization-allowed-users-option').val();
-        var filename =  '';
+        var filename = '';
 
         try {
             filename = fileData.name
-        } catch(err) {
+        } catch (err) {
             filename = null;
         }
 
-        if((cogOrgName.trim()).length <= 0) {
+        if ((cogOrgName.trim()).length <= 0) {
             SweetAlert.swal({
                 title: "Something Missing",
                 text: "Please provide a filename."
-            }, function(isConfirm){
-                if(isConfirm){}
+            }, function (isConfirm) {
+                if (isConfirm) {}
             });
         } else {
             formData.append('id', cogOrgID);
@@ -65,22 +71,26 @@ function cogOrganizationUpdateCtrl($rootScope, $scope, $element, $state, $http, 
                 url: ('./organizations/cogworks/update'),
                 method: "POST",
                 data: formData,
-                headers: {'Content-Type': undefined}
+                headers: {
+                    'Content-Type': undefined
+                }
             }).success(function (response) {
                 SweetAlert.swal({
                     title: "Success",
                     text: "Your update is been processed."
-                }, function(isConfirm){
-                    if(isConfirm){
-                        $state.go($state.current, {}, {reload: true});
+                }, function (isConfirm) {
+                    if (isConfirm) {
+                        $state.go($state.current, {}, {
+                            reload: true
+                        });
                     }
                 });
-            }).error(function(error){
+            }).error(function (error) {
                 SweetAlert.swal({
                     title: "Organization Update Fail",
                     text: "Something went wrong. Please try it again."
-                }, function(isConfirm){
-                    if(isConfirm){}
+                }, function (isConfirm) {
+                    if (isConfirm) {}
                 });
             });
         }

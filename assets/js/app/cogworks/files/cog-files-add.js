@@ -1,15 +1,15 @@
 var cogFilesAdd = angular.module("cog-files-add", []);
-function cogFilesAddCtrl($rootScope, $scope, $element, $state, $http, cogProjects, cogDevelopers, cogFiles, SweetAlert)
-{
+
+function cogFilesAddCtrl($rootScope, $scope, $element, $state, $http, cogProjects, cogDevelopers, cogFiles, SweetAlert) {
     var self = this;
     var cogUser = 0;
     var selectedTempID = 0;
     var orgID = $state.params.org;
     self.cogPage = ($state.params.page == undefined) ? '' : $state.params.page;
 
-    var setTemplateItems = function(ary){
+    var setTemplateItems = function (ary) {
         var str = '';
-        var setString = function(str2, id, ver, folder, template) {
+        var setString = function (str2, id, ver, folder, template) {
             var str2 = '';
             str2 += '<div class="template-item-wrap">';
             str2 += '<div data-id="' + id + '" class="template-item">';
@@ -22,16 +22,16 @@ function cogFilesAddCtrl($rootScope, $scope, $element, $state, $http, cogProject
             str2 += '</div>' // .template-item-wrap;
             return str2;
         }
-        $.each(ary, function(index, value) {
-            if(index % 3 == 0) {
+        $.each(ary, function (index, value) {
+            if (index % 3 == 0) {
                 str += '<div class="row template-item-row">';
-                if(ary[index] != undefined) {
+                if (ary[index] != undefined) {
                     str += setString(str, ary[index].id, ary[index].bootstrap_version, ary[index].folder_name, ary[index].template);
                 }
-                if(ary[index + 1] != undefined) {
+                if (ary[index + 1] != undefined) {
                     str += setString(str, ary[index + 1].id, ary[index + 1].bootstrap_version, ary[index + 1].folder_name, ary[index + 1].template);
                 }
-                if(ary[index + 2] != undefined) {
+                if (ary[index + 2] != undefined) {
                     str += setString(str, ary[index + 2].id, ary[index + 2].bootstrap_version, ary[index + 2].folder_name, ary[index + 2].template);
                 }
                 str += '</div>';
@@ -39,13 +39,17 @@ function cogFilesAddCtrl($rootScope, $scope, $element, $state, $http, cogProject
         });
         return str;
     }
-    if(self.cogPage == 'manage') {
-        cogDevelopers.getActiveOrgDevelopers(self, {org: orgID}, function(data){
-            if(data != null) {
+    if (self.cogPage == 'manage') {
+        cogDevelopers.getActiveOrgDevelopers(self, {
+            org: orgID
+        }, function (data) {
+            if (data != null) {
                 cogUser = data[0].id;
             }
         });
-        cogProjects.getActiveOrgProjects(self, {org: orgID}, function(){
+        cogProjects.getActiveOrgProjects(self, {
+            org: orgID
+        }, function () {
             var obj = new Object();
             self.activeProjects = (self.activeProjects == null) ? new Array() : self.activeProjects;
             obj.id = '0';
@@ -53,7 +57,7 @@ function cogFilesAddCtrl($rootScope, $scope, $element, $state, $http, cogProject
             self.activeProjects.unshift(obj);
         });
     } else {
-        cogProjects.getActiveProjects(self, {}, function(){
+        cogProjects.getActiveProjects(self, {}, function () {
             var obj = new Object();
             self.activeProjects = (self.activeProjects == null) ? new Array() : self.activeProjects;
             obj.id = '0';
@@ -62,22 +66,22 @@ function cogFilesAddCtrl($rootScope, $scope, $element, $state, $http, cogProject
         });
     }
 
-    cogFiles.getAvailableTemplates(self, {}, function(data) {
+    cogFiles.getAvailableTemplates(self, {}, function (data) {
         var bs3Ary = new Array();
         var bs4Ary = new Array();
         var bs3Str = '';
         var bs4Str = '';
-        $.each(data, function(index, value) {
-            if(value.bootstrap_version == '3') {
+        $.each(data, function (index, value) {
+            if (value.bootstrap_version == '3') {
                 bs3Ary.push(value);
-            } else if(value.bootstrap_version == '4') {
+            } else if (value.bootstrap_version == '4') {
                 bs4Ary.push(value);
             }
         });
         $element.find('#bootstrap-3').empty().append(setTemplateItems(bs3Ary));
         $element.find('#bootstrap-4').empty().append(setTemplateItems(bs4Ary));
-        $element.find('.template-item').each(function(){
-            $(this).off().on('click', function(){
+        $element.find('.template-item').each(function () {
+            $(this).off().on('click', function () {
                 selectedTempID = $(this).attr('data-id');
                 $element.find('.template-item').removeClass('selected');
                 $(this).addClass('selected');
@@ -86,43 +90,38 @@ function cogFilesAddCtrl($rootScope, $scope, $element, $state, $http, cogProject
         });
     });
 
-    var processSubmit = function(callback){
+    var processSubmit = function (callback) {
         var formData = new FormData();
         var fileData = $element.find('#cog-new-file-image').prop('files')[0];
         var cogName = $element.find('#cog-new-file-filename').val();
         var cogProject = $element.find('#cog-new-file-project').val();
         var fileUsers = $element.find('#cog-new-file-users').val();
         cogUser = (fileUsers != undefined) ? fileUsers : 0;
-        var filename =  '';
+        var filename = '';
         var fileAdd = false;
         var cogNameAdd = false;
         var cogProjectAdd = false;
-        
-        try
-        {
+
+        try {
             filename = fileData.name
-        }
-        catch(err)
-        {
+        } catch (err) {
             filename = null;
         }
 
-        if((cogName.trim()).length <= 0 || selectedTempID == 0) {
-            if((cogName.trim()).length <= 0) {
+        if ((cogName.trim()).length <= 0 || selectedTempID == 0) {
+            if ((cogName.trim()).length <= 0) {
                 SweetAlert.swal({
                     title: "File Add Fail",
                     text: "Please provide a filename."
-                }, function(isConfirm){
-                    if(isConfirm)
-                    {}
+                }, function (isConfirm) {
+                    if (isConfirm) {}
                 });
-            } else if(selectedTempID == 0) {
+            } else if (selectedTempID == 0) {
                 SweetAlert.swal({
                     title: "File Add Fail",
                     text: "Please select a template."
-                }, function(isConfirm){
-                    if(isConfirm)
-                    {}
+                }, function (isConfirm) {
+                    if (isConfirm) {}
                 });
             }
         } else {
@@ -138,60 +137,59 @@ function cogFilesAddCtrl($rootScope, $scope, $element, $state, $http, cogProject
                 url: './cogworks/cog-files/add',
                 method: "POST",
                 data: formData,
-                headers: {'Content-Type': undefined}
+                headers: {
+                    'Content-Type': undefined
+                }
             }).success(function (response) {
                 console.log(response);
-                if(response != 'false') {
+                if (response != 'false') {
                     callback(response);
                 } else {
                     SweetAlert.swal({
                         title: "Server Error",
                         text: "Something went wrong. Please try it again."
-                    }, function(isConfirm){
-                        if(isConfirm)
-                        {}
+                    }, function (isConfirm) {
+                        if (isConfirm) {}
                     });
                 }
-                
-            }).error(function(error){
+
+            }).error(function (error) {
                 SweetAlert.swal({
                     title: "File Add Fail",
                     text: "Something went wrong. Please try it again."
-                }, function(isConfirm){
-                    if(isConfirm)
-                    {}
+                }, function (isConfirm) {
+                    if (isConfirm) {}
                 });
             });
         }
     }
 
-    self.reset = function(event)
-    {
-        $state.go($state.current, {}, {reload: true});
+    self.reset = function (event) {
+        $state.go($state.current, {}, {
+            reload: true
+        });
     };
-    self.submit = function(event)
-    {
-        processSubmit(function(){
+    self.submit = function (event) {
+        processSubmit(function () {
             SweetAlert.swal({
                 title: "File is Added",
                 text: "Your new file is now available."
-            }, function(isConfirm){
-                if(isConfirm)
-                {
-                    $state.go($state.current, {}, {reload: true});
+            }, function (isConfirm) {
+                if (isConfirm) {
+                    $state.go($state.current, {}, {
+                        reload: true
+                    });
                 }
             });
         });
     };
-    self.submitAndOpen = function(event)
-    {
-        processSubmit(function(data){
+    self.submitAndOpen = function (event) {
+        processSubmit(function (data) {
             SweetAlert.swal({
                 title: "File is Added",
                 text: "Your new file is now available."
-            }, function(isConfirm){
-                if(isConfirm)
-                {
+            }, function (isConfirm) {
+                if (isConfirm) {
                     window.location.href = window.location.protocol + '//' + window.location.host + '/cogworks/' + data.code;
                 }
             });

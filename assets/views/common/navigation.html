@@ -14,7 +14,8 @@
                             </span>
                     </a>
                     <ul uib-dropdown-menu="" class="animated fadeInRight m-t-xs">
-                        <li><a href="">Logout</a></li>
+                        <li><a ng-click="main.logout($event)">Logout</a></li>
+                        <li><a ui-sref="cog-developers.update({id:userID})">Profile</a></li>
                     </ul>
                 </div>
                 <div class="logo-element">

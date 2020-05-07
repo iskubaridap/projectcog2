@@ -308,6 +308,7 @@ return function (App $app) {
     });
     $app->post('/organizations/info/cogworks/deactivate', function ($request, $response, $args) use ($container) {
         $id = $request->getParam('id');
+        $result = false;
         $resultOrg = null;
         $resultUsers = null;
         $dateDateTime = getCurrentDate();
@@ -327,7 +328,23 @@ return function (App $app) {
                 updated = '$dateDateTime'
                 where organization_id = '$id'
             ");
-            $resultUsers = $prepareUsers->execute();
+            $result = $prepareUsers->execute();
+
+            $users = $container->projectcog->query("
+                select * from users where organization_id = '$id';
+            ")->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach($users as $item) {
+                $userID = $item['id'];
+                $prepareCogfiles = $container->cogworks->prepare("
+                    update cog_files
+                    set
+                    status_id = '5',
+                    updated = '$dateDateTime'
+                    where user_id = '$userID'
+                ");
+                $result = $prepareCogfiles->execute();
+            }
         }
 
         return json_encode(($resultOrg));

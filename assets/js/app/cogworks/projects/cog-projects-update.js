@@ -1,43 +1,38 @@
 var cogProjectUpdate = angular.module("cog-projects-update", []);
-function cogProjectCtrl($rootScope, $scope, $element, $state, $http, cogProject, SweetAlert)
-{
+
+function cogProjectCtrl($rootScope, $scope, $element, $state, $http, cogProject, SweetAlert) {
     var self = this;
     var cogProjID = $state.params.id;
     self.title = 'Update';
-    cogProject.getProject(self, {id: cogProjID});
-    
-    self.reset = function(event)
-    {
-        $state.go($state.current, {}, {reload: true});
+    cogProject.getProject(self, {
+        id: cogProjID
+    });
+
+    self.reset = function (event) {
+        $state.go($state.current, {}, {
+            reload: true
+        });
     };
-    self.submit = function(event)
-    {
+    self.submit = function (event) {
         var formData = new FormData();
         var fileData = $element.find('#cog-project-update-image').prop('files')[0];
         var cogProjectName = $element.find('#cog-project-update-name').val();
-        var filename =  '';
+        var filename = '';
 
-        try
-        {
+        try {
             filename = fileData.name
-        }
-        catch(err)
-        {
+        } catch (err) {
             filename = null;
         }
 
-        if((cogProjectName.trim()).length <= 0)
-        {
+        if ((cogProjectName.trim()).length <= 0) {
             SweetAlert.swal({
                 title: "Project Update Fail",
                 text: "Please provide a filename."
-            }, function(isConfirm){
-                if(isConfirm)
-                {}
+            }, function (isConfirm) {
+                if (isConfirm) {}
             });
-        }
-        else
-        {
+        } else {
             formData.append('id', cogProjID);
             formData.append('file', fileData);
             formData.append('cogProjName', cogProjectName);
@@ -46,16 +41,24 @@ function cogProjectCtrl($rootScope, $scope, $element, $state, $http, cogProject,
                 url: './cogworks/projects/update',
                 method: "POST",
                 data: formData,
-                headers: {'Content-Type': undefined}
+                headers: {
+                    'Content-Type': undefined
+                }
             }).success(function (response) {
-                $state.go($state.current, {}, {reload: true});
-            }).error(function(error){
+                SweetAlert.swal({
+                    title: "Success",
+                    text: "Project is successfully updated."
+                }, function (isConfirm) {
+                    if (isConfirm) {
+                        $state.go($state.current, {}, {reload: true});
+                    }
+                });
+            }).error(function (error) {
                 SweetAlert.swal({
                     title: "Project Update Fail",
                     text: "Something went wrong. Please try it again."
-                }, function(isConfirm){
-                    if(isConfirm)
-                    {}
+                }, function (isConfirm) {
+                    if (isConfirm) {}
                 });
             });
         }

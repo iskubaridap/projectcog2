@@ -12,6 +12,10 @@ return function (App $app) {
     $app->post('/login/user/test', function ($request, $response, $args) use ($container) {
         return json_encode(identifyLoggedUser($container));
     });
+    $app->post('/login/logged-user', function ($request, $response, $args) use ($container) {
+        @session_start();
+        return json_encode(isset($_SESSION["logged"]));
+    });
     $app->get('/login', function ($request, $response, $args) use ($container) {
         // Making sure everything is fresh
         @session_start();
@@ -66,7 +70,7 @@ return function (App $app) {
 
         @session_destroy();
 
-        return 'true';
+        // return 'true';
         // route to dashboard for now
         custom_redirect('login');
     });

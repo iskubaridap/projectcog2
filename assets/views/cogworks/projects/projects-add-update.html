@@ -1,7 +1,10 @@
 <div id="section-projects-update" ng-controller="cogProjectCtrl as cogProject">
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-12">
-            <h2>Project {{cogProject.title}} <a ng-if="cogProject.page != 'manage'" ui-sref="cog-projects.active" class="btn btn-primary btn-xs pull-right"><i class="fa fa-folder"></i> Projects</a></h2>
+            <h2>
+                Project {{cogProject.title}} 
+                <!-- <a ng-if="cogProject.page != 'manage'" ui-sref="cog-projects.active" class="btn btn-primary btn-xs pull-right"><i class="fa fa-folder"></i> Projects</a> -->
+            </h2>
         </div>
     </div>
     <section-loader-indicator text="Preparing to show file Details" object="cogProject.project" ng-if="cogProject.project === undefined || cogProject.project.error !== undefined"></section-loader-indicator>

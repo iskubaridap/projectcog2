@@ -2,14 +2,14 @@
     <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
         <ul class="nav navbar-top-links navbar-right">
             <li>
-                <span class="m-r-sm text-muted welcome-message">Welcome User!</span>
+                <span class="m-r-sm text-muted welcome-message">Welcome {{firstname}}!</span>
             </li>
             <li>
                 <a href="#"><i class="fa fa-home"></i> Home</a>
             </li>
-            <li>
+            <!-- <li>
                 <a class="none-sidebar-nav" href="#"><i class="fa fa-envelope"></i> Messages</a>
-            </li>
+            </li> -->
             <li>
                 <!-- <a href="./logout"> -->
                 <a ng-click="main.logout($event)">

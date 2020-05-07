@@ -24,11 +24,20 @@ return function (App $app) {
 
     $app->post('/extra/test-function', function ($request, $response, $args) use ($container) {
         // test();
-        $template = $container->cogworks->query("
+        /* $template = $container->cogworks->query("
             select * from templates
             where id = '4';
         ")->fetch(PDO::FETCH_ASSOC);
-        return getCogTemplateDirectory($template);
+        return getCogTemplateDirectory($template); */
+        /* {
+            "imageValue": "support-engineer.svg",
+            "path": "cogworks/organizations/5/img/thumbnail/cog-files/107/support-engineer.svg",
+            "folder": "cogworks/organizations/5/img/thumbnail/cog-files/107"
+        } */
+        $ary = array();
+        $ary['path'] = 'cogworks/organizations/5/img/thumbnail/cog-files/107/support-engineer.svg';
+        $ary['folder'] = 'cogworks/organizations/5/img/thumbnail/cog-files/107';
+        return json_encode(generateDirectory($ary['folder']));
     });
 
     // reserve code
@@ -85,6 +94,10 @@ return function (App $app) {
     $app->post('/extra/replicate/organizations', function ($request, $response, $args) use ($container) {
         // $date = new DateTime('NOW');
         // $dateDateTime = $date->format('Y-m-d H:i:s');
+
+        /* $cogOrigs = $container->cogworks_original->query("
+            select * from organizations where active = 1 order by id;
+        ")->fetchAll(PDO::FETCH_ASSOC); */
 
         $cogOrigs = $container->cogworks_original->query("
             select * from organizations order by id;
@@ -151,6 +164,14 @@ return function (App $app) {
         $accountTypeName = '';
         $user = array();
 
+        /* $cogOrigUsers = $container->cogworks_original->query("
+            select users.id, users.name, users.username, users.password, users.image, 
+                users.organization_id, users.role, users.account_id, 
+                users.date_registered, users.last_login, users.active 
+            from users, organizations where users.organization_id = organizations.id and 
+                organizations.active = 1 order by id;
+        ")->fetchAll(PDO::FETCH_ASSOC); */
+
         $cogOrigUsers = $container->cogworks_original->query("
             select * from users order by id;
         ")->fetchAll(PDO::FETCH_ASSOC);
@@ -160,7 +181,7 @@ return function (App $app) {
         ")->fetchAll(PDO::FETCH_ASSOC);
 
         $projCogOrganizations = $container->projectcog->query("
-            select * from organizations order by id;
+            select * from organizations where active = 1 order by id;
         ")->fetchAll(PDO::FETCH_ASSOC);
 
         $projCogAccounts = $container->projectcog->query("

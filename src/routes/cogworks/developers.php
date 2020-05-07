@@ -289,6 +289,25 @@ return function (App $app) {
 
         return json_encode($result);
     });
+    $app->post('/cogworks/developers/get-positions', function ($request, $response, $args) use ($container) {
+        $loggedUser = identifyLoggedUser($container);
+        $result = null;
+
+        if($loggedUser['position_id)']){
+            $result = $container->projectcog->query("
+                select * from positions
+                order by id desc limit 1
+            ")->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            $result = $container->projectcog->query("
+                select * from positions
+                where id <> 1 and id <> 2
+                order by id desc limit 1
+            ")->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        return json_encode($result);
+    });
     $app->post('/cogworks/developers/activate', function ($request, $response, $args) use ($container) {
         $id = $request->getParam('id');
         $dateDateTime = getCurrentDate();

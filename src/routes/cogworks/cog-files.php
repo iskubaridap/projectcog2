@@ -100,6 +100,7 @@ return function (App $app) {
             }
             $tmpAry = getCogFileThumbnail($userOrg, $userID, $cog['id'], $cog['image'], $container);
             $cogFile['imageValue'] = $tmpAry['imageValue'];
+            $cogFile['imageFolder'] = $tmpAry['folder']; // for some reason i need to add this, without this it will throw a 502 error on a certain page example http://localhost:7888/dashboard#/cogworks/projects/user/cog-files/5
             $cogFile['image'] = $tmpAry['path'];
             array_push($result, $cogFile);
         }
@@ -370,6 +371,7 @@ return function (App $app) {
     $app->post('/cogworks/cog-files/add', function ($request, $response, $args) use ($container) {
         $cogUser = (int) $request->getParam('cogUser');
         $user = $cogUser !== 0 ? getUserInfo($cogUser, $container) : identifyLoggedUser($container);
+        $loggedUser = identifyLoggedUser($container);
         $userID = $user['id'];
         $userOrgID = $user['organization_id'];
         $cogTempID = $request->getParam('cogTemplate');
@@ -405,7 +407,7 @@ return function (App $app) {
                 where cog_file = '$cogName' and user_id = '$userID'
                 order by id desc limit 1
             ")->fetch(PDO::FETCH_ASSOC);
-            $cogfile['code'] = base64_encode('{"c":"' . $cogfile['id'] . '","u":"' . $userID . '"}');
+            $cogfile['code'] = base64_encode('{"c":"' . $cogfile['id'] . '","u":"' . $loggedUser['id'] . '"}');
             $cogID = $cogfile['id'];
 
             $sourcePath = getCogTemplateDirectory($template) . 'template.json';

@@ -1071,11 +1071,8 @@ angular
     .module('projectcog')
     .config(config)
     .run(function($rootScope, $state, $http, loginService) {
-        // console.log($state);
-        /* if($state.current.name)
-        $http.post("./login/validate")
-        .then(function (response) {
-            loginService.userLogged(response.data);
-        }); */
+        $rootScope.$on('$stateChangeSuccess', function () {
+            loginService.userLogged();
+        })
         $rootScope.$state = $state;
     });

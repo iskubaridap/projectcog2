@@ -14,6 +14,7 @@ function MainCtrl($rootScope, $http, $state, $scope, loginService) {
     this.descriptionText = 'It is an application skeleton for a typical AngularJS web app. You can use it to quickly bootstrap your angular webapp projects and dev environment for these projects.'; */
     $rootScope.user = '';
     $rootScope.userID = '';
+    $rootScope.firstname = '';
     $rootScope.position = '';
     $rootScope.positionID = '';
     $rootScope.organization = '';
@@ -31,8 +32,10 @@ function MainCtrl($rootScope, $http, $state, $scope, loginService) {
     };
     loginService.getLoggedUser(self, {}, function(data) {
         loginService.userLogged(data);
+        console.log(data);
         if(typeof data == 'object') {
             $rootScope.user = data.user;
+            $rootScope.firstname = (((data.firstname).trim()).length > 0) ? data.firstname : data.user;
             $rootScope.userID = data.id;
             $rootScope.position = data.position;
             $rootScope.positionID = data.position_id;

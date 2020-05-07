@@ -84,9 +84,9 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="control-label"><span class="text-danger">*</span> Position</label>
-                                            <select id="cog-user-position-option" ng-model="user.positionsInitValue" ng-disabled="user.notAllow" ng-model="position" class="form-control m-b" name="cog-user-position" required>
-                                                <option ng-if="item.id != undefined" value="{{item.id}}" ng-repeat="item in user.positions">{{item.position}}</option>
+                                            <label class="control-label"><span class="text-danger">*</span> Position {{user.disablePosition}}</label>
+                                            <select id="cog-user-position-option" ng-disabled="user.disablePosition" ng-model="user.positionsInitValue" ng-disabled="user.notAllow" ng-model="position" class="form-control m-b" name="cog-user-position" required>
+                                                <option ng-if="item.id != undefined" value="{{item.id}}" ng-selected="item.id == cogFileClone.details.projectID" ng-repeat="item in user.positions">{{item.position}}</option>
                                             </select>
                                             <!-- <select id="position-option" ng-disabled="userUpdate.notAllow" ng-model="position" class="form-control m-b" name="position" required>
                                                 <option value="1" ng-if="main.usersDetails.position_id == 1">Super Admin</option>

@@ -1,7 +1,10 @@
 <div id="section-cogworks-clone" ng-controller="cogFilesCloneCtrl as cogFilesClone">
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-12">
-            <h2>Clone Cog File <a ui-sref="cog-files.active({project: 'all'})" class="btn btn-primary btn-xs pull-right"><i class="fa fa-files-o"></i> Cog Files</a></h2>
+            <h2>
+                Clone Cog File 
+                <!-- <a ui-sref="cog-files.active({project: 'all'})" class="btn btn-primary btn-xs pull-right"><i class="fa fa-files-o"></i> Cog Files</a> -->
+            </h2>
         </div>
     </div>
     <section-loader-indicator text="Preparing to show file Details" object="cogFilesClone.details" ng-if="cogFilesClone.details === undefined || cogFilesClone.details.error !== undefined"></section-loader-indicator>
