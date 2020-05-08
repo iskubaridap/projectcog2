@@ -510,6 +510,12 @@ function identifyLoggedUser($container)
     $userInfo = getUserInfo($userID, $container);
     return $userInfo;
 }
+function test_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
 function custom_redirect($loc) {
     // echo "<script language='javascript'> window.location = '" . $loc . "'</script>";
 

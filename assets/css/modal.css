@@ -1,0 +1,48 @@
+#thumbnailsInfoViewer .modalThumbnailCloseBtnWrapper
+{
+	padding: 0 15px 15px 15px;
+}
+#thumbnailsInfoViewer .hero
+{
+	background: linear-gradient(#bbd2ae, #93cfc2);
+	text-align: center;
+}
+#thumbnailsInfoViewer .jumbotron,
+#thumbnailsInfoViewer .container .jumbotron,
+#thumbnailsInfoViewer .container-fluid .jumbotron
+{
+    border-radius: 0;
+}
+#thumbnailsInfoViewer h2#header1
+{
+    color:white;
+    text-shadow:2px 2px 3px rgba(0,0,0,0.3);
+    margin-bottom:20px;
+    margin-top:5px;
+    font-weight: bold;
+    font-size: 25px;
+}
+
+#thumbnailsInfoViewer h2#header1.title
+{
+    color:#e95a44;
+    font-size:38px;
+}
+
+#thumbnailsInfoViewer h2.title
+{
+    color:#e95a44;
+    font-size:32px;
+    margin-bottom:0;
+    margin-top:0;
+}
+
+.loadingNotification
+{
+    position: absolute;
+    display: table;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    background: rgba(0,0,0,0.5) url("../img/logo/projectcog/logo.gif") no-repeat center;
+}

@@ -32,7 +32,6 @@ function MainCtrl($rootScope, $http, $state, $scope, loginService) {
     };
     loginService.getLoggedUser(self, {}, function(data) {
         loginService.userLogged(data);
-        console.log(data);
         if(typeof data == 'object') {
             $rootScope.user = data.user;
             $rootScope.firstname = (((data.firstname).trim()).length > 0) ? data.firstname : data.user;

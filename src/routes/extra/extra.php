@@ -815,4 +815,11 @@ return function (App $app) {
         }
         return json_encode($result);
     });
+    $app->post('/extra/email', function ($request, $response, $args) use ($container) {
+        // $request->getParam('userID');
+        $email = test_input($request->getParam("userEmail"));
+        $message = test_input($request->getParam("userMessage"));
+
+        mail("pcog@projectcog.com","Projectcog Site Feedback",$message,"From: " . $email);
+    });
 };

@@ -3,8 +3,7 @@ var loginService = function ($state, $http) {
   self.userLogged = function(data){
     $http.post("./login/logged-user")
     .then(function (response) {
-      console.log(response.data);
-      if(response.data == 'false') {
+      if(response.data == 'false' || (response.data).search("<script language='javascript'>") >= 0) {
         $state.go('login');
       } else {
         self.getLoggedUser(self, {}, function(data) {
