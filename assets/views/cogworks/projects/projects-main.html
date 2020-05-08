@@ -37,7 +37,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="ibox-content{{(cogProject.activeProjects[$index].status == '2') ? ' item-deleted' : ''}}">
+                        <div class="ibox-content {{cogProject.activeProjects[$index].statusName}}">
                             <div class="contact-box center-version">
                                 <a>
                                     <img alt="image" class="" ng-src="{{cogProject.activeProjects[$index].image}}">
@@ -66,7 +66,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="ibox-content{{(cogProject.activeProjects[$index + 1].status == '2') ? ' item-deleted' : ''}}">
+                        <div class="ibox-content {{cogProject.activeProjects[$index + 1].statusName}}">
                             <div class="contact-box center-version">
                                 <a>
                                     <img alt="image" class="" ng-src="{{cogProject.activeProjects[$index + 1].image}}">
@@ -95,7 +95,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="ibox-content{{(cogProject.activeProjects[$index + 2].status == '2') ? ' item-deleted' : ''}}">
+                        <div class="ibox-content {{cogProject.activeProjects[$index + 2].statusName}}">
                             <div class="contact-box center-version">
                                 <a>
                                     <img alt="image" class="" ng-src="{{cogProject.activeProjects[$index + 2].image}}">
@@ -124,7 +124,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="ibox-content{{(cogProject.activeProjects[$index + 3].status == '2') ? ' item-deleted' : ''}}">
+                        <div class="ibox-content {{cogProject.activeProjects[$index + 3].statusName}}">
                             <div class="contact-box center-version">
                                 <a>
                                     <img alt="image" class="" ng-src="{{cogProject.activeProjects[$index + 3].image}}">

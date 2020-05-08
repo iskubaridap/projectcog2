@@ -14,7 +14,9 @@ return function (App $app) {
     });
     $app->post('/login/logged-user', function ($request, $response, $args) use ($container) {
         @session_start();
-        return json_encode(isset($_SESSION["logged"]));
+        $loggedUser = identifyLoggedUser($container);
+        $status = isset($_SESSION["logged"]) && $loggedUser['status_id'] == 1;
+        return json_encode($status);
     });
     $app->get('/login', function ($request, $response, $args) use ($container) {
         // Making sure everything is fresh
@@ -39,7 +41,7 @@ return function (App $app) {
         
         $user = $container->projectcog->query("
             select * from users
-            where email = '$email' and password = '$pass'
+            where email = '$email' and password = '$pass' and status_id = 1
         ")->fetch(PDO::FETCH_ASSOC);
         
         if(is_array($user) && count($user) > 0)

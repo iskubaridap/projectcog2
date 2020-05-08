@@ -18,7 +18,7 @@ return function (App $app) {
             // be aware that i used alias for status_id into status
             $developers = $container->projectcog->query("
                 select users.id, users.user, users.firstname, users.lastname, users.middlename, users.position_id, users.status_id, positions.position, users.image, users.organization_id from users, positions 
-                where users.position_id = positions.id and (users.id <> 1 and users.id <> 2) and users.organization_id <> 1
+                where users.position_id = positions.id and (users.id <> 1 and users.id <> 2)
                 order by users.user asc
             ")->fetchAll(PDO::FETCH_ASSOC);
         } else {
@@ -90,6 +90,10 @@ return function (App $app) {
         if($loggedUser['organization_id'] != 1) {
             $acctID = $loggedUser['account_id'];
             $org = $loggedUser['organization_id'];
+        } else if($loggedUser['organization_id'] == 1 && $org == 0) {
+            // This is when the admin add new user
+            $acctID = 1;
+            $org = 1;
         }
 
         if(!empty($file)) {
@@ -108,7 +112,7 @@ return function (App $app) {
             $imageAry = getCogDeveloperThumbnail($org, $newUser['id'], $imageName, $container);
             $imagePath = $imageAry['path'];
             $uploadedFile->moveTo($imagePath);
-            chmod($imagePath . $imageName,0777);
+            chmod($imagePath,0777);
         } else {
             $result = $container->projectcog->exec("
                 insert into users
@@ -155,6 +159,10 @@ return function (App $app) {
         if($loggedUser['organization_id'] != 1) {
             $acctID = $loggedUser['account_id'];
             $org = $loggedUser['organization_id'];
+        } else if($loggedUser['organization_id'] == 1 && $org == 0) {
+            // This is when the admin add new user
+            $acctID = 1;
+            $org = 1;
         }
 
         if(!empty($file) && strlen(trim($password)) > 0) {
@@ -183,7 +191,7 @@ return function (App $app) {
             $imageAry = getCogDeveloperThumbnail($org, $id, $imageName, $container);
             $imagePath = $imageAry['path'];
             $uploadedFile->moveTo($imagePath);
-            chmod($imagePath . $imageName,0777);
+            chmod($imagePath,0777);
         } else if(!empty($file) && strlen(trim($password)) <= 0) {
             // this statement is for updating an image but it doesn't need to change password value
             $imageName = $file['file']->getClientFilename();
@@ -209,7 +217,7 @@ return function (App $app) {
             $imageAry = getCogDeveloperThumbnail($org, $id, $imageName, $container);
             $imagePath = $imageAry['path'];
             $uploadedFile->moveTo($imagePath);
-            chmod($imagePath . $imageName,0777);
+            chmod($imagePath,0777);
         } else if(strlen(trim($password)) <= 0) {
             // this statement doesn't need to change image and password value
             $prepare = $container->projectcog->prepare("

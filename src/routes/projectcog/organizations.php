@@ -77,7 +77,7 @@ return function (App $app) {
                 generateDirectory($cogworksFolder . 'organizations/' . $newOrgObj['id'] . '/users');
                 generateCogworksDefaultDirectories($cogworksFolder . 'organizations/' . $newOrgObj['id']);
 
-                $imagePathAry = getCogImageThumbnailDirectory('', $orgID, '', 'organizations');
+                $imagePathAry = getCogImageThumbnailDirectory('', $newOrgObj['id'], '', 'organizations');
                 $imagePath = $imagePathAry['typePath'];
                 $uploadedFile->moveTo($imagePath . '/' . $imageName);
                 chmod($imagePath . '/' . $imageName,0777); 
@@ -299,9 +299,34 @@ return function (App $app) {
                 set
                 status_id = '1',
                 updated = '$dateDateTime'
-                where organization_id = '$id'
+                where organization_id = '$id' and status_id = 5
             ");
             $resultUsers = $prepareUsers->execute();
+
+            $prepareProjects = $container->cogworks->prepare("
+                    update projects
+                    set
+                    status_id = '1',
+                    updated = '$dateDateTime'
+                    where organization_id = '$id' and status_id = 5
+                ");
+            $resultProjects = $prepareProjects->execute();
+
+            $users = $container->projectcog->query("
+                select * from users where organization_id = '$id';
+            ")->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach($users as $item) {
+                $userID = $item['id'];
+                $prepareCogfiles = $container->cogworks->prepare("
+                    update cog_files
+                    set
+                    status_id = '1',
+                    updated = '$dateDateTime'
+                    where user_id = '$userID' and status_id = 5
+                ");
+                $result = $prepareCogfiles->execute();
+            }
         }
 
         return json_encode(($resultOrg));
@@ -328,7 +353,16 @@ return function (App $app) {
                 updated = '$dateDateTime'
                 where organization_id = '$id'
             ");
-            $result = $prepareUsers->execute();
+            $resultUser = $prepareUsers->execute();
+
+            $prepareProjects = $container->cogworks->prepare("
+                    update projects
+                    set
+                    status_id = '5',
+                    updated = '$dateDateTime'
+                    where organization_id = '$id'
+                ");
+            $resultProjects = $prepareProjects->execute();
 
             $users = $container->projectcog->query("
                 select * from users where organization_id = '$id';
@@ -343,7 +377,7 @@ return function (App $app) {
                     updated = '$dateDateTime'
                     where user_id = '$userID'
                 ");
-                $result = $prepareCogfiles->execute();
+                $resultCogfiles = $prepareCogfiles->execute();
             }
         }
 

@@ -21,6 +21,9 @@ return function (App $app) {
             select * from organizations
             order by organization asc
         ")->fetchAll(PDO::FETCH_ASSOC);
+        $statues = $container->projectcog->query("
+            select status from statues
+        ")->fetchAll(PDO::FETCH_ASSOC);
 
         // This assumes that the user is the Admin
         if($page == 'manage')
@@ -76,6 +79,7 @@ return function (App $app) {
 
         foreach($cogFiles as $cog)
         {
+            $statusName = str_replace(' ', '-', strtolower($statues[(((int) $cog['status_id']) - 1)]['status']));
             $cogFile = array();
             $cogFileUserID = $cog['user_id'];
             $cogFile['id'] = $cog['id'];
@@ -87,6 +91,7 @@ return function (App $app) {
             $cogFile['project'] = '(Personal File)';
             $cogFile['imageValue'] = '';
             $cogFile['status'] = $cog['status_id'];
+            $cogFile['statusName'] = $statusName;
             $cogFile['code'] = base64_encode('{"c":"' . $cog['id'] . '","u":"' . $userID . '"}');
             $tmpAry = array();
 
@@ -194,6 +199,11 @@ return function (App $app) {
             where id = '$userID';
         ")->fetch(PDO::FETCH_ASSOC);
         $orgID = $user['organization_id'];
+        // reserve code
+        /* $org = $container->projectcog->query("
+            select * from organizations
+            where id = '$orgID';
+        ")->fetch(PDO::FETCH_ASSOC); */
 
         $tmpAry = getCogFileThumbnail($orgID, $userID, $id, $cog['image'], $container);
 
@@ -210,6 +220,7 @@ return function (App $app) {
         $result['projectID'] = $cog['project_id'];
         $result['project'] = ($projID != 0) ? $project['project'] : '(Personal File)';
         $result['status'] = $status['status'];
+        $result['orgID'] = $orgID;
         $result['updated'] = (explode(" ",$cog['updated']))[0];
         $result['created'] = (explode(" ",$cog['created']))[0];
 
@@ -324,9 +335,9 @@ return function (App $app) {
         $cogOrgID = $cogUser['organization_id'];
 
         $sourcePath = getCogFileDirectory($cogProjectID, $cogOrgID, $cogUserID) . $cogID . '.cog';
-        $targetPath = getCogFileDirectory($projID, $loggedUser['organization_id'], $userID) . $cogID . '.cog';
+        $targetPath = getCogFileDirectory($projID, $loggedUser['organization_id'], $cogUserID) . $cogID . '.cog';
         $cogFileContent = json_decode(file_get_contents($sourcePath, true));        
-        $cogFileContent->design->id = setCogworksDesignUniqueID($userID);
+        $cogFileContent->design->id = setCogworksDesignUniqueID($cogUserID);
         $cogFileContent->design->name = $name;
 
         $myfile = fopen($targetPath, "w");
@@ -341,15 +352,15 @@ return function (App $app) {
             $insert = $container->cogworks->exec("
                 insert into cog_files
                 (cog_file, image, project_id, user_id)
-                values('$cogName', '$imageName', '$projID', '$userID')
+                values('$cogName', '$imageName', '$projID', '$cogUserID')
             ");
             $newCog = $container->cogworks->query("
                 select * from cog_files
-                where cog_file = '$cogName' and user_id = '$userID'
+                where cog_file = '$cogName' and user_id = '$cogUserID'
                 order by id desc limit 1
             ")->fetch(PDO::FETCH_ASSOC);
 
-            $imagePathAry = getCogImageThumbnailDirectory($newCog['id'], $loggedUser['organization_id'], $userID, 'cog-files');
+            $imagePathAry = getCogImageThumbnailDirectory($newCog['id'], $cogOrgID, $cogUserID, 'cog-files');
             $imagePath = $imagePathAry['path'];
 
             $uploadedFile->moveTo($imagePath . $imageName);
@@ -358,7 +369,7 @@ return function (App $app) {
             $insert = $container->cogworks->exec("
                 insert into cog_files
                 (cog_file, project_id, user_id)
-                values('$cogName' , '$projID', '$userID')
+                values('$cogName' , '$projID', '$cogUserID')
             ");
         }
         if($insert == 1) {
@@ -428,7 +439,7 @@ return function (App $app) {
                 $uploadedFile->moveTo($imagePath . $imageName);
                 chmod($imagePath . $imageName,0777);
             }
-            $result = true;
+            $result = $cogfile;
         } else {
             $result = false;
         }

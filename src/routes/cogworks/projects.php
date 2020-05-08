@@ -25,6 +25,10 @@ return function (App $app) {
             order by organization asc
         ")->fetchAll(PDO::FETCH_ASSOC);
 
+        $statues = $container->projectcog->query("
+            select status from statues
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
         // This assumes that the user is the Admin
         if($page == 'manage')
         {
@@ -44,6 +48,7 @@ return function (App $app) {
 
         foreach($projects as $prj)
         {
+            $statusName = str_replace(' ', '-', strtolower($statues[(((int) $prj['status_id']) - 1)]['status']));
             $project = array();
             $project['id'] = $prj['id'];
             $projectID = $prj['id'];
@@ -52,6 +57,7 @@ return function (App $app) {
             $project['created'] = (explode(" ",$prj['created']))[0];
             $project['cogfiles'] = 0;
             $project['status'] = $prj['status_id'];
+            $project['statusName'] = $statusName;
             $projImgAry = array();
 
             $projImgAry = getCogProjectThumbnail($prj['organization_id'], $prj['id'], $prj['image'], $container);
