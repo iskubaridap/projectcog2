@@ -70,7 +70,8 @@ return function (App $app) {
 
         $user = getUserInfo($userID, $container);
 
-        $resourceFolder = (getCogResourcesPath($cogID, $container))[$resource];
+        // $resourceFolder = (getCogResourcesPath($cogID, $container))[$resource];
+        $resourceFolder = getCogResourcesPath($cogID, $container)[$resource];
         $tmpResourceFolder = getTmpResourcesDirectoryPath($user['organization_id'], $userID, $resource) . '/' . $designID;
 
         rrmdir($resourceFolder);
@@ -102,67 +103,101 @@ return function (App $app) {
         $cogOrigs = $container->cogworks_original->query("
             select * from organizations order by id;
         ")->fetchAll(PDO::FETCH_ASSOC);
+        $lastOrgIDNumObj = $container->cogworks_original->query("
+            select id from organizations order by id desc limit 1;
+        ")->fetch(PDO::FETCH_ASSOC);
 
-        foreach($cogOrigs as $cogOrig)
+        $lastOrgIDNum = (int) $lastOrgIDNumObj['id'];
+        $orgIndex = 0;
+        $cogOrigID = 0;
+        $cogOrigIndex = 0;
+        for($index = 0; $index < $lastOrgIDNum; $index++)
         {
-            $date = date_create($cogOrig['date_started']);
-            $dateDateTime = date_format($date,"Y-m-d H:i:s");
-            $orgName = $cogOrig['name'];
+            $orgIndex++;
+            $cogOrig = $cogOrigs[$cogOrigIndex];
+            $cogOrigID = (int) $cogOrig['id'];
+            if($orgIndex == $cogOrigID) {
+                $cogOrigIndex++;
+                $date = date_create($cogOrig['date_started']);
+                $dateDateTime = date_format($date,"Y-m-d H:i:s");
+                $orgName = $cogOrig['name'];
+                $status = ($cogOrig['active'] == 1) ? 1 : 2;
 
-            if($orgName == 'Admin')
-            {
+                if($orgName == 'Admin')
+                {
+                    $adminInsert = $container->projectcog->exec("
+                        insert into accounts
+                        (account_type_id, allowed_users_id, started, created)
+                        values('1', '1', '$dateDateTime', '$dateDateTime')
+                    ");
+                    $admin = $container->projectcog->exec("
+                        insert into organizations
+                        (organization, account_id, created)
+                        values('$orgName', '1', '$dateDateTime')
+                    ");
+                }
+                else
+                {
+                    $accountInsert = $container->projectcog->exec("
+                        insert into accounts
+                        (account_type_id, allowed_users_id, started, created)
+                        values('2', '1', '$dateDateTime', '$dateDateTime')
+                    ");
+                    $accountRetrieve = $container->projectcog->query("
+                        select * from accounts 
+                        order by id desc limit 1;
+                    ")->fetch(PDO::FETCH_ASSOC);
+                    $accountID = $accountRetrieve['id'];
+                    
+                    $org = $container->projectcog->exec("
+                        insert into organizations
+                        (organization, account_id, status_id, created)
+                        values('$orgName', '$accountID','$status', '$dateDateTime')
+                    ");
+                }
+            } else {
                 $adminInsert = $container->projectcog->exec("
                     insert into accounts
-                    (account_type_id, allowed_users_id, started, created)
-                    values('1', '1', '$dateDateTime', '$dateDateTime')
-                ");
-                $admin = $container->projectcog->exec("
-                    insert into organizations
-                    (organization, account_id, created)
-                    values('$orgName', '1', '$dateDateTime')
-                ");
-            }
-            else
-            {
-                $accountInsert = $container->projectcog->exec("
-                    insert into accounts
-                    (account_type_id, allowed_users_id, started, created)
-                    values('2', '1', '$dateDateTime', '$dateDateTime')
+                    (account_type_id, allowed_users_id, program_id)
+                    values('0', '0', '0')
                 ");
                 $accountRetrieve = $container->projectcog->query("
                     select * from accounts 
                     order by id desc limit 1;
                 ")->fetch(PDO::FETCH_ASSOC);
                 $accountID = $accountRetrieve['id'];
-                
                 $org = $container->projectcog->exec("
                     insert into organizations
-                    (organization, account_id, created)
-                    values('$orgName', '$accountID', '$dateDateTime')
+                    (organization, account_id, status_id)
+                    values('anonymous', '$accountID','2')
                 ");
             }
+            
         }
 
         return 'Process on replicating Organization is complete';
     });
     $app->post('/extra/replicate/users', function ($request, $response, $args) use ($container) {
-        $name = '';
+        $name = 'anonymous';
         $userFirstName = '';
         $userLastName = '';
         $userMiddleName = '';
         $email = '';
         $username = '';
         $password = '';
-        $image = '';
-        $organizationID = '';
+        $image = null;
+        $organizationID = 0;
         $organizationName = '';
-        $positionID = '';
+        $positionID = 0;
         $positionName = '';
-        $accountID = '';
+        $accountID = 0;
         $accountName = '';
-        $accountTypeID = '';
+        $accountTypeID = 0;
         $accountTypeName = '';
         $user = array();
+        $userIndex = 0;
+        $cogUsersIndex = 0;
+        $monitorResult = array();
 
         /* $cogOrigUsers = $container->cogworks_original->query("
             select users.id, users.name, users.username, users.password, users.image, 
@@ -175,13 +210,16 @@ return function (App $app) {
         $cogOrigUsers = $container->cogworks_original->query("
             select * from users order by id;
         ")->fetchAll(PDO::FETCH_ASSOC);
+        $lastUserIDNumObj = $container->cogworks_original->query("
+            select id from users order by id desc limit 1;
+        ")->fetch(PDO::FETCH_ASSOC);
 
         $projCogPositions = $container->projectcog->query("
             select * from positions order by id;
         ")->fetchAll(PDO::FETCH_ASSOC);
 
         $projCogOrganizations = $container->projectcog->query("
-            select * from organizations where active = 1 order by id;
+            select * from organizations order by id;
         ")->fetchAll(PDO::FETCH_ASSOC);
 
         $projCogAccounts = $container->projectcog->query("
@@ -191,141 +229,151 @@ return function (App $app) {
         $projCogAccountTypes = $container->projectcog->query("
             select * from account_types order by id;
         ")->fetchAll(PDO::FETCH_ASSOC);
+        // select id from cog_files order by id desc limit 1;
+        
+        $lastUserIDNum = (int) $lastUserIDNumObj['id'];
 
-        foreach($cogOrigUsers as $cogUser)
+        for($index = 0; $index < $lastUserIDNum; $index++)
         {
-            $name = '';
+            $cogUser = $cogOrigUsers[$cogUsersIndex];
+            $name = 'anonymous';
             $userFirstName = '';
             $userLastName = '';
             $userMiddleName = '';
             $email = '';
             $username = '';
             $password = '';
-            $organizationID = '';
+            $image = null;
+            $organizationID = 0;
             $organizationName = '';
-            $positionID = '';
+            $positionID = 0;
             $positionName = '';
-            $accountID = '';
+            $accountID = 0;
             $accountName = '';
-            $accountTypeID = '';
+            $accountTypeID = 0;
             $accountTypeName = '';
+            $status = 0;
+            $userCogID = (int) $cogUser['id'];
+            $userResult = array();
+            $userIndex++;
 
-            $userNameAry = explode(" ",$cogUser['name']);
+            if($userIndex == $userCogID) {
+                $cogUsersIndex++;
+                $userNameAry = explode(" ",$cogUser['name']);
 
-            $date = date_create($cogUser['date_registered']);
-            $dateDateTime = date_format($date,"Y-m-d H:i:s");
+                $date = date_create($cogUser['date_registered']);
+                $dateDateTime = date_format($date,"Y-m-d H:i:s");
 
-            if(count($userNameAry) == 1)
-            {
-                $name = $cogUser['name'];
-            }
-            else if(count($userNameAry) == 2)
-            {
-                $name = $cogUser['name'];
-                $userFirstName = trim($userNameAry[0]);
-                $userLastName = trim($userNameAry[1]);
-            }
-            else if(count($userNameAry) == 3)
-            {
-                $name = $cogUser['name'];
-                if(strlen(trim($userNameAry[1])) > 0 && strlen(trim($userNameAry[1])) <= 2 && strpos(trim($userNameAry[1])) !== false)
+                $status = ($cogUser['active'] == 1) ? 1 : 2;
+
+                if(count($userNameAry) == 1)
                 {
-                    // This is getting any middle initials
-                    $userMiddleName = trim($userNameAry[1]);
+                    $name = $cogUser['name'];
+                }
+                else if(count($userNameAry) == 2)
+                {
+                    $name = $cogUser['name'];
                     $userFirstName = trim($userNameAry[0]);
-                    $userLastName = trim($userNameAry[2]);
+                    $userLastName = trim($userNameAry[1]);
                 }
-            }
-            else
-            {
-                /*
-                    Just incase the user input a long name
-                    We cannot determine what is the exact name of the user at this point,
-                    or to determine their first, middle and last name.
-                 */
-                $name = $cogUser['name'];
-            }
-            $email = $cogUser['username'];
-            $username = $cogUser['username'];
-            $password = $cogUser['password'];
-            $organizationID = $cogUser['organization_id'];
-            $organizationName = '';
+                else if(count($userNameAry) == 3)
+                {
+                    $name = $cogUser['name'];
+                    if(strlen(trim($userNameAry[1])) > 0 && strlen(trim($userNameAry[1])) <= 2 && strpos(trim($userNameAry[1])) !== false)
+                    {
+                        // This is getting any middle initials
+                        $userMiddleName = trim($userNameAry[1]);
+                        $userFirstName = trim($userNameAry[0]);
+                        $userLastName = trim($userNameAry[2]);
+                    }
+                }
+                else
+                {
+                    /*
+                        Just incase the user input a long name
+                        We cannot determine what is the exact name of the user at this point,
+                        or to determine their first, middle and last name.
+                    */
+                    $name = $cogUser['name'];
+                }
+                $email = $cogUser['username'];
+                $username = $cogUser['username'];
+                $password = $cogUser['password'];
+                $organizationID = $cogUser['organization_id'];
+                $organizationName = '';
 
-            foreach($projCogOrganizations as $item)
-            {
-                if($item['id'] == $cogUser['organization_id'])
+                foreach($projCogOrganizations as $item)
                 {
-                    $organizationName = $item['organization'];
-                    $accountID = $item['account_id'];
-                    $accountTypeID = $item['account_type_id'];
-                    break;
+                    if($item['id'] == $cogUser['organization_id'])
+                    {
+                        $organizationName = $item['organization'];
+                        $accountID = $item['account_id'];
+                        $accountTypeID = $item['account_type_id'];
+                        break;
+                    }
                 }
-            }
-            foreach($projCogPositions as $item)
-            {
-                if(strtolower($item['position']) == strtolower($cogUser['role']))
+                foreach($projCogPositions as $item)
                 {
-                    $positionID = $item['id'];
-                    $positionName = $item['position'];
-                    break;
+                    if(strtolower($item['position']) == strtolower($cogUser['role']))
+                    {
+                        $positionID = $item['id'];
+                        $positionName = $item['position'];
+                        break;
+                    }
                 }
-            }
-            foreach($projCogAccounts as $item)
-            {
-                if($accountID == $item['id'])
+                foreach($projCogAccounts as $item)
                 {
-                    $accountTypeID = $item['account_type_id'];
-                    break;
+                    if($accountID == $item['id'])
+                    {
+                        $accountTypeID = $item['account_type_id'];
+                        break;
+                    }
                 }
-            }
-            foreach($projCogAccountTypes as $item)
-            {
-                if($accountTypeID == $item['id'])
+                foreach($projCogAccountTypes as $item)
                 {
-                    $accountTypeName = $item['account_type'];
-                    break;
+                    if($accountTypeID == $item['id'])
+                    {
+                        $accountTypeName = $item['account_type'];
+                        break;
+                    }
                 }
-            }
-            if($cogUser['image'] != null)
-            {
-                $image = $cogUser['image'];
-            }
-            
-            if($organizationID == 1)
-            {
+                if($cogUser['image'] != null)
+                {
+                    $image = $cogUser['image'];
+                }
+                
+                if($organizationID == 1)
+                {
+                    $userProcess = $container->projectcog->exec("
+                        insert into users
+                        (user, firstname, lastname, middlename, email, username, password, image, address, country, position_id, account_id, organization_id, status_id, created)
+                        values('$name', '$userFirstName', '$userLastName', '$userMiddleName', '$email', '$username', '$password', '$image', '', '', '1', '1', '$organizationID', '$status', '$dateDateTime')
+                    ");
+                }
+                else
+                {
+                    $userProcess = $container->projectcog->exec("
+                        insert into users
+                        (user, firstname, lastname, middlename, email, username, password, image, address, country, position_id, account_id, organization_id, status_id, created)
+                        values('$name', '$userFirstName', '$userLastName', '$userMiddleName', '$email', '$username', '$password', '$image', '', '', '$positionID', '$accountID', '$organizationID', '$status', '$dateDateTime')
+                    ");
+                }
+            } else {
                 $userProcess = $container->projectcog->exec("
                     insert into users
-                    (user, firstname, lastname, middlename, email, username, password, image, address, country, position_id, account_id, organization_id, created)
-                    values('$name', '$userFirstName', '$userLastName', '$userMiddleName', '$email', '$username', '$password', '$image', '', '', '1', '1', '$organizationID', '$dateDateTime')
+                    (user, firstname, lastname, middlename, email, username, password, image, address, country, position_id, account_id, organization_id, status_id, created)
+                    values('anonymous', '', '', '', '', '', '', '', '', '', '0', '0', '0', '2', '$dateDateTime')
                 ");
             }
-            else
-            {
-                $userProcess = $container->projectcog->exec("
-                    insert into users
-                    (user, firstname, lastname, middlename, email, username, password, image, address, country, position_id, account_id, organization_id, created)
-                    values('$name', '$userFirstName', '$userLastName', '$userMiddleName', '$email', '$username', '$password', '$image', '', '', '$positionID', '$accountID', '$organizationID', '$dateDateTime')
-                ");
-            }
-            
-            echo  $name . ' - is successfully processed.<br>';
-            echo 'Name: ' . $name . '<br>';
-            echo 'FirstName: ' . $userFirstName . '<br>';
-            echo 'MiddleName: ' . $userMiddleName . '<br>';
-            echo 'LastName: ' . $userLastName. '<br>';
-            echo 'Email: ' . $email. '<br>';
-            echo 'Username: ' . $username. '<br>';
-            echo 'Password: ' . $password. '<br>';
-            echo 'Image: ' . $image . '<br>';
-            echo 'Org: ' . $organizationName. ' - ID: ' . $organizationID . '<br>';
-            echo 'Position: ' . $positionName. ' - ID: ' . $positionID . '<br>';
-            echo 'Account: ' . $accountTypeName . ' - ID: ' . $accountID . '<br>';
-            echo '<hr>';
 
-            echo '<br><br>';
+            $userResult['name'] = $name;
+            $userResult['id'] = $userCogID;
+            $userResult['positionName'] = $positionName;
+            $userResult['organizationName'] = $organizationName;
+            $userResult['bool'] = $userIndex == $userCogID;
+            array_push($monitorResult, $userResult);
         }
-
-        //return 'Process on replicating Users is complete';
+        return json_encode($monitorResult);
     });
     $app->post('/extra/replicate/projects', function ($request, $response, $args) use ($container) {
         $projects = $container->cogworks_original->query("
@@ -338,11 +386,12 @@ return function (App $app) {
             $projOrg = $project['organization_id'];
             $date = date_create($project['date_started']);
             $dateDateTime = date_format($date,"Y-m-d H:i:s");
+            $status = ($project['active'] == 1) ? 1 : 2;
 
             $projectProcess = $container->cogworks->exec("
                 insert into projects
-                (project, organization_id, created)
-                values('$projName', '$projOrg', '$dateDateTime');
+                (project, organization_id, status_id, created)
+                values('$projName', '$projOrg', '$status', '$dateDateTime');
             ");
 
             echo  $projName . ' is processed...<br>';
@@ -444,14 +493,14 @@ return function (App $app) {
         {
             $podContent = addslashes($pod['pods']);
             $orgID = $pod['organization_id'];
-            $podStatus = $pod['active'];
             $dateUpdated = date_create($pod['date_updated']);
             $dateDateTimeUpdated = date_format($dateUpdated,"Y-m-d H:i:s");
+            $status = ($pod['active'] == 1) ? 1 : 2;
 
             $podProcess = $container->cogworks->exec("
                 insert into pods
                 (pod, organization_id, status_id, updated, created)
-                values('$podContent', '$orgID', '$podStatus', '$dateDateTimeUpdated', '$dateDateTimeUpdated');
+                values('$podContent', '$orgID', '$status', '$dateDateTimeUpdated', '$dateDateTimeUpdated');
             ");
         }
         echo 'Process is complete!';
@@ -465,20 +514,45 @@ return function (App $app) {
         {
             $whatNotContent = addslashes($whatNot['what_nots']);
             $userID = $whatNot['user_id'];
-            $whatNotStatus = $whatNot['active'];
             $dateUpdated = date_create($whatNot['date_updated']);
             $dateDateTimeUpdated = date_format($dateUpdated,"Y-m-d H:i:s");
+            $status = ($whatNot['active'] == 1) ? 1 : 2;
 
             $whatNotProcess = $container->cogworks->exec("
                 insert into what_nots
                 (what_not, user_id, status_id, updated, created)
-                values('$whatNotContent', '$userID', '$whatNotStatus', '$dateDateTimeUpdated', '$dateDateTimeUpdated');
+                values('$whatNotContent', '$userID', '$status', '$dateDateTimeUpdated', '$dateDateTimeUpdated');
             ");
         }
         echo 'Process is complete!';
         //echo json_encode($whatNotProcess);
     });
+    $app->post('/extra/remove/users/folders', function ($request, $response, $args) use ($container) {
+        // this is use to remove all major folders without any other processing after.
+        header('Content-type: text/html; charset=utf-8');
+        $root = $_SERVER['DOCUMENT_ROOT'];
+        $cogworksFolder = $root . '/cogworks/';
 
+        rrmdir($cogworksFolder . 'admin');
+        rrmdir($cogworksFolder . 'developers');
+        rrmdir($cogworksFolder . 'organizations');
+        /* 
+            29 - Sir_Jeffrey = 11
+            - 568.cog
+                - Objection Handling_copy.cog
+                - 0 = 33 (user_id)
+                - 11 (organization_id)
+                - 29 (project_id)
+
+            42 - Starter_Projects = 14
+            - 675.cog
+                - First Project.cog
+                - 55 (user_id)
+                - 14 (organization_id)
+                - 42 (project_id)
+         */
+        echo 'Process is complete!';
+    });
     $app->post('/extra/generate/users/folders', function ($request, $response, $args) use ($container) {
         header('Content-type: text/html; charset=utf-8');
         $root = $_SERVER['DOCUMENT_ROOT'];

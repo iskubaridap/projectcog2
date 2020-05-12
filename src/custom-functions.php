@@ -26,7 +26,7 @@ function getCogOrganizationThumbnail($orgID, $img, $container)
             $ary['path'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/organizations/' . $img;
         }
     }
-    generateDirectory($ary['folder']);
+    generateDirectory($_SERVER['DOCUMENT_ROOT'] . $ary['folder']);
     return $ary;
 }
 function getCogDeveloperThumbnail($orgID, $userID, $img, $container)
@@ -58,7 +58,7 @@ function getCogDeveloperThumbnail($orgID, $userID, $img, $container)
             $ary['path'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/profiles/' . $userID . '/' . $img;
         }
     }
-    generateDirectory($ary['folder']);
+    generateDirectory($_SERVER['DOCUMENT_ROOT'] . $ary['folder']);
     return $ary;
 }
 function getCogProjectThumbnail($orgID, $projID, $img, $container)
@@ -101,7 +101,7 @@ function getCogProjectThumbnail($orgID, $projID, $img, $container)
             $ary['path'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/projects/' . $projID . '/' . $img;
         }
     }
-    generateDirectory($ary['folder']);
+    generateDirectory($_SERVER['DOCUMENT_ROOT'] . $ary['folder']);
     return $ary;
 }
 function getCogFileThumbnail($orgID, $userID, $cogID, $img, $container)
@@ -159,7 +159,7 @@ function getCogFileThumbnail($orgID, $userID, $cogID, $img, $container)
             $ary['path'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/cog-files/' . $cogID . '/' . $img;
         }
     }
-    generateDirectory($ary['folder']);
+    generateDirectory($_SERVER['DOCUMENT_ROOT'] . $ary['folder']);
     return $ary;
 }
 function getCogImageThumbnailDirectory($fileID, $orgID, $userID, $type)
@@ -186,8 +186,8 @@ function getCogImageThumbnailDirectory($fileID, $orgID, $userID, $type)
         $result['typePath'] = setCogworksDirectoryPath($orgID) . $orgID . '/img/thumbnail/' . $type;
         $result['filePath'] = setCogworksDirectoryPath($orgID) . $orgID . '/img/thumbnail/' . $type . '/' . $fileID;
     }
-    generateDirectory($result['typePath']);
-    generateDirectory($result['filePath']);
+    generateDirectory(ROOT . $result['typePath']);
+    generateDirectory(ROOT . $result['filePath']);
     
     return $result;
 }
@@ -215,8 +215,8 @@ function getCogImageDirectory($projID, $orgID, $userID, $folder)
         $folderPath = setCogworksDirectoryPath($orgID) . $orgID . 'img/' . $folder;
         $projPath = setCogworksDirectoryPath($orgID) . $orgID . 'img/' . $folder . '/' . $projID;
     }
-    generateDirectory($folderPath);
-    generateDirectory($projPath);
+    generateDirectory($_SERVER['DOCUMENT_ROOT'] . $folderPath);
+    generateDirectory($_SERVER['DOCUMENT_ROOT'] . $projPath);
 
     return $path;
 }

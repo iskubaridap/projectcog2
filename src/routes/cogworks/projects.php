@@ -54,7 +54,7 @@ return function (App $app) {
             $projectID = $prj['id'];
             $project['project'] = $prj['project'];
             $project['orgID'] = $prj['organization_id'];
-            $project['created'] = (explode(" ",$prj['created']))[0];
+            $project['created'] = explode(" ",$prj['created'])[0];
             $project['cogfiles'] = 0;
             $project['status'] = $prj['status_id'];
             $project['statusName'] = $statusName;
@@ -105,7 +105,7 @@ return function (App $app) {
             $projectID = $prj['id'];
             $project['project'] = $prj['project'];
             $project['orgID'] = $prj['organization_id'];
-            $project['created'] = (explode(" ",$prj['created']))[0];
+            $project['created'] = explode(" ",$prj['created'])[0];
             $project['cogfiles'] = 0;
             $project['status'] = $prj['status_id'];
             $projImgAry = array();
@@ -284,7 +284,7 @@ return function (App $app) {
             $projectID = $prj['id'];
             $project['project'] = $prj['project'];
             $project['orgID'] = $prj['organization_id'];
-            $project['created'] = (explode(" ",$prj['created']))[0];
+            $project['created'] = explode(" ",$prj['created'])[0];
             $project['cogfiles'] = array();
 
             $projImgAry = getCogProjectThumbnail($prj['organization_id'], $prj['id'], $prj['image'], $container);

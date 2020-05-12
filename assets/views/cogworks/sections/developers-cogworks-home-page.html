@@ -7,7 +7,7 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h5>Developers</h5>
-                    <a ui-sref="cog-developers.active" class="btn btn-primary btn-xs pull-right"><i class="fa fa-users"></i>&nbsp;&nbsp;&nbsp;Visit Page</a>
+                    <a ui-sref="cog-developers.active({page: 'user'})" class="btn btn-primary btn-xs pull-right"><i class="fa fa-users"></i>&nbsp;&nbsp;&nbsp;Visit Page</a>
                 </div>
                 <div class="ibox-content">
                     <div class="row">
@@ -28,7 +28,7 @@
                             <p class="text-center">There are {{developer.activeDevelopers.length}} total number of Active Developers. You can view them of all at this <a ui-sref="cog-developers.active">page</a>.</p>
                         </div>
                         <div class="col-md-12" ng-if="developer.activeDevelopers.length == 1">
-                            <p class="text-center">There is 1 Active Developer. You can view him at this <a ui-sref="cog-developers.active">page</a>.</p>
+                            <p class="text-center">There is 1 Active Developer. You can view him at this <a ui-sref="cog-developers.active({page: 'user'})">page</a>.</p>
                         </div>
                     </div>
                 </div>

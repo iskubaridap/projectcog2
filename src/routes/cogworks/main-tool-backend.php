@@ -165,8 +165,8 @@ return function (App $app) {
                 $cog['user'] = $file['user_id'];
                 $cog['project'] = $prj['project'];
                 $cog['projectID'] = $prj['id'];
-                $cog['created'] = (explode(" ",$file['created']))[0];
-                $cog['updated'] = (explode(" ",$file['updated']))[0];
+                $cog['created'] = explode(" ",$file['created'])[0];
+                $cog['updated'] = explode(" ",$file['updated'])[0];
                 $tmpAry = array();
 
                 $tmpAry = getCogFileThumbnail($orgID, $userID, $file['id'], $file['image'], $container);
@@ -221,7 +221,7 @@ return function (App $app) {
             $projectID = $prj['id'];
             $project['project'] = $prj['project'];
             $project['orgID'] = $prj['organization_id'];
-            $project['created'] = (explode(" ",$prj['created']))[0];
+            $project['created'] = explode(" ",$prj['created'])[0];
             $project['cogfiles'] = array();
 
             $projImgAry = getCogProjectThumbnail($prj['organization_id'], $prj['id'], $prj['image'], $container);
@@ -332,7 +332,7 @@ return function (App $app) {
         $resources = array('audio', 'pdf', 'extra', 'video');
 
         foreach($resources as $resource) {
-            $resourcePath = ($cogID != 0) ? (getCogResourcesPath($cogID, $container))[$resource] : 0;
+            $resourcePath = ($cogID != 0) ? getCogResourcesPath($cogID, $container)[$resource] : 0;
             $tmpResourcePath = getTmpResourcesDirectoryPath($user['organization_id'], $userID, $resource);
             generateDirectory($tmpResourcePath . '/' . $designID);
             if(count($assets[$resource]['children']) > 0) {
@@ -341,28 +341,28 @@ return function (App $app) {
         }
 
         /* // generating folders for the assets
-        $resourcePath = ($cogID != 0) ? (getCogResourcesPath($cogID, $container))['audio'] : 0;
+        $resourcePath = ($cogID != 0) ? getCogResourcesPath($cogID, $container)['audio'] : 0;
         $tmpResourcePath = getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'audio');
         generateDirectory($tmpResourcePath . '/' . $designID);
         if(count($assets['audio']['children']) > 0) {
             copydir($resourcePath, $tmpResourcePath . '/' . $designID);
         }
         
-        $resourcePath = ($cogID != 0) ? (getCogResourcesPath($cogID, $container))['pdf'] : 0;
+        $resourcePath = ($cogID != 0) ? getCogResourcesPath($cogID, $container)['pdf'] : 0;
         $tmpResourcePath = getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'pdf');
         generateDirectory($tmpResourcePath . '/' . $designID);
         if(count($assets['pdf']['children']) > 0) {
             copydir($resourcePath, $tmpResourcePath . '/' . $designID);
         }
 
-        $resourcePath = ($cogID != 0) ? (getCogResourcesPath($cogID, $container))['video'] : 0;
+        $resourcePath = ($cogID != 0) ? getCogResourcesPath($cogID, $container)['video'] : 0;
         $tmpResourcePath = getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'video');
         generateDirectory($tmpResourcePath . '/' . $designID);
         if(count($assets['video']['children']) > 0) {
             copydir($resourcePath, $tmpResourcePath . '/' . $designID);
         }
         
-        $resourcePath = ($cogID != 0) ? (getCogResourcesPath($cogID, $container))['extra'] : 0;
+        $resourcePath = ($cogID != 0) ? getCogResourcesPath($cogID, $container)['extra'] : 0;
         $tmpResourcePath = getTmpResourcesDirectoryPath($user['organization_id'], $userID, 'extra');
         generateDirectory($tmpResourcePath . '/' . $designID);
         if(count($assets['extra']['children']) > 0) {
@@ -627,8 +627,8 @@ return function (App $app) {
         $result['userOrgID'] = $orgID;
         $result['userOrg'] = $org['organization'];
         $result['status'] = $status['status'];
-        $result['updated'] = (explode(" ",$cog['updated']))[0];
-        $result['created'] = (explode(" ",$cog['created']))[0];
+        $result['updated'] = explode(" ",$cog['updated'])[0];
+        $result['created'] = explode(" ",$cog['created'])[0];
         $result['filename'] = $cog['id'] . '.cog';
         $result['basePath'] = $basePath = getCogFileDirectory($projID, $orgID, $userID);
         // $result['resources'] = getCogResourcesPath($id, $container);
@@ -671,7 +671,7 @@ return function (App $app) {
 
             foreach($resources as $resource) {
                 if($content['design']['assets'][$resource]['children'] > 0) {
-                    $resourceFolder = (getCogResourcesPath($cogID, $container))[$resource];
+                    $resourceFolder = getCogResourcesPath($cogID, $container)[$resource];
                     $tmpResourceFolder = getTmpResourcesDirectoryPath($user['organization_id'], $userID, $resource) . '/' . $designID;
                     rrmdir($resourceFolder);
                     copydir($tmpResourceFolder, $resourceFolder);
@@ -721,7 +721,7 @@ return function (App $app) {
 
         foreach($resources as $resource) {
             if($contentObj['design']['assets'][$resource]['children'] > 0) {
-                $resourceFolder = (getCogResourcesPath($fileID, $container))[$resource];
+                $resourceFolder = getCogResourcesPath($fileID, $container)[$resource];
                 $tmpResourceFolder = getTmpResourcesDirectoryPath($user['organization_id'], $userID, $resource) . '/' . $designID;
                 rrmdir($resourceFolder);
                 copydir($tmpResourceFolder, $resourceFolder);

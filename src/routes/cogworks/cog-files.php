@@ -86,8 +86,8 @@ return function (App $app) {
             $cogFile['cogfile'] = str_replace('.cog', '', $cog['cog_file']);
             $cogFile['user'] = $cog['user_id'];
             $cogFile['projectID'] = $cog['project_id'];
-            $cogFile['created'] = (explode(" ",$cog['created']))[0];
-            $cogFile['updated'] = (explode(" ",$cog['updated']))[0];
+            $cogFile['created'] = explode(" ",$cog['created'])[0];
+            $cogFile['updated'] = explode(" ",$cog['updated'])[0];
             $cogFile['project'] = '(Personal File)';
             $cogFile['imageValue'] = '';
             $cogFile['status'] = $cog['status_id'];
@@ -221,8 +221,8 @@ return function (App $app) {
         $result['project'] = ($projID != 0) ? $project['project'] : '(Personal File)';
         $result['status'] = $status['status'];
         $result['orgID'] = $orgID;
-        $result['updated'] = (explode(" ",$cog['updated']))[0];
-        $result['created'] = (explode(" ",$cog['created']))[0];
+        $result['updated'] = explode(" ",$cog['updated'])[0];
+        $result['created'] = explode(" ",$cog['created'])[0];
 
         $cogName = $cog['id'] . '.cog';
         $basePath = getCogFileDirectory($projID, $orgID, $userID);

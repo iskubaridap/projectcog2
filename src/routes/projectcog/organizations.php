@@ -216,8 +216,8 @@ return function (App $app) {
         $result['info']['accountID'] = $info['account_id'];
         $result['info']['statusID'] = $info['status_id'];
         $result['info']['status'] = $status[($info['status_id'] - 1)]['status'];
-        $result['info']['updated'] = ($info['updated'] != null) ? (explode(" ", $info['updated']))[0] : '0000-00-00';
-        $result['info']['created'] = (explode(" ", $info['created']))[0];
+        $result['info']['updated'] = ($info['updated'] != null) ? explode(" ", $info['updated'])[0] : '0000-00-00';
+        $result['info']['created'] = explode(" ", $info['created'])[0];
 
         $users = $container->projectcog->query("
             select users.id, users.user, users.status_id, users.position_id, statues.status, positions.position from users, positions, statues where users.status_id = statues.id and users.position_id = positions.id and users.organization_id = '$orgID' order by users.user
@@ -383,5 +383,4 @@ return function (App $app) {
 
         return json_encode(($resultOrg));
     });
-    
 };
