@@ -1,10 +1,11 @@
 var cogUser = angular.module("cog-user-add-update", []);
 
-function cogUserCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogPositions, cogUsers, cogOrganizationsService, SweetAlert) {
+function cogUserCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogPositions, cogUsers, cogOrganizationsService, accountsService, SweetAlert) {
     var self = this;
     var userID = ($state.params.id == undefined) ? 0 : $state.params.id;
     var org = ($state.params.orgID == undefined) ? 0 : $state.params.orgID;
     var account = 0;
+    var acctTypeVal = 0;
     self.disablePosition = false;
     self.cogProjPage = ($state.params.page == undefined) ? '' : $state.params.page;
     self.userCategory = 'new';
@@ -20,6 +21,17 @@ function cogUserCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogP
                 self.userObj = null;
             }
 
+        });
+        accountsService.getTypesAllowedUsers(self, {}, function (data) {
+            console.log(data);
+            if (data != 'null') {
+                data.accountType.shift(); // this is to remove the Admin to be selected
+                self.typeInitValue = data.accountType[1].id;
+                self.allowedUsersInitValue = data.allowedUsers[1].id;
+            } else {
+                self.typeInitValue = null;
+                self.allowedUsersInitValue = null;
+            }
         });
     }
     if (org == 0 && self.cogProjPage == 'manage' ||
@@ -65,6 +77,9 @@ function cogUserCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogP
                 if(value.id == 3) {
                     self.positionsInitValue = data[index].id;
                 }
+                if (self.cogProjPage == 'manage' && org == 2) {
+                    self.disablePosition = true;
+                }
             });
         });
     }
@@ -92,7 +107,7 @@ function cogUserCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogP
             reload: true
         });
     };
-
+    
     self.submit = function (event) {
         var formData = new FormData();
         var fileData = $element.find('#cog-user-image').prop('files')[0];
@@ -104,7 +119,9 @@ function cogUserCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogP
         var address = $element.find('#cog-user-address').val();
         var country = $element.find('#cog-user-country').val();
         var position = $element.find('#cog-user-position-option').val();
+        var acctType = $element.find('#cog-user-type-option').val();
         var filename = '';
+        acctTypeVal = (acctType != undefined) ? acctType : 0;
 
         try {
             filename = fileData.name
@@ -151,6 +168,9 @@ function cogUserCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogP
             formData.append('position', position);
             formData.append('address', address);
             formData.append('country', country);
+            formData.append('acctType', acctTypeVal);
+
+            console.log(acctTypeVal);
 
             switch (self.userCategory) {
                 case 'new':

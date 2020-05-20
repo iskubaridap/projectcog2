@@ -74,14 +74,14 @@
                 </ul>
             </li>
             
-            <li ng-if="positionID != 3 || organizationID <= 2" ng-class="{active: $state.includes('cog-developers')}">
+            <li ng-if="positionID != 3 || organizationID < 2" ng-class="{active: $state.includes('cog-developers')}">
                 <a href="#"><i class="fa fa-users"></i> <span class="nav-label">User / Developers </span><span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level collapse" ng-class="{in: $state.includes('cog-developers')}">
                     <li ui-sref-active="active"><a ui-sref="cog-developers.active({page: 'user'})"><i class="fa fa-eye"></i> View</a></li>
                     <li ui-sref-active="active"><a ui-sref="cog-developers.add"><i class="fa fa-plus-circle"></i> Add</a ui-sref="cog-developers.active"></li ui-sref-active="active">
                 </ul>
             </li>
-            <li ng-class="{active: $state.includes('tasks')}">
+            <li ng-class="{active: $state.includes('tasks')}" ng-if="organizationID != 2">
                 <a ui-sref="tasks.todo"><i class="fa fa-edit"></i> <span>Task</span></a>
             </li>
             <li ng-class="{active: $state.include('pods-what-nots')}">

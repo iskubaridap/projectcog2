@@ -26,7 +26,7 @@ function getCogOrganizationThumbnail($orgID, $img, $container)
             $ary['path'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/organizations/' . $img;
         }
     }
-    generateDirectory($_SERVER['DOCUMENT_ROOT'] . $ary['folder']);
+    generateDirectory($_SERVER['DOCUMENT_ROOT'] . '/' . $ary['folder']);
     return $ary;
 }
 function getCogDeveloperThumbnail($orgID, $userID, $img, $container)
@@ -58,7 +58,7 @@ function getCogDeveloperThumbnail($orgID, $userID, $img, $container)
             $ary['path'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/profiles/' . $userID . '/' . $img;
         }
     }
-    generateDirectory($_SERVER['DOCUMENT_ROOT'] . $ary['folder']);
+    generateDirectory($_SERVER['DOCUMENT_ROOT'] . '/' . $ary['folder']);
     return $ary;
 }
 function getCogProjectThumbnail($orgID, $projID, $img, $container)
@@ -78,9 +78,9 @@ function getCogProjectThumbnail($orgID, $projID, $img, $container)
         // first determine or initiate $userID org for Developers
         if($orgID == 2)
         {
-            // it just need one query to retrieve user id
+            // just in-case there are more than one project name
             $cogInfo = $container->cogworks->query("
-                select * from cog_files
+                select * from projects
                 where id = '$projID'
             ")->fetch(PDO::FETCH_ASSOC);
             $userID = $cogInfo['user_id'];
@@ -101,7 +101,7 @@ function getCogProjectThumbnail($orgID, $projID, $img, $container)
             $ary['path'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/projects/' . $projID . '/' . $img;
         }
     }
-    generateDirectory($_SERVER['DOCUMENT_ROOT'] . $ary['folder']);
+    generateDirectory($_SERVER['DOCUMENT_ROOT'] . '/' . $ary['folder']);
     return $ary;
 }
 function getCogFileThumbnail($orgID, $userID, $cogID, $img, $container)
@@ -159,7 +159,7 @@ function getCogFileThumbnail($orgID, $userID, $cogID, $img, $container)
             $ary['path'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/cog-files/' . $cogID . '/' . $img;
         }
     }
-    generateDirectory($_SERVER['DOCUMENT_ROOT'] . $ary['folder']);
+    generateDirectory($_SERVER['DOCUMENT_ROOT'] . '/' . $ary['folder']);
     return $ary;
 }
 function getCogImageThumbnailDirectory($fileID, $orgID, $userID, $type)
@@ -186,8 +186,8 @@ function getCogImageThumbnailDirectory($fileID, $orgID, $userID, $type)
         $result['typePath'] = setCogworksDirectoryPath($orgID) . $orgID . '/img/thumbnail/' . $type;
         $result['filePath'] = setCogworksDirectoryPath($orgID) . $orgID . '/img/thumbnail/' . $type . '/' . $fileID;
     }
-    generateDirectory(ROOT . $result['typePath']);
-    generateDirectory(ROOT . $result['filePath']);
+    generateDirectory($result['typePath']);
+    generateDirectory($result['filePath']);
     
     return $result;
 }
@@ -215,8 +215,8 @@ function getCogImageDirectory($projID, $orgID, $userID, $folder)
         $folderPath = setCogworksDirectoryPath($orgID) . $orgID . 'img/' . $folder;
         $projPath = setCogworksDirectoryPath($orgID) . $orgID . 'img/' . $folder . '/' . $projID;
     }
-    generateDirectory($_SERVER['DOCUMENT_ROOT'] . $folderPath);
-    generateDirectory($_SERVER['DOCUMENT_ROOT'] . $projPath);
+    generateDirectory($_SERVER['DOCUMENT_ROOT'] . '/' . $folderPath);
+    generateDirectory($_SERVER['DOCUMENT_ROOT'] . '/' . $projPath);
 
     return $path;
 }
@@ -268,6 +268,7 @@ function getCogFileDirectory($projID, $orgID, $userID)
             $path = setCogworksDirectoryPath($orgID) . $orgID . '/projects/' . $projID . '/';
         }
     }
+    generateDirectory($path);
     return $path;
 }
 function getCogTemplateDirectory($obj)

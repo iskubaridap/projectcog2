@@ -4,19 +4,25 @@
     <div ng-if="orgInfo.organization !== 'false' && orgInfo.organization.error === undefined">
         <div class="row min-padding-t-b">
             <div class="col-md-6">
-                <h1>{{orgInfo.organization.info.organization}} - {{orgInfo.organization.info.status}}</h1>
-                <div class="inline-element">
-                    <small><b>Account Type</b></small>
-                    <p>{{orgInfo.organization.account.account_type}}</p>
+                <div ng-if="orgInfo.organization.info.id != '2'">
+                    <h1>{{orgInfo.organization.info.organization}} - {{orgInfo.organization.info.status}}</h1>
+                    <div class="inline-element">
+                        <small><b>Account Type</b></small>
+                        <p>{{orgInfo.organization.account.account_type}}</p>
+                    </div>
+                    <div class="inline-element m-l">
+                        <small><b>Allowed Users</b></small>
+                        <p>{{orgInfo.organization.account.allowed_user}}</p>
+                    </div>
+                    <div class="inline-element m-l">
+                        <small><b>Available Proprams</b></small>
+                        <p><span ng-repeat="item in orgInfo.organization.account.programs" class="item">{{item}}<span ng-if="!$last">, </span></span></p>
+                    </div>
                 </div>
-                <div class="inline-element m-l">
-                    <small><b>Allowed Users</b></small>
-                    <p>{{orgInfo.organization.account.allowed_user}}</p>
+                <div ng-if="orgInfo.organization.info.id == '2'">
+                    <h1>Developers</h1>
                 </div>
-                <div class="inline-element m-l">
-                    <small><b>Available Proprams</b></small>
-                    <p><span ng-repeat="item in orgInfo.organization.account.programs" class="item">{{item}}<span ng-if="!$last">, </span></span></p>
-                </div>
+                
                 
                 <table class="table small m-t-sm">
                     <tr>
@@ -32,13 +38,15 @@
                         <td>{{orgInfo.organization.cogfiles.length}}</td>
                     </tr>
                 </table>
-                <div class="inline-element">
-                    <small><b>Updated</b></small>
-                    <p>{{orgInfo.organization.info.updated}}</p>
-                </div>
-                <div class="inline-element pull-right">
-                    <small><b>Created</b></small>
-                    <p>{{orgInfo.organization.info.created}}</p>
+                <div ng-if="orgInfo.organization.info.id != '2'">
+                    <div class="inline-element">
+                        <small><b>Updated</b></small>
+                        <p>{{orgInfo.organization.info.updated}}</p>
+                    </div>
+                    <div class="inline-element pull-right">
+                        <small><b>Created</b></small>
+                        <p>{{orgInfo.organization.info.created}}</p>
+                    </div>
                 </div>
                 
             </div>

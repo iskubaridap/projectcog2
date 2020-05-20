@@ -36,9 +36,20 @@
                             <form method="post" enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col-md-6">
+                                        {{cogProject.cogProjPage}}
                                         <div class="form-group">
                                             <label class="control-label"><span class="text-danger">*</span> Project Name</label>
                                             <input data-orginal-value="{{cogProject.project.project}}" id="cog-project-update-name" name="cog-project-update-name" type="text" class="cog-input form-control" value="{{cogProject.project.project}}">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6" ng-if="cogProject.page == 'manage'">
+                                        <div class="form-group">
+                                            <label class="control-label">Assign to User</label>
+        
+                                            <select id="cog-new-project-users" class="cog-input form-control m-b" name="cog-users">
+                                                <option ng-repeat="item in cogProject.activeOrgDevelopers" value="{{item.id}}">{{item.user}}</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <!-- <div ng-if="(positionID != 3 || organizationID <= 2) && cogProject.page == 'manage'" class="col-md-6">

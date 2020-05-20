@@ -39,11 +39,19 @@ return function (App $app) {
         }
         else
         {
-            $projects = $container->cogworks->query("
-                select * from projects
-                where status_id = '1' and organization_id = '$userOrg'
-                order by project asc
-            ")->fetchAll(PDO::FETCH_ASSOC);
+            if($userOrg == 2) {
+                $projects = $container->cogworks->query("
+                    select * from projects
+                    where status_id = '1' and user_id = '$userID'
+                    order by project asc
+                ")->fetchAll(PDO::FETCH_ASSOC);
+            } else {
+                $projects = $container->cogworks->query("
+                    select * from projects
+                    where status_id = '1' and organization_id = '$userOrg'
+                    order by project asc
+                ")->fetchAll(PDO::FETCH_ASSOC);
+            }
         }
 
         foreach($projects as $prj)
@@ -54,6 +62,7 @@ return function (App $app) {
             $projectID = $prj['id'];
             $project['project'] = $prj['project'];
             $project['orgID'] = $prj['organization_id'];
+            $project['userID'] = $prj['user_id'];
             $project['created'] = explode(" ",$prj['created'])[0];
             $project['cogfiles'] = 0;
             $project['status'] = $prj['status_id'];
@@ -85,6 +94,7 @@ return function (App $app) {
     });
     $app->post('/cogworks/projects/retrieve/org/active', function ($request, $response, $args) use ($container) {
         $userOrg = $request->getParam('org');
+        $userID = $request->getParam('user');
         $result = array();
 
         $orgs = $container->projectcog->query("
@@ -94,7 +104,7 @@ return function (App $app) {
 
         $projects = $container->cogworks->query("
             select * from projects
-            where status_id = '1' and organization_id = '$userOrg'
+            where status_id = '1' and organization_id = '$userOrg' and user_id = '$userID'
             order by project asc
         ")->fetchAll(PDO::FETCH_ASSOC);
 
@@ -166,7 +176,7 @@ return function (App $app) {
     $app->post('/cogworks/projects/add', function ($request, $response, $args) use ($container) {
         $result = null;
         $user = identifyLoggedUser($container);
-        $userID = $user['id'];
+        $userID = $request->getParam('cogUser');
         $name = $request->getParam('cogProjName');
         $orgID = $request->getParam('cogOrgID');
         $file = $request->getUploadedFiles();
@@ -176,7 +186,6 @@ return function (App $app) {
         $imageName = null;
 
         $cogOrgID = ($orgID == 0 ? $user['organization_id'] : $orgID);
-        $cogUserID = $userID;
        
         if(!empty($file)) {
             $uploadedFile = $file['file'];
@@ -184,8 +193,8 @@ return function (App $app) {
 
             $result = $container->cogworks->exec("
                 insert into projects
-                (project, image, organization_id)
-                values('$name', '$imageName', '$cogOrgID');
+                (project, image, organization_id, user_id)
+                values('$name', '$imageName', '$cogOrgID', '$userID');
             ");
             
             if($result) {
@@ -195,7 +204,7 @@ return function (App $app) {
                 ")->fetch(PDO::FETCH_ASSOC);
                 $projID = $proj['id'];
 
-                $imagePathAry = getCogImageThumbnailDirectory($projID, $cogOrgID, $cogUserID, 'projects');
+                $imagePathAry = getCogImageThumbnailDirectory($projID, $cogOrgID, $userID, 'projects');
                 $imagePath = $imagePathAry['path'];
                 $uploadedFile->moveTo($imagePath . $imageName);
                 chmod($imagePath . $imageName,0777);
@@ -204,8 +213,8 @@ return function (App $app) {
         } else {
             $result = $container->cogworks->exec("
                 insert into projects
-                (project, organization_id)
-                values('$name', '$cogOrgID');
+                (project, organization_id, user_id)
+                values('$name', '$cogOrgID', '$userID');
             ");
             if($result) {
                 $proj = $container->cogworks->query("
@@ -215,7 +224,7 @@ return function (App $app) {
                 $projID = $proj['id'];
             }
         }
-        // using $userID base on the logged user for now
+        
         $path = getCogProjectDirectory($projID, $cogOrgID, $userID);
         
         generateDirectory($path);

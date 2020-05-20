@@ -79,6 +79,7 @@ return function (App $app) {
         $email = $request->getParam('email');
         $password = md5($request->getParam('password'));
         $position = $request->getParam('position');
+        $acctType = $request->getParam('acctType');
         $address = addslashes($request->getParam('address'));
         $country = addslashes($request->getParam('country'));
         $file = $request->getUploadedFiles();
@@ -86,15 +87,33 @@ return function (App $app) {
         $path = '';
         $result = null;
         $imageName = null;
+        $date = getCurrentDate();
 
-        if($loggedUser['organization_id'] != 1) {
-            $acctID = $loggedUser['account_id'];
-            $org = $loggedUser['organization_id'];
+        if($org == 2) {
+            $newAccount = $container->projectcog->exec("
+                insert into accounts
+                (account_type_id, started)
+                values('$acctType', '$date');
+            ");
+            // just incase it fails to add new account
+            if($newAccount){
+                $newAccountObj = $container->projectcog->query("
+                    select * from accounts
+                    order by id desc limit 1
+                ")->fetch(PDO::FETCH_ASSOC);
+    
+                $acctID = $newAccountObj['id'];
+            }
+            $acctID = $acctID;
+            $org = 2;
         } else if($loggedUser['organization_id'] == 1 && $org == 0) {
             // This is when the admin add new user
             $acctID = 1;
             $org = 1;
-        }
+        } else {
+            $acctID = $loggedUser['account_id'];
+            $org = $loggedUser['organization_id'];
+        } 
 
         if(!empty($file)) {
             $imageName = $file['file']->getClientFilename();

@@ -1,6 +1,6 @@
 <div class="wrapper wrapper-content animated fadeInRight">
-    <tasks-home></tasks-home>
-    <section-cogworks-developers></section-cogworks-developers>
+    <tasks-home ng-if="organizationID != 2"></tasks-home>
+    <section-cogworks-developers ng-if="organizationID != 2"></section-cogworks-developers>
     <section-cogworks-files-projects></section-cogworks-files-projects>
     
 </div>

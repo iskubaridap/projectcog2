@@ -47,8 +47,10 @@ function cogFilesAddCtrl($rootScope, $scope, $element, $state, $http, cogProject
                 cogUser = data[0].id;
             }
         });
+        
         cogProjects.getActiveOrgProjects(self, {
-            org: orgID
+            org: orgID,
+            user: cogUser
         }, function () {
             var obj = new Object();
             self.activeProjects = (self.activeProjects == null) ? new Array() : self.activeProjects;
@@ -78,6 +80,33 @@ function cogFilesAddCtrl($rootScope, $scope, $element, $state, $http, cogProject
                 bs4Ary.push(value);
             }
         });
+
+        // this is to generate available projects for Developers
+        if(orgID == 2) {
+            cogProjects.getActiveOrgProjects(self, {
+                org: orgID,
+                user: cogUser
+            }, function () {
+                var obj = new Object();
+                self.activeProjects = (self.activeProjects == null) ? new Array() : self.activeProjects;
+                obj.id = '0';
+                obj.project = '(Personal File)';
+                self.activeProjects.unshift(obj);
+            });
+            $element.find('#cog-new-file-users').on('change', function(){
+                var id = $(this).val();
+                cogProjects.getActiveOrgProjects(self, {
+                    org: orgID,
+                    user: id
+                }, function () {
+                    var obj = new Object();
+                    self.activeProjects = (self.activeProjects == null) ? new Array() : self.activeProjects;
+                    obj.id = '0';
+                    obj.project = '(Personal File)';
+                    self.activeProjects.unshift(obj);
+                });
+            });
+        }
         $element.find('#bootstrap-3').empty().append(setTemplateItems(bs3Ary));
         $element.find('#bootstrap-4').empty().append(setTemplateItems(bs4Ary));
         $element.find('.template-item').each(function () {

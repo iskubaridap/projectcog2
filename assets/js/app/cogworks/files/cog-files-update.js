@@ -3,16 +3,11 @@ var cogFilesUpdate = angular.module("cog-files-update", []);
 function cogFilesUpdateCtrl($rootScope, $scope, $element, $state, $http, cogProjects, cogFilesDetails, SweetAlert) {
     var self = this;
     var cogID = $state.params.id;
-    /* cogProjects.getActiveProjects(self, {}, function () {
-        var obj = new Object();
-        obj.id = '0';
-        obj.project = '(Personal File)';
-        self.activeProjects.unshift(obj);
-    }); */
     cogFilesDetails.getDetails(self, {id: cogID}, function(data) {
         console.log(data);
         cogProjects.getActiveOrgProjects(self, {
-            org: data.orgID
+            org: data.orgID,
+            user: data.userID
         }, function () {
             var obj = new Object();
             self.activeProjects = (self.activeProjects == null) ? new Array() : self.activeProjects;

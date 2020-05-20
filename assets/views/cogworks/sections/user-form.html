@@ -84,18 +84,20 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="control-label"><span class="text-danger">*</span> Position {{user.disablePosition}}</label>
+                                            <label class="control-label"><span class="text-danger">*</span> Position</label>
                                             <select id="cog-user-position-option" ng-disabled="user.disablePosition" ng-model="user.positionsInitValue" ng-disabled="user.notAllow" ng-model="position" class="form-control m-b" name="cog-user-position" required>
                                                 <option ng-if="item.id != undefined" value="{{item.id}}" ng-selected="item.id == cogFileClone.details.projectID" ng-repeat="item in user.positions">{{item.position}}</option>
                                             </select>
-                                            <!-- <select id="position-option" ng-disabled="userUpdate.notAllow" ng-model="position" class="form-control m-b" name="position" required>
-                                                <option value="1" ng-if="main.usersDetails.position_id == 1">Super Admin</option>
-                                                <option value="2">Admin</option>
-                                                <option value="7">Global Admin</option>
-                                                <option value="6">Theater Lead</option>
-                                                <option value="3">Vice President</option>
-                                                <option value="5">Leader</option>
-                                            </select> -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" ng-if="user.cogProjPage == 'manage'">
+                                    <div class="col-md-6" ng-if="user.typesAllowedUsers.accountType !== null && user.typesAllowedUsers.accountType !== undefined">
+                                        <div class="form-group">
+                                            <label class="control-label"><span class="text-danger">*</span> Type</label>
+                                            <select id="cog-user-type-option" ng-model="user.typeInitValue" ng-model="position" class="form-control m-b" name="cog-organization-type" required>
+                                                <option ng-if="item.id != undefined" value="{{item.id}}" ng-repeat="item in user.typesAllowedUsers.accountType">{{item.account_type}}</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>

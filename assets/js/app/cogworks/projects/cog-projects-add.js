@@ -1,10 +1,11 @@
 var cogProjectAdd = angular.module("cog-projects-add", []);
 
-function cogProjectCtrl($rootScope, $scope, $element, $state, $http, cogProject, cogOrganizationsService, SweetAlert) {
+function cogProjectCtrl($rootScope, $scope, $element, $state, $http, cogProject, cogOrganizationsService, cogDevelopers, SweetAlert) {
     var self = this;
     var cogProjID = 0; // initializing anonymous value
     var cogOrgID = ($state.params.orgID == undefined) ? 0 : $state.params.orgID; // initializing anonymous value
     var cogProjPage = ($state.params.page == undefined) ? '' : $state.params.page;
+    var cogUser = 0;
 
     /* cogOrganizationsService.getOrganizations(self, {}, function(data) {
         // this is to avoid admin and developers to be shown
@@ -16,6 +17,13 @@ function cogProjectCtrl($rootScope, $scope, $element, $state, $http, cogProject,
 
     // this is to make sure we don't get any weird anonymous value
     if (cogOrgID != 0 || cogProjPage == 'manage') {
+        cogDevelopers.getActiveOrgDevelopers(self, {
+            org: cogOrgID
+        }, function (data) {
+            if (data != null) {
+                cogUser = data[0].id;
+            }
+        });
         cogOrganizationsService.getOrganization(self, {
             id: cogOrgID
         }, function (data) {
@@ -42,11 +50,16 @@ function cogProjectCtrl($rootScope, $scope, $element, $state, $http, cogProject,
             reload: true
         });
     };
+    
     self.submit = function (event) {
         var formData = new FormData();
         var fileData = $element.find('#cog-project-update-image').prop('files')[0];
         var cogProjectName = $element.find('#cog-project-update-name').val();
+        var projectUsers = $element.find('#cog-new-project-users').val();
+        cogUser = (projectUsers != undefined) ? projectUsers : 0;
         var filename = '';
+
+        console.log(cogUser);
 
         try {
             filename = fileData.name
@@ -64,6 +77,7 @@ function cogProjectCtrl($rootScope, $scope, $element, $state, $http, cogProject,
         } else {
             formData.append('id', cogProjID);
             formData.append('file', fileData);
+            formData.append('cogUser', cogUser);
             formData.append('cogProjName', cogProjectName);
             formData.append('cogOrgID', cogOrgID);
 

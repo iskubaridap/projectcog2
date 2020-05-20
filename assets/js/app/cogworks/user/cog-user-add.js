@@ -1,6 +1,6 @@
 var cogUserAdd = angular.module("cog-user-add", []);
 
-function cogUserAddCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogPositions, cogUsers, cogOrganizationsService, SweetAlert) {
+function cogUserAddCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogPositions, cogUsers, cogOrganizationsService, accountsService, SweetAlert) {
     var self = this;
     var userID = ($state.params.id == undefined) ? 0 : $state.params.id;
     var org = ($state.params.orgID == undefined) ? 0 : $state.params.orgID;
