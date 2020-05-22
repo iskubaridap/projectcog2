@@ -2,9 +2,13 @@
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-12">
             <h2>Developers <span class="pull-right">Total: {{developer.activeDevelopers.length}}</span></h2>
-            <div class="pull-left">
+            <div id="left-buttons" ng-if="developer.view == 'thumbnail'" class="pull-left">
                 <button ng-click="developer.orderByName($event)" type="button" class="btn btn-xs btn-link">Name</button> |
                 <button ng-click="developer.orderByPosition($event)" type="button" class="btn btn-xs btn-link">Position</button>
+            </div>
+            <div id="right-buttons" class="pull-right page-view table-view">
+                <button ng-click="developer.tableView($event)" type="button" class="btn btn-xs btn-link">Table</button> |
+                <button ng-click="developer.thumbnailView($event)" type="button" class="btn btn-xs btn-link">Thumbnails</button>
             </div>
         </div>
     </div>
@@ -12,7 +16,27 @@
     <div class="wrapper wrapper-content animated fadeInRight">
         <section-loader-indicator text="Preparing to show all active Developers" object="developer.activeDevelopers" ng-if="developer.activeDevelopers === undefined || developer.activeDevelopers.error !== undefined"></section-loader-indicator>
         <section-data-empty text="Records for Active Developers are Empty." ng-if="developer.activeDevelopers !== undefined && developer.activeDevelopers === null"></section-data-empty>
-        <div ng-if="developer.activeDevelopers !== undefined && developer.activeDevelopers.error === undefined">
+        <div ng-if="developer.activeDevelopers !== null && developer.activeDevelopers !== undefined && developer.activeDevelopers.error === undefined && developer.view == 'table'">
+            <input type="text" class="form-control input-sm m-b-xs" id="filter" placeholder="Search Course">
+            <table id="page-table" class="footable table table-stripped" data-page-size="50" data-filter=#filter>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Position</th>
+                        <th class="remove-sorting">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="page-table-body"></tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3">
+                            <ul class="pagination pull-right"></ul>
+                        </td>
+                    </tr>
+                    </tfoot>
+            </table>
+        </div>
+        <div ng-if="developer.activeDevelopers !== undefined && developer.activeDevelopers.error === undefined && developer.view == 'thumbnail'">
             <div class="row" ng-repeat="item in developer.activeDevelopers" ng-if="$index % 4 == 0">
                 <div class="col-md-3" ng-if="developer.activeDevelopers[$index] !== undefined">
                     <div class="ibox app-ibox float-e-margins">

@@ -2,10 +2,14 @@
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-12">
             <h2>Projects <span class="pull-right">Total: {{cogProject.activeProjects.length}}</span></h2>
-            <div class="pull-left">
+            <div id="left-buttons" ng-if="cogProject.view == 'thumbnail'" class="pull-left">
                 <button ng-click="cogProject.orderByName($event)" type="button" class="btn btn-xs btn-link">Name</button> |
                 <button ng-click="cogProject.orderByUpdated($event)" type="button" class="btn btn-xs btn-link">Updated</button> |
                 <button ng-click="cogProject.orderByCreated($event)" type="button" class="btn btn-xs btn-link">Created</button>
+            </div>
+            <div id="right-buttons" class="pull-right page-view table-view">
+                <button ng-click="cogProject.tableView($event)" type="button" class="btn btn-xs btn-link">Table</button> |
+                <button ng-click="cogProject.thumbnailView($event)" type="button" class="btn btn-xs btn-link">Thumbnails</button>
             </div>
             <!-- <div class="pull-right">
                 <button ng-click="cogProject.viewByThumbnail($event)" type="button" class="btn btn-xs btn-link">Thumbnail</button> |
@@ -17,8 +21,29 @@
     <div class="wrapper wrapper-content animated fadeInRight">
         <section-loader-indicator text="Preparing to show all Projects" object="cogProject.activeProjects" ng-if="cogProject.activeProjects === undefined || cogProject.activeProjects.error !== undefined"></section-loader-indicator>
         <section-data-empty text="Records for Projects are Empty." ng-if="cogProject.activeProjects !== undefined && cogProject.activeProjects === null"></section-data-empty>
-        
-        <div ng-if="cogProject.activeProjects !== undefined && cogProject.activeProjects.error === undefined">
+        <div ng-if="cogProject.activeProjects !== null && cogProject.activeProjects !== undefined && cogProject.activeProjects.error === undefined && cogProject.view == 'table'">
+            <input type="text" class="form-control input-sm m-b-xs" id="filter" placeholder="Search Course">
+            <table id="page-table" class="footable table table-stripped" data-page-size="50" data-filter=#filter>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Files</th>
+                        <th>Updated</th>
+                        <th>Created</th>
+                        <th class="remove-sorting">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="page-table-body"></tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5">
+                            <ul class="pagination pull-right"></ul>
+                        </td>
+                    </tr>
+                    </tfoot>
+            </table>
+        </div>
+        <div ng-if="cogProject.activeProjects !== undefined && cogProject.activeProjects.error === undefined && cogProject.view == 'thumbnail'">
             <div class="row section-thumbnail show-default" ng-repeat="item in cogProject.activeProjects" ng-if="$index % 4 == 0">
                 <div class="col-md-3" ng-if="cogProject.activeProjects[$index] !== undefined">
                     <div class="ibox app-ibox float-e-margins">

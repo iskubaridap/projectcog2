@@ -2,11 +2,15 @@
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-12">
             <h2><span ng-if="cogFile.projID != 'all' && cogFile.cogProj !== undefined">{{cogFile.cogProj}}: </span>Cog Files <span class="pull-right">Total: {{(cogFile.activeFiles.length > 0 ? cogFile.activeFiles.length : 0)}}</span></h2>
-            <div class="pull-left">
+            <div id="left-buttons" ng-if="cogFile.view == 'thumbnail'" class="pull-left page-view thumbnail-view">
                 <button ng-click="cogFile.orderByName($event)" type="button" class="btn btn-xs btn-link">Name</button> |
                 <button ng-click="cogFile.orderByProject($event)" type="button" class="btn btn-xs btn-link">Project</button> |
                 <button ng-click="cogFile.orderByUpdated($event)" type="button" class="btn btn-xs btn-link">Updated</button> |
                 <button ng-click="cogFile.orderByCreated($event)" type="button" class="btn btn-xs btn-link">Created</button>
+            </div>
+            <div id="right-buttons" class="pull-right page-view table-view">
+                <button ng-click="cogFile.tableView($event)" type="button" class="btn btn-xs btn-link">Table</button> |
+                <button ng-click="cogFile.thumbnailView($event)" type="button" class="btn btn-xs btn-link">Thumbnails</button>
             </div>
         </div>
     </div>
@@ -14,8 +18,29 @@
     <div class="wrapper wrapper-content animated fadeInRight">
         <section-loader-indicator text="Preparing to show all Cog Files" object="cogFile.activeFiles" ng-if="cogFile.activeFiles === undefined || cogFile.activeFiles.error !== undefined"></section-loader-indicator>
         <section-data-empty text="Records for Cog Files are Empty." ng-if="cogFile.activeFiles !== undefined && cogFile.activeFiles === null"></section-data-empty>
-    
-        <div ng-if="cogFile.activeFiles !== undefined && cogFile.activeFiles.error === undefined">
+        <div ng-if="cogFile.activeFiles !== null && cogFile.activeFiles !== undefined && cogFile.activeFiles.error === undefined && cogFile.view == 'table'">
+            <input type="text" class="form-control input-sm m-b-xs" id="filter" placeholder="Search Course">
+            <table id="page-table" class="footable table table-stripped" data-page-size="50" data-filter=#filter>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Project</th>
+                        <th>Updated</th>
+                        <th>Created</th>
+                        <th class="remove-sorting">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="page-table-body"></tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5">
+                            <ul class="pagination pull-right"></ul>
+                        </td>
+                    </tr>
+                    </tfoot>
+            </table>
+        </div>
+        <div ng-if="cogFile.activeFiles !== undefined && cogFile.activeFiles.error === undefined && cogFile.view == 'thumbnail'">
             <div class="row section-thumbnail show-default" ng-repeat="item in cogFile.activeFiles" ng-if="$index % 4 == 0">
                 <div class="col-md-3" ng-if="cogFile.activeFiles[$index] !== undefined">
                     <div class="ibox app-ibox float-e-margins">

@@ -108,6 +108,13 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                         {
                             name: 'oitozero.ngSweetAlert',
                             files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/footable/footable.all.min.js', 'assets/css/plugins/footable/footable.core.css']
+                        },
+                        {
+                            name: 'ui.footable',
+                            files: ['assets/js/plugins/footable/angular-footable.js']
                         }
                     ]);
                 }
@@ -201,6 +208,13 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                         {
                             name: 'oitozero.ngSweetAlert',
                             files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/footable/footable.all.min.js', 'assets/css/plugins/footable/footable.core.css']
+                        },
+                        {
+                            name: 'ui.footable',
+                            files: ['assets/js/plugins/footable/angular-footable.js']
                         }
                     ]);
                 }
@@ -584,6 +598,13 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                         {
                             name: 'oitozero.ngSweetAlert',
                             files: ['assets/js/plugins/sweetalert/angular-sweetalert.min.js']
+                        },
+                        {
+                            files: ['assets/js/plugins/footable/footable.all.min.js', 'assets/css/plugins/footable/footable.core.css']
+                        },
+                        {
+                            name: 'ui.footable',
+                            files: ['assets/js/plugins/footable/angular-footable.js']
                         }
                     ]);
                 }

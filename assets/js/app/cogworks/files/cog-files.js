@@ -16,10 +16,39 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, log
             self.cogProj = data.project;
         }
     });
-
-    cogFiles.getActiveFiles(self, {
-        projID: cogProjID,
-        page: cogProjPage
+    cogFiles.getActiveFiles(self, {projID: cogProjID,page: cogProjPage}, function(data){
+        var str = '';
+        self.view = 'table';
+        if(self.activeFiles) {
+            $.each(self.activeFiles, function(index, value){
+                str += '<tr class="cog-file-row" data-id="' + value.id + '">';
+                str += '<td>' + value.cogfile + ((value.status == '5') ? ' <span class="text-warning">(<i>Org Deleted</i>)</span>' : '') +'</td>';
+                str += '<td>' + value.project + '</td>';
+                str += '<td>' + value.updated + '</td>';
+                str += '<td>' + value.created + '</td>';
+                str += '<td class="cog-file-action">';
+                str += '<span class="file-open btn btn-success btn-xs" data-id="' + value.id + '" data-code="' + value.code + '">Open</span>&nbsp;';
+                str += '<span class="file-details btn btn-success btn-xs" data-id="' + value.id + '">Details</span>&nbsp;';
+                str += '<span class="file-clone btn btn-success btn-xs" data-id="' + value.id + '">Clone</span>&nbsp;';
+                str += '<span class="file-update btn btn-success btn-xs" data-id="' + value.id + '">Update</span>&nbsp;';
+                if(value.status == '1') {
+                    str += '<span class="file-remove btn btn-danger btn-xs" data-id="' + value.id + '">Remove</span>';
+                } else if (value.status == '2') {
+                    str += '<span class="file-restore btn btn-warning btn-xs" data-id="' + value.id + '">Restore</span>';
+                }
+                str += '</td>';
+                str += '</tr>';
+                // i need to use this to make it appear. still not know it doesn't show automatically
+                setTimeout(function(){
+                    $element.find('#page-table-body').empty();
+                    $element.find('#page-table').data('footable').appendRow(str);
+                    $element.find('#page-table .remove-sorting').off();
+                    $element.find('#page-table .remove-sorting').removeClass('footable-sortable');
+                    $element.find('#page-table .remove-sorting .footable-sort-indicator').remove();
+                    setEvent();
+                }, 0);
+            });
+        }
     });
 
     var detailFile = function (fileID) {
@@ -99,7 +128,7 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, log
             }
         });
     };
-    var removeFile = function (id) {
+    var removeFile = function (id, callback) {
         SweetAlert.swal({
                 title: "Are you sure?",
                 text: "This file will no longer be available.",
@@ -122,6 +151,9 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, log
                                     projID: cogProjID,
                                     page: cogProjPage
                                 });
+                                try {
+                                    callback();
+                                } catch(err) {}
                                 SweetAlert.swal("Deleted!", "File is successfully removed", "success");
                             } else {
                                 SweetAlert.swal("Failed!", "File is not been removed. Try it again.", "error");
@@ -135,7 +167,7 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, log
                 }
             });
     };
-    var restoreFile = function (id) {
+    var restoreFile = function (id, callback) {
         $http.post("./cogworks/cog-files/activate", {
                 id: id
             })
@@ -145,6 +177,9 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, log
                         projID: cogProjID,
                         page: cogProjPage
                     });
+                    try {
+                        callback();
+                    } catch(err) {}
                     SweetAlert.swal("Success!", "File is successfully restored.", "success");
                 } else {
                     SweetAlert.swal("Failed!", "File is not been removed. Try it again.", "error");
@@ -153,6 +188,41 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, log
                 SweetAlert.swal("Error", "Something went wrong. Try it again.", "error");
             });
     }
+    var setEvent = function() {
+        $element.find('.file-open').off().on('click', function(){
+            var id = $(this).attr('data-id');
+            var code = $(this).attr('data-code');
+            openFile(code);
+        });
+        $element.find('.file-details').off().on('click', function(){
+            var id = $(this).attr('data-id');
+            detailFile(id);
+        });
+        $element.find('.file-clone').off().on('click', function(){
+            var id = $(this).attr('data-id');
+            cloneFile(id);
+        });
+        $element.find('.file-update').off().on('click', function(){
+            var id = $(this).attr('data-id');
+            updateFile(id);
+        });
+        $element.find('.file-remove').off().on('click', function(){
+            var id = $(this).attr('data-id');
+            removeFile(id, function(){
+                $element.find(('.cog-file-row[data-id="' + id + '"] .cog-file-action .file-remove')).remove();
+                $element.find(('.cog-file-row[data-id="' + id + '"] .cog-file-action')).append('<span class="file-restore btn btn-warning btn-xs" data-id="' + id + '">Restore</span>');
+                setEvent();
+            });
+        });
+        $element.find('.file-restore').off().on('click', function(){
+            var id = $(this).attr('data-id');
+            restoreFile(id, function(){
+                $element.find(('.cog-file-row[data-id="' + id + '"] .cog-file-action .file-restore')).remove();
+                $element.find(('.cog-file-row[data-id="' + id + '"] .cog-file-action')).append('<span class="file-remove btn btn-danger btn-xs" data-id="' + id + '">Remove</span>');
+                setEvent();
+            });
+        });
+    };
 
     self.orderByName = function (event) {
         self.activeFiles = self.activeFiles.sort(function (a, b) {
@@ -189,6 +259,46 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, log
                 return 1;
             return 0;
         });
+    };
+    self.tableView = function(event) {
+        var str = '';
+        cogFiles.getActiveFiles(self, {projID: cogProjID,page: cogProjPage}, function(data){
+            var str = '';
+            self.view = 'table';
+            if(self.activeFiles) {
+                $.each(self.activeFiles, function(index, value){
+                    str += '<tr class="cog-file-row" data-id="' + value.id + '">';
+                    str += '<td>' + value.cogfile + ((value.status == '5') ? ' <span class="text-warning">(<i>Org Deleted</i>)</span>' : '') +'</td>';
+                    str += '<td>' + value.project + '</td>';
+                    str += '<td>' + value.updated + '</td>';
+                    str += '<td>' + value.created + '</td>';
+                    str += '<td class="cog-file-action">';
+                    str += '<span class="file-open btn btn-success btn-xs" data-id="' + value.id + '" data-code="' + value.code + '">Open</span>&nbsp;';
+                    str += '<span class="file-details btn btn-success btn-xs" data-id="' + value.id + '">Details</span>&nbsp;';
+                    str += '<span class="file-clone btn btn-success btn-xs" data-id="' + value.id + '">Clone</span>&nbsp;';
+                    str += '<span class="file-update btn btn-success btn-xs" data-id="' + value.id + '">Update</span>&nbsp;';
+                    if(value.status == '1') {
+                        str += '<span class="file-remove btn btn-danger btn-xs" data-id="' + value.id + '">Remove</span>';
+                    } else if (value.status == '2') {
+                        str += '<span class="file-restore btn btn-warning btn-xs" data-id="' + value.id + '">Restore</span>';
+                    }
+                    str += '</td>';
+                    str += '</tr>';
+                    // i need to use this to make it appear. still not know it doesn't show automatically
+                    setTimeout(function(){
+                        $element.find('#page-table-body').empty();
+                        $element.find('#page-table').data('footable').appendRow(str);
+                        $element.find('#page-table .remove-sorting').off();
+                        $element.find('#page-table .remove-sorting').removeClass('footable-sortable');
+                        $element.find('#page-table .remove-sorting .footable-sort-indicator').remove();
+                        setEvent();
+                    }, 0);
+                });
+            }
+        });
+    };
+    self.thumbnailView = function(event) {
+        self.view = 'thumbnail';
     };
     self.viewThumbnail = function (event) {
         viewThumnail();
