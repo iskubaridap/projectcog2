@@ -5,11 +5,9 @@ function cogFilesUpdateCtrl($rootScope, $scope, $element, $state, $http, cogProj
     var cogID = $state.params.id;
     cogFilesDetails.getDetails(self, {id: cogID}, function(data) {
         console.log(data);
-        cogProjects.getActiveOrgProjects(self, {
-            org: data.orgID,
-            user: data.userID
-        }, function () {
+        cogProjects.getActiveOrgProjects(self, {org: data.orgID, user: data.userID}, function(data2) {
             var obj = new Object();
+            console.log(data2);
             self.activeProjects = (self.activeProjects == null) ? new Array() : self.activeProjects;
             obj.id = '0';
             obj.project = '(Personal File)';

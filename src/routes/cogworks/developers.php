@@ -23,7 +23,7 @@ return function (App $app) {
             ")->fetchAll(PDO::FETCH_ASSOC);
         } else {
             $developers = $container->projectcog->query("
-                select users.id, users.user, positions.position, users.image, users.organization_id from users, positions 
+                select users.id, users.user, positions.position, users.status_id, users.image, users.organization_id from users, positions 
                 where users.status_id = '1' and users.position_id = positions.id  and (users.id <> 1 and users.id <> 2) and users.organization_id = '$userOrg' 
                 order by users.user asc
             ")->fetchAll(PDO::FETCH_ASSOC);

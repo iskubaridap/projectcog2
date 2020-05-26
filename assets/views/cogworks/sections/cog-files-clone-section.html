@@ -38,9 +38,9 @@
                                         <div class="form-group">
                                             <label class="control-label">Project</label>
 
-                                            <select data-orginal-value="{{cogFileClone.details.projectID}}" id="cog-clone-project" class="cog-input form-control m-b" name="cog-project">
-                                                <!-- <option value="0" selected>(Personal File)</option> -->
+                                            <select data-orginal-value="{{cogFileClone.details.projectID}}" ng-disabled="cogFileClone.disableProject" id="cog-clone-project" class="cog-input form-control m-b" name="cog-project">
                                                 <option ng-repeat="item in cogFileClone.activeProjects" ng-selected="item.id == cogFileClone.details.projectID" value="{{item.id}}">{{item.project}}</option>
+                                                <!-- <option ng-repeat="item in cogFileClone.activeProjects" value="{{item.id}}">{{item.project}}</option> -->
                                             </select>
                                         </div>
                                     </div>

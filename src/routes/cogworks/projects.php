@@ -101,12 +101,19 @@ return function (App $app) {
             select * from organizations
             order by organization asc
         ")->fetchAll(PDO::FETCH_ASSOC);
-
-        $projects = $container->cogworks->query("
-            select * from projects
-            where status_id = '1' and organization_id = '$userOrg' and user_id = '$userID'
-            order by project asc
-        ")->fetchAll(PDO::FETCH_ASSOC);
+        if($userOrg == 2) {
+            $projects = $container->cogworks->query("
+                select * from projects
+                where status_id = '1' and organization_id = '$userOrg' and user_id = '$userID'
+                order by project asc
+            ")->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            $projects = $container->cogworks->query("
+                select * from projects
+                where status_id = '1' and organization_id = '$userOrg' 
+                order by project asc
+            ")->fetchAll(PDO::FETCH_ASSOC);
+        }
 
         foreach($projects as $prj)
         {

@@ -16,6 +16,12 @@ return function (App $app) {
         @session_start();
         $loggedUser = identifyLoggedUser($container);
         $status = isset($_SESSION["logged"]) && $loggedUser['status_id'] == 1;
+        if($status == false && isset($_SESSION["logged"])) {
+            unset($_SESSION['id']);
+            unset($_SESSION['logged']);
+
+            @session_destroy();
+        }
         return json_encode($status);
     });
     $app->get('/login', function ($request, $response, $args) use ($container) {

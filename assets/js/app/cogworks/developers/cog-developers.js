@@ -7,8 +7,8 @@ function cogDevelopersCtrl($rootScope, $scope, $element, $state, $http, $timeout
     cogDevelopers.getActiveDevelopers(self, {page: cogDevPage}, function(data){
         var str = '';
         self.view = 'table';
-        console.log(data);
-        if(data) {
+        
+        if(self.activeDevelopers && $element.find('#right-buttons').length > 0) {
             $.each(data, function(index, value){
                 str += '<tr class="dev-row" data-id="' + value.id + '">';
                 str += '<td>' + value.user + '</td>';
@@ -23,15 +23,15 @@ function cogDevelopersCtrl($rootScope, $scope, $element, $state, $http, $timeout
                 }
                 str += '</td>';
                 str += '</tr>';
-                setTimeout(function(){
-                    $element.find('#page-table-body').empty();
-                    $element.find('#page-table').data('footable').appendRow(str);
-                    $element.find('#page-table .remove-sorting').off();
-                    $element.find('#page-table .remove-sorting').removeClass('footable-sortable');
-                    $element.find('#page-table .remove-sorting .footable-sort-indicator').remove();
-                    setEvent();
-                }, 0);
             });
+            setTimeout(function(){
+                $element.find('#page-table-body').empty();
+                $element.find('#page-table').data('footable').appendRow(str);
+                $element.find('#page-table .remove-sorting').off();
+                $element.find('#page-table .remove-sorting').removeClass('footable-sortable');
+                $element.find('#page-table .remove-sorting .footable-sort-indicator').remove();
+                setEvent();
+            }, 0);
         }
     });
 
@@ -145,8 +145,8 @@ function cogDevelopersCtrl($rootScope, $scope, $element, $state, $http, $timeout
         cogDevelopers.getActiveDevelopers(self, {page: cogDevPage}, function(data){
             var str = '';
             self.view = 'table';
-            if(data) {
-                $.each(data, function(index, value){
+            if(self.activeDevelopers) {
+                $.each(self.activeDevelopers, function(index, value){
                     str += '<tr class="dev-row" data-id="' + value.id + '">';
                     str += '<td>' + value.user + '</td>';
                     str += '<td>' + value.position + '</td>';
@@ -160,15 +160,15 @@ function cogDevelopersCtrl($rootScope, $scope, $element, $state, $http, $timeout
                     }
                     str += '</td>';
                     str += '</tr>';
-                    setTimeout(function(){
-                        $element.find('#page-table-body').empty();
-                        $element.find('#page-table').data('footable').appendRow(str);
-                        $element.find('#page-table .remove-sorting').off();
-                        $element.find('#page-table .remove-sorting').removeClass('footable-sortable');
-                        $element.find('#page-table .remove-sorting .footable-sort-indicator').remove();
-                        setEvent();
-                    }, 0);
                 });
+                setTimeout(function(){
+                    $element.find('#page-table-body').empty();
+                    $element.find('#page-table').data('footable').appendRow(str);
+                    $element.find('#page-table .remove-sorting').off();
+                    $element.find('#page-table .remove-sorting').removeClass('footable-sortable');
+                    $element.find('#page-table .remove-sorting .footable-sort-indicator').remove();
+                    setEvent();
+                }, 0);
             }
         });
     };
@@ -203,7 +203,7 @@ function cogDevelopersCtrl($rootScope, $scope, $element, $state, $http, $timeout
     {
         viewList();
     };
-    self.view = function(event)
+    self.viewProfile = function(event)
     {
         var elem = $(event.target);
         viewUser(elem.attr('data-id'));

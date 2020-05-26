@@ -47,7 +47,7 @@
                                     <i class="fa fa-bars"></i>
                                 </a>
                                 <ul uib-dropdown-menu="" class="dropdown-menu">
-                                    <li><a data-id="{{developer.activeDevelopers[$index].id}}" ng-click="developer.view($event)">Profile</a></li>
+                                    <li><a data-id="{{developer.activeDevelopers[$index].id}}" ng-click="developer.viewProfile($event)">Profile</a></li>
                                     <li><a data-id="{{developer.activeDevelopers[$index].id}}" data-orgid="{{developer.activeDevelopers[$index].organization_id}}" ng-click="developer.update($event)">Update</a></li>
                                     <li ng-if="developer.activeDevelopers[$index].status_id == '1'"><a data-id="{{developer.activeDevelopers[$index].id}}" ng-click="developer.remove($event)">Remove</a></li>
                                     <li ng-if="developer.activeDevelopers[$index].status_id == '2'"><a data-id="{{developer.activeDevelopers[$index].id}}" ng-click="developer.restore($event)">Restore</a></li>

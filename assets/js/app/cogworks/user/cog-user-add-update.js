@@ -46,15 +46,27 @@ function cogUserCtrl($rootScope, $scope, $element, $state, $http, $timeout, cogP
         cogUsers.getUser(self, {
             id: userID
         }, function (data) {
+            console.log(data);
             if(parseInt(userID) != $rootScope.userID) {
                 self.disablePosition = false;
             } else {
                 self.disablePosition = true;
             }
+            if(self.typesAllowedUsers !== undefined){
+                $.each(self.typesAllowedUsers.accountType, function(index, value){
+                    if(value.id == data.account_type_id) {
+                        self.typeInitValue = data.account_type_id;
+                        return false;
+                    }
+                });
+            }
             cogPositions.getPositions(self, {}, function (dataPos) {
                 $.each(dataPos, function (index, value) {
                     if (data.position_id == value.id) {
                         self.positionsInitValue = dataPos[index].id;
+                        if (self.cogProjPage == 'manage' && org == 2) {
+                            self.disablePosition = true;
+                        }
                         return false;
                     }
                 });

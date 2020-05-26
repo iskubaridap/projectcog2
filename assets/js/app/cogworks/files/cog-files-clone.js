@@ -3,7 +3,9 @@ var cogFilesClone = angular.module("cog-files-clone", []);
 function cogFilesCloneCtrl($rootScope, $scope, $element, $state, $http, cogProjects, cogFilesDetails, SweetAlert) {
     var self = this;
     var cogID = $state.params.id;
+    self.disableProject = false;
     cogFilesDetails.getDetails(self, {id: cogID}, function (data) {
+        console.log(data);
         if (data.cogfile.search('-copy') < 0) {
             self.details.cogfile = data.cogfile + '-copy';
         }
@@ -12,10 +14,20 @@ function cogFilesCloneCtrl($rootScope, $scope, $element, $state, $http, cogProje
             user: data.userID
         }, function () {
             var obj = new Object();
-            self.activeProjects = (self.activeProjects == null) ? new Array() : self.activeProjects;
-            obj.id = '0';
-            obj.project = '(Personal File)';
-            self.activeProjects.unshift(obj);
+            if(data.orgID == $rootScope.organizationID) {
+                self.activeProjects = (self.activeProjects == null) ? new Array() : self.activeProjects;
+                obj.id = '0';
+                obj.project = '(Personal File)';
+                self.activeProjects.unshift(obj);
+                self.disableProject = false;
+            } else {
+                // this assumes that the admin is cloning cogfiles coming from other orgs
+                self.activeProjects = new Array();
+                obj.id = '0';
+                obj.project = '(Personal File)';
+                self.activeProjects.push(obj);
+                self.disableProject = true;
+            }
         });
     });
     self.reset = function (event) {

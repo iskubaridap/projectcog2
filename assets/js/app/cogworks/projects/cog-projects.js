@@ -8,7 +8,7 @@ function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, 
         console.log(data);
         var str = '';
         self.view = 'table';
-        if(self.activeProjects) {
+        if(self.activeProjects && $element.find('#right-buttons').length > 0) {
             $.each(self.activeProjects, function(index, value){
                 str += '<tr class="project-row" data-id="' + value.id + '">';
                 str += '<td>' + value.project + ((value.status == '5') ? ' <span class="text-warning">(<i>Org Deleted</i>)</span>' : '') +'</td>';
@@ -16,8 +16,7 @@ function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, 
                 str += '<td>' + value.created + '</td>';
                 str += '<td class="project-action">';
                 str += '<span class="project-open btn btn-success btn-xs" data-id="' + value.id + '">Open</span>&nbsp;';
-                str += '<span class="project-update btn btn-success btn-xs" data-id="' + value.id + '">Update</span>&nbsp;';
-                if($rootScope.positionID != 3 || $rootScope.organizationID <= 2) {
+                if($rootScope.organizationID == 2 || ($rootScope.positionID != 3 && $rootScope.organizationID != 2)) {
                     str += '<span class="project-update btn btn-success btn-xs" data-id="' + value.id + '" data-files="' + value.cogfiles + '">Update</span>&nbsp;';
                     if(value.status == '1') {
                         str += '<span class="project-remove btn btn-danger btn-xs" data-id="' + value.id + '" data-files="' + value.cogfiles + '">Remove</span>';
@@ -27,16 +26,16 @@ function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, 
                 }
                 str += '</td>';
                 str += '</tr>';
-                // i need to use this to make it appear. still not know it doesn't show automatically
-                setTimeout(function(){
-                    $element.find('#page-table-body').empty();
-                    $element.find('#page-table').data('footable').appendRow(str);
-                    $element.find('#page-table .remove-sorting').off();
-                    $element.find('#page-table .remove-sorting').removeClass('footable-sortable');
-                    $element.find('#page-table .remove-sorting .footable-sort-indicator').remove();
-                    setEvent();
-                }, 0);
             });
+            // i need to use this to make it appear. still not know it doesn't show automatically
+            setTimeout(function(){
+                $element.find('#page-table-body').empty();
+                $element.find('#page-table').data('footable').appendRow(str);
+                $element.find('#page-table .remove-sorting').off();
+                $element.find('#page-table .remove-sorting').removeClass('footable-sortable');
+                $element.find('#page-table .remove-sorting .footable-sort-indicator').remove();
+                setEvent();
+            }, 0);
         }
     });
 
@@ -65,11 +64,6 @@ function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, 
             });
         }
     }
-    var viewFile = function (id) {
-        //console.log(id);
-    };
-    var viewThumnail = function () {};
-    var viewList = function () {};
     var removeProject = function (id, files, callback) {
         if (files > 0) {
             SweetAlert.swal({
@@ -178,7 +172,7 @@ function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, 
                     str += '<td>' + value.created + '</td>';
                     str += '<td class="project-action">';
                     str += '<span class="project-open btn btn-success btn-xs" data-id="' + value.id + '">Open</span>&nbsp;';
-                    if($rootScope.positionID != 3 || $rootScope.organizationID <= 2) {
+                    if($rootScope.organizationID == 2 || ($rootScope.positionID != 3 && $rootScope.organizationID != 2)) {
                         str += '<span class="project-update btn btn-success btn-xs" data-id="' + value.id + '" data-files="' + value.cogfiles + '">Update</span>&nbsp;';
                         if(value.status == '1') {
                             str += '<span class="project-remove btn btn-danger btn-xs" data-id="' + value.id + '" data-files="' + value.cogfiles + '">Remove</span>';
@@ -188,27 +182,21 @@ function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, 
                     }
                     str += '</td>';
                     str += '</tr>';
-                    // i need to use this to make it appear. still not know it doesn't show automatically
-                    setTimeout(function(){
-                        $element.find('#page-table-body').empty();
-                        $element.find('#page-table').data('footable').appendRow(str);
-                        $element.find('#page-table .remove-sorting').off();
-                        $element.find('#page-table .remove-sorting').removeClass('footable-sortable');
-                        $element.find('#page-table .remove-sorting .footable-sort-indicator').remove();
-                        setEvent();
-                    }, 0);
                 });
+                // i need to use this to make it appear. still not know it doesn't show automatically
+                setTimeout(function(){
+                    $element.find('#page-table-body').empty();
+                    $element.find('#page-table').data('footable').appendRow(str);
+                    $element.find('#page-table .remove-sorting').off();
+                    $element.find('#page-table .remove-sorting').removeClass('footable-sortable');
+                    $element.find('#page-table .remove-sorting .footable-sort-indicator').remove();
+                    setEvent();
+                }, 0);
             }
         });
     };
     self.thumbnailView = function(event) {
         self.view = 'thumbnail';
-    };
-    self.viewByThumnail = function (event) {
-        viewThumnail();
-    };
-    self.viewByList = function (event) {
-        viewList();
     };
     self.orderByName = function (event) {
         self.activeProjects = self.activeProjects.sort(function (a, b) {

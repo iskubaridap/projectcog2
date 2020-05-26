@@ -64,6 +64,22 @@ var accountsService = function ($http) {
         return null;
       });
   };
+  this.getAccountUser = function (obj, config, callback) {
+    return $http.post("./accounts/retrieve/user")
+      .then(function (response) {
+        obj.userAccount = ((response.data).toString().length > 0 && response.data != 'null') ? response.data : null;
+        try {
+          callback(response.data);
+        } catch (err) {
+          // no callback function
+        }
+      }, function (response) {
+        obj.typesAllowedUsers = new Object();
+        obj.typesAllowedUsers.error = 'serverError';
+        obj.typesAllowedUsers.errorData = 'Organizations';
+        return null;
+      });
+  };
   this.getTypesAllowedUsers = function (obj, config, callback) {
     return $http.post("./accounts/retrieve/types-allowed-users")
       .then(function (response) {

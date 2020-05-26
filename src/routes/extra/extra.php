@@ -23,21 +23,11 @@ return function (App $app) {
     $container = $app->getContainer();
 
     $app->post('/extra/test-function', function ($request, $response, $args) use ($container) {
-        // test();
-        /* $template = $container->cogworks->query("
-            select * from templates
-            where id = '4';
-        ")->fetch(PDO::FETCH_ASSOC);
-        return getCogTemplateDirectory($template); */
-        /* {
-            "imageValue": "support-engineer.svg",
-            "path": "cogworks/organizations/5/img/thumbnail/cog-files/107/support-engineer.svg",
-            "folder": "cogworks/organizations/5/img/thumbnail/cog-files/107"
-        } */
-        $ary = array();
-        $ary['path'] = 'cogworks/organizations/5/img/thumbnail/cog-files/107/support-engineer.svg';
-        $ary['folder'] = 'cogworks/organizations/5/img/thumbnail/cog-files/107';
-        return json_encode(generateDirectory($ary['folder']));
+        $loggedUser = identifyLoggedUser($container);
+        $userID = $loggedUser['id'];
+        $userPosition = $loggedUser['position_id'];
+        $userOrg = $loggedUser['organization_id'];
+        return json_encode(getCogFileThumbnail($userOrg, $userID, '164', 'monitor-mail.svg', $container));
     });
 
     // reserve code

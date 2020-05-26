@@ -19,7 +19,8 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, log
     cogFiles.getActiveFiles(self, {projID: cogProjID,page: cogProjPage}, function(data){
         var str = '';
         self.view = 'table';
-        if(self.activeFiles) {
+        
+        if(self.activeFiles && $element.find('#right-buttons').length > 0) {
             $.each(self.activeFiles, function(index, value){
                 str += '<tr class="cog-file-row" data-id="' + value.id + '">';
                 str += '<td>' + value.cogfile + ((value.status == '5') ? ' <span class="text-warning">(<i>Org Deleted</i>)</span>' : '') +'</td>';
@@ -30,24 +31,26 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, log
                 str += '<span class="file-open btn btn-success btn-xs" data-id="' + value.id + '" data-code="' + value.code + '">Open</span>&nbsp;';
                 str += '<span class="file-details btn btn-success btn-xs" data-id="' + value.id + '">Details</span>&nbsp;';
                 str += '<span class="file-clone btn btn-success btn-xs" data-id="' + value.id + '">Clone</span>&nbsp;';
-                str += '<span class="file-update btn btn-success btn-xs" data-id="' + value.id + '">Update</span>&nbsp;';
-                if(value.status == '1') {
-                    str += '<span class="file-remove btn btn-danger btn-xs" data-id="' + value.id + '">Remove</span>';
-                } else if (value.status == '2') {
-                    str += '<span class="file-restore btn btn-warning btn-xs" data-id="' + value.id + '">Restore</span>';
+                if($rootScope.organizationID == 2 || ($rootScope.positionID != 3 && $rootScope.organizationID != 2) || ($rootScope.userID == value.user && cogProjID == 'all')) {
+                    str += '<span class="file-update btn btn-success btn-xs" data-id="' + value.id + '">Update</span>&nbsp;';
+                    if(value.status == '1') {
+                        str += '<span class="file-remove btn btn-danger btn-xs" data-id="' + value.id + '">Remove</span>';
+                    } else if (value.status == '2') {
+                        str += '<span class="file-restore btn btn-warning btn-xs" data-id="' + value.id + '">Restore</span>';
+                    }
                 }
                 str += '</td>';
                 str += '</tr>';
-                // i need to use this to make it appear. still not know it doesn't show automatically
-                setTimeout(function(){
-                    $element.find('#page-table-body').empty();
-                    $element.find('#page-table').data('footable').appendRow(str);
-                    $element.find('#page-table .remove-sorting').off();
-                    $element.find('#page-table .remove-sorting').removeClass('footable-sortable');
-                    $element.find('#page-table .remove-sorting .footable-sort-indicator').remove();
-                    setEvent();
-                }, 0);
             });
+            // i need to use this to make it appear. still not know it doesn't show automatically
+            setTimeout(function(){
+                $element.find('#page-table-body').empty();
+                $element.find('#page-table').data('footable').appendRow(str);
+                $element.find('#page-table .remove-sorting').off();
+                $element.find('#page-table .remove-sorting').removeClass('footable-sortable');
+                $element.find('#page-table .remove-sorting .footable-sort-indicator').remove();
+                setEvent();
+            }, 0);
         }
     });
 
@@ -276,24 +279,26 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, log
                     str += '<span class="file-open btn btn-success btn-xs" data-id="' + value.id + '" data-code="' + value.code + '">Open</span>&nbsp;';
                     str += '<span class="file-details btn btn-success btn-xs" data-id="' + value.id + '">Details</span>&nbsp;';
                     str += '<span class="file-clone btn btn-success btn-xs" data-id="' + value.id + '">Clone</span>&nbsp;';
-                    str += '<span class="file-update btn btn-success btn-xs" data-id="' + value.id + '">Update</span>&nbsp;';
-                    if(value.status == '1') {
-                        str += '<span class="file-remove btn btn-danger btn-xs" data-id="' + value.id + '">Remove</span>';
-                    } else if (value.status == '2') {
-                        str += '<span class="file-restore btn btn-warning btn-xs" data-id="' + value.id + '">Restore</span>';
+                    if($rootScope.organizationID == 2 || ($rootScope.positionID != 3 && $rootScope.organizationID != 2) || ($rootScope.userID == value.user && cogProjID == 'all')) {
+                        str += '<span class="file-update btn btn-success btn-xs" data-id="' + value.id + '">Update</span>&nbsp;';
+                        if(value.status == '1') {
+                            str += '<span class="file-remove btn btn-danger btn-xs" data-id="' + value.id + '">Remove</span>';
+                        } else if (value.status == '2') {
+                            str += '<span class="file-restore btn btn-warning btn-xs" data-id="' + value.id + '">Restore</span>';
+                        }
                     }
                     str += '</td>';
                     str += '</tr>';
-                    // i need to use this to make it appear. still not know it doesn't show automatically
-                    setTimeout(function(){
-                        $element.find('#page-table-body').empty();
-                        $element.find('#page-table').data('footable').appendRow(str);
-                        $element.find('#page-table .remove-sorting').off();
-                        $element.find('#page-table .remove-sorting').removeClass('footable-sortable');
-                        $element.find('#page-table .remove-sorting .footable-sort-indicator').remove();
-                        setEvent();
-                    }, 0);
                 });
+                // i need to use this to make it appear. still not know it doesn't show automatically
+                setTimeout(function(){
+                    $element.find('#page-table-body').empty();
+                    $element.find('#page-table').data('footable').appendRow(str);
+                    $element.find('#page-table .remove-sorting').off();
+                    $element.find('#page-table .remove-sorting').removeClass('footable-sortable');
+                    $element.find('#page-table .remove-sorting .footable-sort-indicator').remove();
+                    setEvent();
+                }, 0);
             }
         });
     };

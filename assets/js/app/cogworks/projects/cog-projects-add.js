@@ -50,16 +50,13 @@ function cogProjectCtrl($rootScope, $scope, $element, $state, $http, cogProject,
             reload: true
         });
     };
-    
     self.submit = function (event) {
         var formData = new FormData();
         var fileData = $element.find('#cog-project-update-image').prop('files')[0];
         var cogProjectName = $element.find('#cog-project-update-name').val();
         var projectUsers = $element.find('#cog-new-project-users').val();
-        cogUser = (projectUsers != undefined) ? projectUsers : 0;
+        cogUser = (projectUsers != undefined) ? projectUsers : ($rootScope.organizationID == 2) ? $rootScope.userID : 0;
         var filename = '';
-
-        console.log(cogUser);
 
         try {
             filename = fileData.name

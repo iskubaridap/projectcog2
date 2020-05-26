@@ -8,9 +8,8 @@ function cogOrganizationsCtrl($rootScope, $scope, $element, $state, $http, $time
     cogOrganizationsService.getOrganizations(self, {}, function (data) {
         var str = '';
         self.view = 'table';
-        
-        if(data) {
-            $.each(data, function(index, value){
+        if(self.organizations && $element.find('#right-buttons').length > 0) {
+            $.each(self.organizations, function(index, value){
                 str += '<tr class="org-row" data-id="' + value.id + '">';
                 str += '<td>' + value.organization + '</td>';
                 str += '<td class="org-action">';
@@ -26,15 +25,15 @@ function cogOrganizationsCtrl($rootScope, $scope, $element, $state, $http, $time
                 }
                 str += '</td>';
                 str += '</tr>';
-                setTimeout(function(){
-                    $element.find('#page-table-body').empty();
-                    $element.find('#page-table').data('footable').appendRow(str);
-                    $element.find('#page-table .remove-sorting').off();
-                    $element.find('#page-table .remove-sorting').removeClass('footable-sortable');
-                    $element.find('#page-table .remove-sorting .footable-sort-indicator').remove();
-                    setEvent();
-                }, 0);
             });
+            setTimeout(function(){
+                $element.find('#page-table-body').empty();
+                $element.find('#page-table').data('footable').appendRow(str);
+                $element.find('#page-table .remove-sorting').off();
+                $element.find('#page-table .remove-sorting').removeClass('footable-sortable');
+                $element.find('#page-table .remove-sorting .footable-sort-indicator').remove();
+                setEvent();
+            }, 0);
         }
     });
 
@@ -157,8 +156,8 @@ function cogOrganizationsCtrl($rootScope, $scope, $element, $state, $http, $time
         cogOrganizationsService.getOrganizations(self, {}, function (data) {
             var str = '';
             self.view = 'table';
-            if(data) {
-                $.each(data, function(index, value){
+            if(self.organizations) {
+                $.each(self.organizations, function(index, value){
                     str += '<tr class="org-row" data-id="' + value.id + '">';
                     str += '<td>' + value.organization + '</td>';
                     str += '<td class="org-action">';
@@ -174,15 +173,15 @@ function cogOrganizationsCtrl($rootScope, $scope, $element, $state, $http, $time
                     }
                     str += '</td>';
                     str += '</tr>';
-                    setTimeout(function(){
-                        $element.find('#page-table-body').empty();
-                        $element.find('#page-table').data('footable').appendRow(str);
-                        $element.find('#page-table .remove-sorting').off();
-                        $element.find('#page-table .remove-sorting').removeClass('footable-sortable');
-                        $element.find('#page-table .remove-sorting .footable-sort-indicator').remove();
-                        setEvent();
-                    }, 0);
                 });
+                setTimeout(function(){
+                    $element.find('#page-table-body').empty();
+                    $element.find('#page-table').data('footable').appendRow(str);
+                    $element.find('#page-table .remove-sorting').off();
+                    $element.find('#page-table .remove-sorting').removeClass('footable-sortable');
+                    $element.find('#page-table .remove-sorting .footable-sort-indicator').remove();
+                    setEvent();
+                }, 0);
             }
         });
     };

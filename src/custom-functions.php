@@ -113,6 +113,7 @@ function getCogFileThumbnail($orgID, $userID, $cogID, $img, $container)
     {
         $ary['imageValue'] = '';
         $ary['path'] = 'assets/img/thumbnail/cog-file.svg';
+        $ary['folder'] = '';
     }
     else
     {
@@ -159,7 +160,9 @@ function getCogFileThumbnail($orgID, $userID, $cogID, $img, $container)
             $ary['path'] = 'cogworks/organizations/' . $orgID . '/img/thumbnail/cog-files/' . $cogID . '/' . $img;
         }
     }
-    generateDirectory($_SERVER['DOCUMENT_ROOT'] . '/' . $ary['folder']);
+    if($ary['folder'] != '') {
+        generateDirectory($_SERVER['DOCUMENT_ROOT'] . '/' . $ary['folder']);
+    }
     return $ary;
 }
 function getCogImageThumbnailDirectory($fileID, $orgID, $userID, $type)
@@ -476,7 +479,8 @@ function getUserInfo($id, $container)
             users.email, users.username, users.password, users.image, users.address,
             users.country, users.organization_id, organizations.organization,
             users.position_id, positions.position, users.last_login, users.account_id,
-            account_types.account_type, allowed_users.allowed_user, users.status_id,
+            accounts.account_type_id, account_types.account_type, allowed_users.allowed_user, 
+            accounts.started, accounts.expiration, accounts.program_id, users.status_id,
             statues.status, users.updated, users.created
         from users, organizations, positions, accounts, account_types, allowed_users, statues
         where users.id = '$userID' and users.organization_id = organizations.id and

@@ -105,7 +105,7 @@ return function (App $app) {
             }
             $tmpAry = getCogFileThumbnail($userOrg, $userID, $cog['id'], $cog['image'], $container);
             $cogFile['imageValue'] = $tmpAry['imageValue'];
-            $cogFile['imageFolder'] = $tmpAry['folder']; // for some reason i need to add this, without this it will throw a 502 error on a certain page example http://localhost:7888/dashboard#/cogworks/projects/user/cog-files/5
+            $cogFile['imageFolder'] = $tmpAry['folder'];
             $cogFile['image'] = $tmpAry['path'];
             array_push($result, $cogFile);
         }
@@ -120,13 +120,9 @@ return function (App $app) {
         $bs3Blank = array();
         $bs4Blank = array();
 
-        if($userOrg == 1 && $userPosition == 1) {
+        if($userOrg == 1) {
             $result = $container->cogworks->query("
                 select * from templates where status_id = '1' order by bootstrap_version asc
-            ")->fetchAll(PDO::FETCH_ASSOC);
-        } else if($userOrg == 1) {
-            $result = $container->cogworks->query("
-                select * from templates where user_id = '0' and (organization_id = '0' or organization_id = '1') and status_id = '1' order by bootstrap_version asc
             ")->fetchAll(PDO::FETCH_ASSOC);
         } else if ($userOrg == 2) {
             $result = $container->cogworks->query("
@@ -325,25 +321,15 @@ return function (App $app) {
             where id = '$cogID';
         ")->fetch(PDO::FETCH_ASSOC);
         $cogFilename = $cog['cog_file'];
-        $cogUserID = $cog['user_id'];
+        $cogUserIDForPrj = $cog['user_id'];
+        $cogUserID = ($cog['user_id'] != $userID) ? $userID : $cog['user_id'];
         // this is to retrieve the original user who made the file.
         $cogUser = $container->projectcog->query("
             select * from users
-            where id = '$cogUserID';
+            where id = '$cogUserIDForPrj';
         ")->fetch(PDO::FETCH_ASSOC);
         $cogProjectID = $cog['project_id'];
         $cogOrgID = $cogUser['organization_id'];
-
-        $sourcePath = getCogFileDirectory($cogProjectID, $cogOrgID, $cogUserID) . $cogID . '.cog';
-        $targetPath = getCogFileDirectory($projID, $loggedUser['organization_id'], $cogUserID) . $cogID . '.cog';
-        $cogFileContent = json_decode(file_get_contents($sourcePath, true));        
-        $cogFileContent->design->id = setCogworksDesignUniqueID($cogUserID);
-        $cogFileContent->design->name = $name;
-
-        $myfile = fopen($targetPath, "w");
-        fwrite($myfile, (json_encode($cogFileContent)));
-        fclose($myfile);
-        chmod($targetPath,0777);
 
         if(!empty($file)) {
             $uploadedFile = $file['file'];
@@ -359,8 +345,12 @@ return function (App $app) {
                 where cog_file = '$cogName' and user_id = '$cogUserID'
                 order by id desc limit 1
             ")->fetch(PDO::FETCH_ASSOC);
+            $cogUserNew = $container->projectcog->query("
+                select * from users
+                where id = '$cogUserID';
+            ")->fetch(PDO::FETCH_ASSOC);
 
-            $imagePathAry = getCogImageThumbnailDirectory($newCog['id'], $cogOrgID, $cogUserID, 'cog-files');
+            $imagePathAry = getCogImageThumbnailDirectory($newCog['id'], $cogUserNew['organization_id'], $cogUserID, 'cog-files');
             $imagePath = $imagePathAry['path'];
 
             $uploadedFile->moveTo($imagePath . $imageName);
@@ -371,9 +361,26 @@ return function (App $app) {
                 (cog_file, project_id, user_id)
                 values('$cogName' , '$projID', '$cogUserID')
             ");
+            $newCog = $container->cogworks->query("
+                select * from cog_files
+                where cog_file = '$cogName' and user_id = '$cogUserID'
+                order by id desc limit 1
+            ")->fetch(PDO::FETCH_ASSOC);
         }
+
         if($insert == 1) {
             $result = true;
+            $newCogID = $newCog['id'];
+            $sourcePath = getCogFileDirectory($cogProjectID, $cogOrgID, $cog['user_id']) . $cogID . '.cog';
+            $targetPath = getCogFileDirectory($projID, $loggedUser['organization_id'], $cogUserID) . $newCogID . '.cog';
+            $cogFileContent = json_decode(file_get_contents($sourcePath, true));        
+            $cogFileContent->design->id = setCogworksDesignUniqueID($cogUserID);
+            $cogFileContent->design->name = $name;
+    
+            $myfile = fopen($targetPath, "w");
+            fwrite($myfile, (json_encode($cogFileContent)));
+            fclose($myfile);
+            chmod($targetPath,0777);
         } else {
             $result = false;
         }
