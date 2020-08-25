@@ -325,9 +325,9 @@ function generateDirectory($path)
     // check first if the directory exists
     if(!is_dir($path))
     {
-        mkdir($path, 0777, true);
+        $foobar = mkdir($path, 0777, true);
         chmod($path,0777);
-        return false;
+        return $foobar;
     }
     else
     {

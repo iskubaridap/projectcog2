@@ -213,6 +213,7 @@ return function (App $app) {
         $result['image'] = $cogFileImage;
         $result['imageValue'] = $cogFileImageValue;
         $result['userID'] = $cog['user_id'];
+        $result['user'] = $user['user'];
         $result['projectID'] = $cog['project_id'];
         $result['project'] = ($projID != 0) ? $project['project'] : '(Personal File)';
         $result['status'] = $status['status'];

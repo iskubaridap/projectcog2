@@ -114,7 +114,7 @@ define([], function() {
                         $("#audioProgressBar").val(0);
                         
                         if (value != null) {
-                            if(((value.type.split('/')[((value.type.split('/').length) - 1)]).toLowerCase()) == 'mp3')
+                            if((value.type).toLowerCase() == 'audio/mpeg')
                             {
                                 reader = new FileReader();
 
@@ -241,7 +241,7 @@ define([], function() {
                             formData.append('asset', 'audio');
                             formData.append('designID', designID);
                             formData.append('user', user);
-                            console.log(fileErrorAry.length);
+                            // console.log(fileErrorAry.length);
                             if(fileErrorAry.length <= 0) {
                                 cogworks.loadingScreen("dynamic","<p>Importing " + value.name + ".</p>","fadeIn");
                             }

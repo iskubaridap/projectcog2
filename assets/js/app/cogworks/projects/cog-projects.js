@@ -5,7 +5,7 @@ function cogProjectsCtrl($rootScope, $scope, $element, $state, $http, $timeout, 
     var cogProjPage = ($state.params.page == undefined) ? '' : $state.params.page;
     self.activeProjects = undefined;
     cogProjects.getActiveProjects(self, {page: cogProjPage}, function (data) {
-        console.log(data);
+        // console.log(data);
         var str = '';
         self.view = 'table';
         if(self.activeProjects && $element.find('#right-buttons').length > 0) {

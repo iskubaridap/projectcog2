@@ -4060,8 +4060,14 @@ define([], function() {
                         cache: true,
                         data: {path:parsed.dirname,fName:parsed.basename, user: app.user},
                         success: function (data) {
+                            var ctx = new DesignContext;
                             var json = JSON.parse(data);
                             var context = null;
+
+                            // this is to eliminate all old files that has a context id of "null_1492924957415"
+                            if(!json.design.id || (json.design.id).search('null') >= 0) {
+                                json.design.id = app.user + '_' + json.timestamp;
+                            }
                             console.log(json);
                             try {
                                 if(typeof json.design.assets.audio === "undefined") {
@@ -4199,7 +4205,6 @@ define([], function() {
                         if (switchTo) {
                             app.activateContext(ctx);
                             console.log(ctx);
-                            console.log(app.context.id);
                         }
                         if (ctx.assets.css.hasSCSS()) {
                             app.compileSASS(ctx)

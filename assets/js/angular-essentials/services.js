@@ -298,7 +298,7 @@ var cogFiles = function ($http) {
     return $http.post("./cogworks/cog-files/retrieve/active", config)
       .then(function (response) {
         obj.activeFiles = ((response.data).toString().length > 0 && response.data != 'null') ? response.data : null;
-        console.log(obj.activeFiles);
+        // console.log(obj.activeFiles);
         try {
           callback(response.data);
         } catch (err) {

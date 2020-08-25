@@ -22,7 +22,7 @@ function loginCtrl($rootScope, $scope, $state, $element, $http, loginService, Sw
                         $rootScope.positionID = parseInt(data.position_id);
                         $rootScope.organization = data.organization;
                         $rootScope.organizationID = parseInt(data.organization_id);
-                        console.log($rootScope);
+                        // console.log($rootScope);
                         $state.go('cog-home.main');
                     });
 
