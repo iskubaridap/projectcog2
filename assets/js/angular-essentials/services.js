@@ -388,7 +388,7 @@ var cogProjects = function ($http) {
     return $http.post("./cogworks/projects/retrieve/org/active", config)
       .then(function (response) {
         obj.activeProjects = ((response.data).toString().length > 0) ? response.data : null;
-        console.log(obj.activeProjects);
+        // console.log(obj.activeProjects);
         try {
           callback(response.data);
         } catch (err) {

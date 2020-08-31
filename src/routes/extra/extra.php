@@ -24,10 +24,21 @@ return function (App $app) {
 
     $app->post('/extra/test-function', function ($request, $response, $args) use ($container) {
         $loggedUser = identifyLoggedUser($container);
-        $userID = $loggedUser['id'];
-        $userPosition = $loggedUser['position_id'];
-        $userOrg = $loggedUser['organization_id'];
-        return json_encode(getCogFileThumbnail($userOrg, $userID, '164', 'monitor-mail.svg', $container));
+        // $userID = $loggedUser['id'];
+        // $userPosition = $loggedUser['position_id'];
+        // $userOrg = $loggedUser['organization_id'];
+        // return json_encode(getCogFileThumbnail($userOrg, $userID, '164', 'monitor-mail.svg', $container));
+        return json_encode($loggedUser);
+    });
+
+    // reserve code
+    $app->post('/extra/clean-root-folder', function ($request, $response, $args) use ($container) {
+        $folder = $request->getParam('folder');
+        $user = getUserInfo($userID, $container);
+        
+        rrmdir($_SERVER['DOCUMENT_ROOT'] . '/' . $folder . '/');
+
+        echo 'complete';
     });
 
     // reserve code

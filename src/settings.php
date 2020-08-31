@@ -39,30 +39,30 @@
 */
 /*
     'cogworks_original' => [ 
-        'dsn' => 'mysql:host=mysql.projectcog.com;dbname=cogworks;charset=UTF8',
-        'username' => 'projectcog_dev',
-        'password' => 'pr0j3ctc0gd3v',
-    ],
-    'projectcog' => [ 
-        'dsn' => 'mysql:host=mysql.projectcog.com;dbname=projectcog_2_test;charset=UTF8',
-        'username' => 'dkohler',
-        'password' => 'Projectcog07!',
-    ],
-    'cogworks' => [ 
-        'dsn' => 'mysql:host=mysql.projectcog.com;dbname=cogworks_2_test;charset=UTF8',
-        'username' => 'dkohler',
-        'password' => 'Projectcog07!',
-    ],
-    'task' => [ 
-        'dsn' => 'mysql:host=mysql.projectcog.com;dbname=task_2_test;charset=UTF8',
-        'username' => 'dkohler',
-        'password' => 'Projectcog07!',
-    ],
-    'message' => [ 
-        'dsn' => 'mysql:host=mysql.projectcog.com;dbname=message_2_test;charset=UTF8',
-        'username' => 'dkohler',
-        'password' => 'Projectcog07!',
-    ], 
+            'dsn' => 'mysql:host=mysql.projectcog.com;dbname=cogworks;charset=UTF8',
+            'username' => 'projectcog_dev',
+            'password' => 'pr0j3ctc0gd3v',
+        ],
+        'projectcog' => [ 
+            'dsn' => 'mysql:host=mysql.projectcog.com;dbname=projectcog_2;charset=UTF8',
+            'username' => 'projectcog_two',
+            'password' => 'P@ssw0rd',
+        ],
+        'cogworks' => [ 
+            'dsn' => 'mysql:host=mysql.projectcog.com;dbname=cogworks_2;charset=UTF8',
+            'username' => 'projectcog_two',
+            'password' => 'P@ssw0rd',
+        ],
+        'task' => [ 
+            'dsn' => 'mysql:host=mysql.projectcog.com;dbname=task_2;charset=UTF8',
+            'username' => 'projectcog_two',
+            'password' => 'P@ssw0rd',
+        ],
+        'message' => [ 
+            'dsn' => 'mysql:host=mysql.projectcog.com;dbname=message_2;charset=UTF8',
+            'username' => 'projectcog_two',
+            'password' => 'P@ssw0rd',
+        ]
 */
 return [
     'settings' => [

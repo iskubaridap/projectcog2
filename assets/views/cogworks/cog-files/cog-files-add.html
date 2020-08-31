@@ -59,14 +59,22 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" ng-if="cogFilesAdd.cogPage == 'manage'">
-                                <div class="col-md-6" ng-if="cogFilesAdd.activeProjects !== undefined">
+                            <div class="row">
+                                <div ng-if="cogFilesAdd.cogPage == 'manage'">
+                                    <div class="col-md-6" ng-if="cogFilesAdd.activeProjects !== undefined">
+                                        <div class="form-group">
+                                            <label class="control-label">Assign to User</label>
+        
+                                            <select id="cog-new-file-users" class="cog-input form-control m-b" name="cog-users">
+                                                <option ng-repeat="item in cogFilesAdd.activeOrgDevelopers" value="{{item.id}}">{{item.user}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="control-label">Assign to User</label>
-    
-                                        <select id="cog-new-file-users" class="cog-input form-control m-b" name="cog-users">
-                                            <option ng-repeat="item in cogFilesAdd.activeOrgDevelopers" value="{{item.id}}">{{item.user}}</option>
-                                        </select>
+                                        <label class="control-label">ID Name</label>
+                                        <input id="cog-new-file-id-name" name="cog-id-name" type="text" class="cog-input form-control" placeholder="ID Name">
                                     </div>
                                 </div>
                             </div>

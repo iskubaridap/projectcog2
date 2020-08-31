@@ -4,10 +4,8 @@ function cogFilesUpdateCtrl($rootScope, $scope, $element, $state, $http, cogProj
     var self = this;
     var cogID = $state.params.id;
     cogFilesDetails.getDetails(self, {id: cogID}, function(data) {
-        console.log(data);
         cogProjects.getActiveOrgProjects(self, {org: data.orgID, user: data.userID}, function(data2) {
             var obj = new Object();
-            console.log(data2);
             self.activeProjects = (self.activeProjects == null) ? new Array() : self.activeProjects;
             obj.id = '0';
             obj.project = '(Personal File)';
@@ -24,6 +22,7 @@ function cogFilesUpdateCtrl($rootScope, $scope, $element, $state, $http, cogProj
         var fileData = $element.find('#cog-update-image').prop('files')[0];
         var cogName = $element.find('#cog-update-filename').val();
         var cogProject = $element.find('#cog-update-project').val();
+        var idName = $element.find('#cog-update-id-name').val();
         var filename = '';
         var fileUpdate = false;
         var cogNameUpdate = false;
@@ -46,6 +45,7 @@ function cogFilesUpdateCtrl($rootScope, $scope, $element, $state, $http, cogProj
             formData.append('id', cogID);
             formData.append('file', fileData);
             formData.append('cogName', cogName);
+            formData.append('idName', idName);
             formData.append('cogProject', cogProject);
 
             $http({
@@ -56,7 +56,7 @@ function cogFilesUpdateCtrl($rootScope, $scope, $element, $state, $http, cogProj
                     'Content-Type': undefined
                 }
             }).success(function (response) {
-                console.log(response);
+                // console.log(response);
                 SweetAlert.swal({
                     title: "Success!",
                     text: "File is successfully Updated."

@@ -23,6 +23,7 @@ function cogFilesCtrl($rootScope, $scope, $element, $state, $http, $timeout, log
         if(self.activeFiles && $element.find('#right-buttons').length > 0) {
             $.each(self.activeFiles, function(index, value){
                 str += '<tr class="cog-file-row" data-id="' + value.id + '">';
+                str += '<td>' + ((value.idName == null) ? '' : value.idName) + '</td>';
                 str += '<td>' + value.cogfile + ((value.status == '5') ? ' <span class="text-warning">(<i>Org Deleted</i>)</span>' : '') +'</td>';
                 str += '<td>' + value.project + '</td>';
                 str += '<td>' + value.updated + '</td>';

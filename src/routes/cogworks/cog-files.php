@@ -84,6 +84,7 @@ return function (App $app) {
             $cogFileUserID = $cog['user_id'];
             $cogFile['id'] = $cog['id'];
             $cogFile['cogfile'] = str_replace('.cog', '', $cog['cog_file']);
+            $cogFile['idName'] = $cog['id_name'];
             $cogFile['user'] = $cog['user_id'];
             $cogFile['projectID'] = $cog['project_id'];
             $cogFile['created'] = explode(" ",$cog['created'])[0];
@@ -209,6 +210,7 @@ return function (App $app) {
         $result = array();
         $result['id'] = $cog['id'];
         $result['cogfile'] = $cog['cog_file'];
+        $result['cogfileIdName'] = $cog['id_name'];
         // $result['content'] = $cog['cog_file_content']; // reserve code
         $result['image'] = $cogFileImage;
         $result['imageValue'] = $cogFileImageValue;
@@ -230,6 +232,7 @@ return function (App $app) {
     $app->post('/cogworks/cog-files/update', function ($request, $response, $args) use ($container) {
         $cogID = $request->getParam('id');
         $name = $request->getParam('cogName');
+        $idName = $request->getParam('idName');
         $projID = $request->getParam('cogProject');
         $file = $request->getUploadedFiles();
         $dateDateTime = getCurrentDate();
@@ -281,6 +284,7 @@ return function (App $app) {
                 update cog_files
                 set
                 cog_file = '$cogName',
+                id_name = '$idName',
                 image = '$imageName',
                 project_id = '$projID',
                 updated = '$dateDateTime'
@@ -293,6 +297,7 @@ return function (App $app) {
                 update cog_files
                 set
                 cog_file = '$cogName',
+                id_name = '$idName',
                 project_id = '$projID',
                 updated = '$dateDateTime'
                 where id = '$cogID'
@@ -396,6 +401,7 @@ return function (App $app) {
         $cogTempID = $request->getParam('cogTemplate');
         $name = $request->getParam('cogName');
         $projID = $request->getParam('cogProject');
+        $idName = $request->getParam('idName');
         $file = $request->getUploadedFiles();
         $cogName = $name . '.cog';
 
@@ -409,14 +415,14 @@ return function (App $app) {
             $imageName = $file['file']->getClientFilename();
             $insert = $container->cogworks->exec("
                 insert into cog_files
-                (cog_file, image, project_id, user_id)
-                values('$cogName', '$imageName', '$projID', '$userID')
+                (cog_file, id_name, image, project_id, user_id)
+                values('$cogName',, '$idName' '$imageName', '$projID', '$userID')
             ");
         } else {
             $insert = $container->cogworks->exec("
                 insert into cog_files
-                (cog_file, project_id, user_id)
-                values('$cogName' , '$projID', '$userID')
+                (cog_file, id_name, project_id, user_id)
+                values('$cogName', '$idName' , '$projID', '$userID')
             ");
         }
         if($insert == 1) {

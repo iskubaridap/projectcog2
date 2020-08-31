@@ -12,7 +12,6 @@ function loginCtrl($rootScope, $scope, $state, $element, $http, loginService, Sw
                 password: passwordInput
             })
             .then(function (response) {
-
                 if (response.data == 'true') {
                     loginService.getLoggedUser(self, {}, function (data) {
                         $rootScope.user = data.user;

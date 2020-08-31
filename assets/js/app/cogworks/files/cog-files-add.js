@@ -114,7 +114,7 @@ function cogFilesAddCtrl($rootScope, $scope, $element, $state, $http, cogProject
                 selectedTempID = $(this).attr('data-id');
                 $element.find('.template-item').removeClass('selected');
                 $(this).addClass('selected');
-                console.log(selectedTempID);
+                // console.log(selectedTempID);
             });
         });
     });
@@ -125,6 +125,7 @@ function cogFilesAddCtrl($rootScope, $scope, $element, $state, $http, cogProject
         var cogName = $element.find('#cog-new-file-filename').val();
         var cogProject = $element.find('#cog-new-file-project').val();
         var fileUsers = $element.find('#cog-new-file-users').val();
+        var idName = $element.find('#cog-new-file-id-name').val();
         cogUser = (fileUsers != undefined) ? fileUsers : 0;
         var filename = '';
         var fileAdd = false;
@@ -158,9 +159,8 @@ function cogFilesAddCtrl($rootScope, $scope, $element, $state, $http, cogProject
             formData.append('cogUser', cogUser);
             formData.append('cogName', cogName);
             formData.append('cogProject', cogProject);
+            formData.append('idName', idName);
             formData.append('cogTemplate', selectedTempID);
-
-            console.log(cogUser)
 
             $http({
                 url: './cogworks/cog-files/add',
